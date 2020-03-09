@@ -45,16 +45,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: scene)
         window?.backgroundColor = .white
         window?.makeKeyAndVisible()
-        
-        let tabBarController = UITabBarController()
-        window?.rootViewController = tabBarController
-        
-        tabBarController.viewControllers = bars.map { bar in
-            bar.viewController.tabBarItem.title = bar.title
-            bar.viewController.tabBarItem.image = UIImage(named: "Tabbar/tabbar-icon-\(bar.title)")
-            return bar.viewController
-        }
-        tabBarController.tabBar.itemPositioning = .centered
+
+        window?.rootViewController = generateTabBarController()
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -83,5 +75,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
+    }
+    
+    // MARK: - Tools
+    fileprivate func generateTabBarController() -> some UITabBarController {
+        let tabBarController = UITabBarController()
+        tabBarController.tabBar.unselectedItemTintColor = .darkGray
+        tabBarController.tabBar.barTintColor = UIColor(red: 245 / 255.0, green: 245 / 255.0, blue: 245 / 255.0, alpha: 1)
+        tabBarController.tabBar.tintColor = UIColor(red: 0, green: 157 / 255.0, blue: 130 / 255.0, alpha: 1)
+        
+        tabBarController.viewControllers = bars.map { bar in
+            bar.viewController.tabBarItem.title = bar.title
+            bar.viewController.tabBarItem.image = UIImage(named: "Tabbar/tabbar-icon-\(bar.title)")
+            return bar.viewController
+        }
+        tabBarController.tabBar.itemPositioning = .centered
+        
+        return tabBarController
     }
 }
