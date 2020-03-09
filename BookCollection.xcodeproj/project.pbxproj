@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5667FB24241682D2009F9E65 /* BCListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5667FB23241682D2009F9E65 /* BCListViewController.swift */; };
+		5667FB262416833B009F9E65 /* BCScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5667FB252416833B009F9E65 /* BCScanViewController.swift */; };
+		5667FB2824168386009F9E65 /* BCAnalyticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5667FB2724168386009F9E65 /* BCAnalyticViewController.swift */; };
 		567B0A4624167A2D00B595A7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567B0A4524167A2D00B595A7 /* AppDelegate.swift */; };
 		567B0A4824167A2D00B595A7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567B0A4724167A2D00B595A7 /* SceneDelegate.swift */; };
 		567B0A4A24167A2D00B595A7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567B0A4924167A2D00B595A7 /* ViewController.swift */; };
@@ -35,6 +38,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5667FB23241682D2009F9E65 /* BCListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCListViewController.swift; sourceTree = "<group>"; };
+		5667FB252416833B009F9E65 /* BCScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCScanViewController.swift; sourceTree = "<group>"; };
+		5667FB2724168386009F9E65 /* BCAnalyticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCAnalyticViewController.swift; sourceTree = "<group>"; };
 		567B0A4224167A2D00B595A7 /* BookCollection.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BookCollection.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		567B0A4524167A2D00B595A7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		567B0A4724167A2D00B595A7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -76,6 +82,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5667FB2224168259009F9E65 /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				5667FB23241682D2009F9E65 /* BCListViewController.swift */,
+				5667FB252416833B009F9E65 /* BCScanViewController.swift */,
+				5667FB2724168386009F9E65 /* BCAnalyticViewController.swift */,
+			);
+			path = Modules;
+			sourceTree = "<group>";
+		};
 		567B0A3924167A2D00B595A7 = {
 			isa = PBXGroup;
 			children = (
@@ -99,6 +115,7 @@
 		567B0A4424167A2D00B595A7 /* BookCollection */ = {
 			isa = PBXGroup;
 			children = (
+				5667FB2224168259009F9E65 /* Modules */,
 				567B0A4524167A2D00B595A7 /* AppDelegate.swift */,
 				567B0A4724167A2D00B595A7 /* SceneDelegate.swift */,
 				567B0A4924167A2D00B595A7 /* ViewController.swift */,
@@ -259,8 +276,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5667FB2824168386009F9E65 /* BCAnalyticViewController.swift in Sources */,
 				567B0A4A24167A2D00B595A7 /* ViewController.swift in Sources */,
+				5667FB24241682D2009F9E65 /* BCListViewController.swift in Sources */,
 				567B0A4624167A2D00B595A7 /* AppDelegate.swift in Sources */,
+				5667FB262416833B009F9E65 /* BCScanViewController.swift in Sources */,
 				567B0A4824167A2D00B595A7 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
