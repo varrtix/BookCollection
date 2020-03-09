@@ -31,6 +31,14 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     
+    fileprivate typealias BarTuple = (title: String, viewController: UIViewController)
+    
+    fileprivate var bars: [BarTuple] = [
+        ("Collections", BCListViewController()),
+        ("Scan", BCScanViewController()),
+        ("Me", BCAnalyticViewController()),
+    ]
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
         
@@ -40,6 +48,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let tabBarController = UITabBarController()
         window?.rootViewController = tabBarController
+        
+        tabBarController.viewControllers = bars.map { bar in
+            bar.viewController.tabBarItem.title = bar.title
+            return bar.viewController
+        }
+        tabBarController.tabBar.itemPositioning = .centered
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {
