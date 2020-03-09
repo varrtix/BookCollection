@@ -51,6 +51,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         tabBarController.viewControllers = bars.map { bar in
             bar.viewController.tabBarItem.title = bar.title
+            bar.viewController.tabBarItem.image = UIImage(named: "Tabbar/tabbar-icon-\(bar.title)")
             return bar.viewController
         }
         tabBarController.tabBar.itemPositioning = .centered
