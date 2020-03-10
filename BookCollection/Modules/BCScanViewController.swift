@@ -27,11 +27,16 @@
 /// THE SOFTWARE.
 
 import UIKit
+import AVFoundation
 
 class BCScanViewController: UIViewController {
   
-  lazy var scanView = BCScanView(frame: self.view.frame, rectSize: CGSize(width: 230.0, height: 230.0), offsetY: -43.0)
+  lazy var scanView = BCScanView(
+    frame: self.view.frame,
+    rectSize: CGSize(width: 230.0, height: 230.0), offsetY: -43.0)
   
+  lazy var captureSession = AVCaptureSession()
+
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -52,12 +57,17 @@ extension BCScanViewController {
     navigationController?.navigationBar.shadowImage = UIImage()
     
     // The fucking items ARE NOT INCLUDED in property navigationController of itself.
-    navigationItem.leftBarButtonItem = loadButton("Scan/back-button", action: #selector(back))
-    navigationItem.rightBarButtonItem = loadButton("Scan/light-off", and: "Scan/light-on", action: #selector(light(_:)))
+    navigationItem.leftBarButtonItem = loadButton(
+      "Scan/back-button", action: #selector(back))
+    navigationItem.rightBarButtonItem = loadButton(
+      "Scan/light-off", and: "Scan/light-on", action: #selector(light(_:)))
   }
   
   // loadButton
-  fileprivate func loadButton(_ imageNamed: String, and selectImageNamed: String? = nil, action: Selector) -> some UIBarButtonItem {
+  fileprivate func loadButton(
+    _ imageNamed: String, and selectImageNamed: String? = nil,
+    action: Selector) -> UIBarButtonItem {
+    
     let button = UIButton(type: .custom)
     button.setImage(UIImage(named: imageNamed), for: .normal)
     button.tintColor = .white
@@ -81,6 +91,7 @@ extension BCScanViewController {
 
 // MARK: - Subviews
 extension BCScanViewController {
+
   fileprivate func loadSubviews() {
     loadCamera()
     loadScanView()

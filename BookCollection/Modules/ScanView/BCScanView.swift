@@ -30,12 +30,12 @@ import UIKit
 
 class BCScanView: UIView {
   fileprivate typealias Point = (x: CGFloat, y: CGFloat)
-  // The size of scanning rectangle.
+  /// The size of scanning rectangle
   fileprivate var rectSize: CGSize
-  // The offset value relative to the center point in the axis of Y.
-  // The positive direction is going down.
+  /// The offset value relative to the center point in the axis of Y.
+  /// The positive direction is going down
   fileprivate var offsetY: CGFloat
-  // Scan Line
+  /// Scan Line
   fileprivate var animationLine: UIImageView
   // Key pointers
   fileprivate var upperLeftPoint: Point
@@ -43,16 +43,29 @@ class BCScanView: UIView {
   fileprivate var lowerLeftPoint: Point
   fileprivate var lowerRightPoint: Point
   
+  fileprivate var animationReverse = false
+  fileprivate var animationFreeze = true
+  
   init(frame: CGRect, rectSize: CGSize, offsetY: CGFloat) {
     self.rectSize = rectSize
     self.offsetY = offsetY
     // Computed reference coordinates
-    upperLeftPoint = ((frame.width - rectSize.width) / 2, (frame.height - rectSize.height) / 2 + offsetY)
-    upperRightPoint = (upperLeftPoint.x + rectSize.width, upperLeftPoint.y)
-    lowerLeftPoint = (upperLeftPoint.x, upperLeftPoint.y + rectSize.height)
-    lowerRightPoint = (upperRightPoint.x, lowerLeftPoint.y)
+    upperLeftPoint = (
+      (frame.width - rectSize.width) / 2, (frame.height - rectSize.height) / 2 + offsetY
+    )
+    upperRightPoint = (
+      upperLeftPoint.x + rectSize.width, upperLeftPoint.y
+    )
+    lowerLeftPoint = (
+      upperLeftPoint.x, upperLeftPoint.y + rectSize.height
+    )
+    lowerRightPoint = (
+      upperRightPoint.x, lowerLeftPoint.y
+    )
     
-    animationLine = UIImageView(frame: CGRect(x: upperLeftPoint.x, y: upperLeftPoint.y, width: rectSize.width, height: 1.0))
+    animationLine = UIImageView(
+      frame: CGRect(x: upperLeftPoint.x, y: upperLeftPoint.y, width: rectSize.width, height: 1.0)
+    )
     animationLine.image = UIImage(named: "Scan/scanner-line")
     
     super.init(frame: frame)
@@ -80,6 +93,8 @@ class BCScanView: UIView {
 
 // MARK: - Draw View
 extension BCScanView {
+  /// Draw the translucent black area
+  /// - Parameter context: CGContext
   fileprivate func drawOuterArea(_ context: CGContext) {
     context.setFillColor(red: 0, green: 0, blue: 0, alpha: 0.4)
     
@@ -87,20 +102,31 @@ extension BCScanView {
       // Top area
       CGRect(x: 0, y: 0, width: frame.width, height: upperLeftPoint.y),
       // Bottom area
-      CGRect(x: 0, y: lowerLeftPoint.y, width: frame.width, height: frame.height - lowerLeftPoint.y),
+      CGRect(x: 0, y: lowerLeftPoint.y,
+             width: frame.width, height: frame.height - lowerLeftPoint.y),
       // Left area
-      CGRect(x: 0, y: upperLeftPoint.y, width: upperLeftPoint.x, height: rectSize.height),
+      CGRect(x: 0, y: upperLeftPoint.y,
+             width: upperLeftPoint.x, height: rectSize.height),
       // Right area
-      CGRect(x: upperRightPoint.x, y: upperRightPoint.y, width: frame.width - upperRightPoint.x, height: rectSize.height),
+      CGRect(x: upperRightPoint.x, y: upperRightPoint.y,
+             width: frame.width - upperRightPoint.x, height: rectSize.height),
     ])
   }
   
+  /// Draw the white boarder around the center area
+  /// - Parameter context: CGContext
   fileprivate func drawBoarder(_ context: CGContext) {
     context.setStrokeColor(UIColor.white.cgColor)
     
-    context.stroke(CGRect(x: upperLeftPoint.x, y: upperLeftPoint.y, width: rectSize.width, height: rectSize.height), width: 0.5)
+    context.stroke(CGRect(
+      x: upperLeftPoint.x,
+      y: upperLeftPoint.y,
+      width: rectSize.width,
+      height: rectSize.height), width: 0.5)
   }
   
+  /// Draw four white corners around the center area
+  /// - Parameter context: CGContext
   fileprivate func drawBoarderCorners(_ context: CGContext) {
     let cornerLength: CGFloat = 9.0
     let cornerThick: CGFloat = 1.0
@@ -111,27 +137,39 @@ extension BCScanView {
     
     // The upper left corner
     context.addLines(between: [
-      CGPoint(x: upperLeftPoint.x - cornerThick, y: upperLeftPoint.y + offset),
-      CGPoint(x: upperLeftPoint.x - cornerThick, y: upperLeftPoint.y - cornerThick),
-      CGPoint(x: upperLeftPoint.x + offset, y: upperLeftPoint.y - cornerThick),
+      CGPoint(x: upperLeftPoint.x - cornerThick,
+              y: upperLeftPoint.y + offset),
+      CGPoint(x: upperLeftPoint.x - cornerThick,
+              y: upperLeftPoint.y - cornerThick),
+      CGPoint(x: upperLeftPoint.x + offset,
+              y: upperLeftPoint.y - cornerThick),
     ])
     // The upper right corner
     context.addLines(between: [
-      CGPoint(x: upperRightPoint.x - offset, y: upperRightPoint.y - cornerThick),
-      CGPoint(x: upperRightPoint.x + cornerThick, y: upperRightPoint.y - cornerThick),
-      CGPoint(x: upperRightPoint.x + cornerThick, y: upperRightPoint.y + offset),
+      CGPoint(x: upperRightPoint.x - offset,
+              y: upperRightPoint.y - cornerThick),
+      CGPoint(x: upperRightPoint.x + cornerThick,
+              y: upperRightPoint.y - cornerThick),
+      CGPoint(x: upperRightPoint.x + cornerThick,
+              y: upperRightPoint.y + offset),
     ])
     // The lower left corner
     context.addLines(between: [
-      CGPoint(x: lowerLeftPoint.x - cornerThick, y: lowerLeftPoint.y - offset),
-      CGPoint(x: lowerLeftPoint.x - cornerThick, y: lowerLeftPoint.y + cornerThick),
-      CGPoint(x: lowerLeftPoint.x + offset, y: lowerLeftPoint.y + cornerThick),
+      CGPoint(x: lowerLeftPoint.x - cornerThick,
+              y: lowerLeftPoint.y - offset),
+      CGPoint(x: lowerLeftPoint.x - cornerThick,
+              y: lowerLeftPoint.y + cornerThick),
+      CGPoint(x: lowerLeftPoint.x + offset,
+              y: lowerLeftPoint.y + cornerThick),
     ])
     // the lower right corner
     context.addLines(between: [
-      CGPoint(x: lowerRightPoint.x - offset, y: lowerRightPoint.y + cornerThick),
-      CGPoint(x: lowerRightPoint.x + cornerThick, y: lowerRightPoint.y + cornerThick),
-      CGPoint(x: lowerRightPoint.x + cornerThick, y: lowerRightPoint.y - offset),
+      CGPoint(x: lowerRightPoint.x - offset,
+              y: lowerRightPoint.y + cornerThick),
+      CGPoint(x: lowerRightPoint.x + cornerThick,
+              y: lowerRightPoint.y + cornerThick),
+      CGPoint(x: lowerRightPoint.x + cornerThick,
+              y: lowerRightPoint.y - offset),
     ])
     
     context.strokePath()
@@ -140,15 +178,34 @@ extension BCScanView {
 
 // MARK: - AnimationLine
 extension BCScanView {
+  /// Start scan line animation
   func startAnimation() {
+    guard animationFreeze else { return }
+    animationFreeze = false
+    
     UIView.animate(withDuration: 3.0, delay: 0.5, options: .curveEaseInOut, animations: {
-      self.animationLine.frame = CGRect(x: self.lowerLeftPoint.x, y: self.lowerLeftPoint.y, width: self.rectSize.width, height: 1.0)
+      self.animationLine.frame = self.animationReverse ?
+        CGRect(x: self.upperLeftPoint.x, y: self.upperLeftPoint.y,
+               width: self.rectSize.width, height: 1.0) :
+        CGRect(x: self.lowerLeftPoint.x, y: self.lowerLeftPoint.y,
+               width: self.rectSize.width, height: 1.0)
     }) { completed in
-      // TODO
+      if completed {
+        self.animationReverse.toggle()
+        self.animationFreeze.toggle()
+        
+        self.startAnimation()
+      } else {
+        self.stopAnimation()
+      }
     }
   }
   
   func stopAnimation() {
+    animationLine.removeFromSuperview()
+    
+    animationFreeze = true
+    animationReverse = false
     
   }
 }

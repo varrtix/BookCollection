@@ -30,21 +30,78 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+  var window: UIWindow?
   
-  func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+  fileprivate typealias BarTuple = (
+    title: String,
+    viewController: UIViewController
+  )
+  
+  fileprivate var bars: [BarTuple] = [
+    ("Collections", BCListViewController()),
+    ("Scan", BCScanViewController()),
+    ("Me", BCAnalyticViewController()),
+  ]
+  
+  func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    
+    window = UIWindow(frame: UIScreen.main.bounds)
+    window?.backgroundColor = .white
+    window?.makeKeyAndVisible()
+    
+    let navigation = UINavigationController(rootViewController: loadTabBarController())
+    
+    window?.rootViewController = navigation
+    
     return true
   }
   
-  // MARK: - UISceneSession Lifecycle
-  func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-    // Called when a new scene session is being created.
-    // Use this method to select a configuration to create the new scene with.
-    return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
-  }
+}
+
+// MARK: - Tool functions
+extension AppDelegate: UITabBarControllerDelegate {
   
-  func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-    // Called when the user discards a scene session.
-    // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-    // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
+  fileprivate func loadTabBarController() -> UITabBarController {
+    let tabBarController = UITabBarController()
+    tabBarController.delegate = self
+    
+    tabBarController.tabBar.unselectedItemTintColor = .darkGray
+    tabBarController.tabBar.barTintColor = UIColor(
+      red: 245 / 255.0, green: 245 / 255.0, blue: 245 / 255.0, alpha: 1)
+    tabBarController.tabBar.tintColor = UIColor(
+      red: 0, green: 157 / 255.0, blue: 130 / 255.0, alpha: 1)
+    
+    tabBarController.viewControllers = bars.map { bar in
+      bar.viewController.tabBarItem.title = bar.title
+      bar.viewController.tabBarItem.image = UIImage(
+        named: "Tabbar/tabbar-\(bar.title)")
+      return bar.viewController
+    }
+    tabBarController.tabBar.itemPositioning = .centered
+    
+    return tabBarController
+  }
+}
+
+// MARK: - TabBar Delegate
+extension AppDelegate {
+  
+  func tabBarController(
+    _ tabBarController: UITabBarController,
+    shouldSelect viewController: UIViewController) -> Bool {
+    
+    if viewController is BCScanViewController {
+      let navigationController = UINavigationController(
+        rootViewController: BCScanViewController())
+      
+      navigationController.modalTransitionStyle = .coverVertical
+      navigationController.modalPresentationStyle = .fullScreen
+      
+      window?.rootViewController?.present(navigationController, animated: true)
+    }
+    
+    return true
   }
 }
