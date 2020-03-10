@@ -36,7 +36,7 @@ class BCScanViewController: UIViewController {
     rectSize: CGSize(width: 230.0, height: 230.0), offsetY: -43.0)
   
   lazy var captureSession = AVCaptureSession()
-
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -44,6 +44,11 @@ class BCScanViewController: UIViewController {
     
     loadNavigation()
     loadSubviews()
+  }
+
+  func cleanup() {
+    captureSession.stopRunning()
+    scanView.stopAnimation()
   }
 }
 
@@ -81,7 +86,9 @@ extension BCScanViewController {
   }
   
   // BarButton Actions
-  @objc fileprivate func back() { dismiss(animated: true) }
+  @objc fileprivate func back() {
+    dismiss(animated: true) { self.cleanup() }
+  }
   
   @objc fileprivate func light(_ sender: UIButton) {
     sender.isSelected.toggle()
@@ -91,15 +98,61 @@ extension BCScanViewController {
 
 // MARK: - Subviews
 extension BCScanViewController {
+  
+  fileprivate enum CameraError: Error {
+    case invalidDevice
+    case inputCaptureError
+  }
 
   fileprivate func loadSubviews() {
-    loadCamera()
+    
+    do {
+      try loadCamera()
+    } catch CameraError.invalidDevice {
+      print("Invalid Device!")
+    } catch CameraError.inputCaptureError {
+      print("Input Capture Error!")
+    } catch {
+      print("Unexpected error: \(error).")
+    }
+    
     loadScanView()
     loadTip()
   }
   
-  fileprivate func loadCamera() {
+  fileprivate func loadCamera() throws {
     
+    captureSession.beginConfiguration()
+    
+    guard let captureDevice = AVCaptureDevice.default(for: .video)
+      else { throw CameraError.invalidDevice }
+    
+    do {
+      guard let captureInput = try? AVCaptureDeviceInput(device: captureDevice)
+        else { throw CameraError.inputCaptureError }
+      
+      if captureSession.canAddInput(captureInput) { captureSession.addInput(captureInput) }
+      
+    } catch let error as NSError {
+      print("Input error: \(error)")
+    }
+    
+    let captureOutput = AVCaptureMetadataOutput()
+    captureOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
+
+    if captureSession.canAddOutput(captureOutput) {
+      captureSession.addOutput(captureOutput)
+      // Filter types must be that after addoutput
+      captureOutput.metadataObjectTypes = [.ean13]
+    }
+    
+    // Add preview scene
+    let layer = AVCaptureVideoPreviewLayer(session: captureSession)
+    layer.frame = view.layer.bounds
+    view.layer.addSublayer(layer)
+
+    captureSession.commitConfiguration()
+    captureSession.startRunning()
   }
   
   fileprivate func loadScanView() {
@@ -113,5 +166,22 @@ extension BCScanViewController {
   
   fileprivate func loadTip() {
     
+  }
+}
+
+// MARK: ISBN identification
+extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
+  
+  func metadataOutput(
+    _ output: AVCaptureMetadataOutput,
+    didOutput metadataObjects: [AVMetadataObject],
+    from connection: AVCaptureConnection) {
+    
+    guard let object = metadataObjects.first as? AVMetadataMachineReadableCodeObject
+      else { return }
+    
+    print("ISBN: \(object.stringValue ?? String())")
+    // Mission completed
+    cleanup()
   }
 }
