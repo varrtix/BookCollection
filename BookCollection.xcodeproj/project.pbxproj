@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		564CC8952417911000E9D08B /* BCScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 564CC8942417911000E9D08B /* BCScanView.swift */; };
 		5667FB24241682D2009F9E65 /* BCListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5667FB23241682D2009F9E65 /* BCListViewController.swift */; };
 		5667FB262416833B009F9E65 /* BCScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5667FB252416833B009F9E65 /* BCScanViewController.swift */; };
 		5667FB2824168386009F9E65 /* BCAnalyticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5667FB2724168386009F9E65 /* BCAnalyticViewController.swift */; };
@@ -38,6 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		564CC8942417911000E9D08B /* BCScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCScanView.swift; sourceTree = "<group>"; };
 		5667FB23241682D2009F9E65 /* BCListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCListViewController.swift; sourceTree = "<group>"; };
 		5667FB252416833B009F9E65 /* BCScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCScanViewController.swift; sourceTree = "<group>"; };
 		5667FB2724168386009F9E65 /* BCAnalyticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCAnalyticViewController.swift; sourceTree = "<group>"; };
@@ -82,10 +84,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		564CC893241790CD00E9D08B /* ScanView */ = {
+			isa = PBXGroup;
+			children = (
+				564CC8942417911000E9D08B /* BCScanView.swift */,
+			);
+			path = ScanView;
+			sourceTree = "<group>";
+		};
 		5667FB2224168259009F9E65 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
 				5675CA282417637600437044 /* Bases */,
+				564CC893241790CD00E9D08B /* ScanView */,
 				5667FB23241682D2009F9E65 /* BCListViewController.swift */,
 				5667FB252416833B009F9E65 /* BCScanViewController.swift */,
 				5667FB2724168386009F9E65 /* BCAnalyticViewController.swift */,
@@ -310,6 +321,7 @@
 			files = (
 				5667FB2824168386009F9E65 /* BCAnalyticViewController.swift in Sources */,
 				5667FB24241682D2009F9E65 /* BCListViewController.swift in Sources */,
+				564CC8952417911000E9D08B /* BCScanView.swift in Sources */,
 				5675CA272417637100437044 /* BCNavigationController.swift in Sources */,
 				567B0A4624167A2D00B595A7 /* AppDelegate.swift in Sources */,
 				5667FB262416833B009F9E65 /* BCScanViewController.swift in Sources */,

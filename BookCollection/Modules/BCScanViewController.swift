@@ -30,6 +30,8 @@ import UIKit
 
 class BCScanViewController: UIViewController {
   
+  lazy var scanView = BCScanView(frame: self.view.frame, rectSize: CGSize(width: 230.0, height: 230.0), offsetY: -43.0)
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -80,6 +82,25 @@ extension BCScanViewController {
 // MARK: - Subviews
 extension BCScanViewController {
   fileprivate func loadSubviews() {
+    loadCamera()
+    loadScanView()
+    loadTip()
+  }
+  
+  fileprivate func loadCamera() {
+    
+  }
+  
+  fileprivate func loadScanView() {
+    scanView.backgroundColor = .clear
+    scanView.autoresizingMask = [.flexibleWidth, .flexibleHeight,]
+    
+    scanView.startAnimation()
+    
+    view.addSubview(scanView)
+  }
+  
+  fileprivate func loadTip() {
     
   }
 }

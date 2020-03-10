@@ -52,16 +52,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     window?.backgroundColor = .white
     window?.makeKeyAndVisible()
     
-    let navigation = UINavigationController(rootViewController: generateTabBarController())
+    let navigation = UINavigationController(rootViewController: loadTabBarController())
     
-//    window?.rootViewController = generateTabBarController()
     window?.rootViewController = navigation
   }
 }
 
 // MARK: - Tool functions
 extension SceneDelegate {
-  fileprivate func generateTabBarController() -> some UITabBarController {
+  fileprivate func loadTabBarController() -> some UITabBarController {
     let tabBarController = UITabBarController()
     tabBarController.delegate = self
     tabBarController.tabBar.unselectedItemTintColor = .darkGray
