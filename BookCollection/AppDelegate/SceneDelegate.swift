@@ -31,7 +31,10 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   var window: UIWindow?
   
-  fileprivate typealias BarTuple = (title: String, viewController: UIViewController)
+  fileprivate typealias BarTuple = (
+    title: String,
+    viewController: UIViewController
+  )
   
   fileprivate var bars: [BarTuple] = [
     ("Collections", BCListViewController()),
@@ -39,63 +42,56 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     ("Me", BCAnalyticViewController()),
   ]
   
-  func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+  func scene(
+    _ scene: UIScene,
+    willConnectTo session: UISceneSession,
+    options connectionOptions: UIScene.ConnectionOptions) {
     guard let scene = (scene as? UIWindowScene) else { return }
     
     window = UIWindow(windowScene: scene)
     window?.backgroundColor = .white
     window?.makeKeyAndVisible()
     
-    window?.rootViewController = generateTabBarController()
+    let navigation = UINavigationController(rootViewController: generateTabBarController())
+    
+//    window?.rootViewController = generateTabBarController()
+    window?.rootViewController = navigation
   }
-  
-  func sceneDidDisconnect(_ scene: UIScene) {
-    // Called as the scene is being released by the system.
-    // This occurs shortly after the scene enters the background, or when its session is discarded.
-    // Release any resources associated with this scene that can be re-created the next time the scene connects.
-    // The scene may re-connect later, as its session was not neccessarily discarded (see `application:didDiscardSceneSessions` instead).
-  }
-  
-  func sceneDidBecomeActive(_ scene: UIScene) {
-    // Called when the scene has moved from an inactive state to an active state.
-    // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
-  }
-  
-  func sceneWillResignActive(_ scene: UIScene) {
-    // Called when the scene will move from an active state to an inactive state.
-    // This may occur due to temporary interruptions (ex. an incoming phone call).
-  }
-  
-  func sceneWillEnterForeground(_ scene: UIScene) {
-    // Called as the scene transitions from the background to the foreground.
-    // Use this method to undo the changes made on entering the background.
-  }
-  
-  func sceneDidEnterBackground(_ scene: UIScene) {
-    // Called as the scene transitions from the foreground to the background.
-    // Use this method to save data, release shared resources, and store enough scene-specific state information
-    // to restore the scene back to its current state.
-  }
-  
-  // MARK: - Tools
+}
+
+// MARK: - Tool functions
+extension SceneDelegate {
   fileprivate func generateTabBarController() -> some UITabBarController {
     let tabBarController = UITabBarController()
     tabBarController.delegate = self
     tabBarController.tabBar.unselectedItemTintColor = .darkGray
-    tabBarController.tabBar.barTintColor = UIColor(red: 245 / 255.0, green: 245 / 255.0, blue: 245 / 255.0, alpha: 1)
-    tabBarController.tabBar.tintColor = UIColor(red: 0, green: 157 / 255.0, blue: 130 / 255.0, alpha: 1)
+    tabBarController.tabBar.barTintColor = UIColor(
+      red: 245 / 255.0, green: 245 / 255.0, blue: 245 / 255.0, alpha: 1)
+    tabBarController.tabBar.tintColor = UIColor(
+      red: 0, green: 157 / 255.0, blue: 130 / 255.0, alpha: 1)
     
     tabBarController.viewControllers = bars.map { bar in
       bar.viewController.tabBarItem.title = bar.title
-      bar.viewController.tabBarItem.image = UIImage(named: "Tabbar/tabbar-icon-\(bar.title)")
+      bar.viewController.tabBarItem.image = UIImage(
+        named: "Tabbar/tabbar-icon-\(bar.title)")
       return bar.viewController
     }
     tabBarController.tabBar.itemPositioning = .centered
-    
+
     return tabBarController
   }
 }
 
+// MARK: - TabBar Delegate
 extension SceneDelegate: UITabBarControllerDelegate {
-  
+  func tabBarController(
+    _ tabBarController: UITabBarController,
+    shouldSelect viewController: UIViewController) -> Bool {
+    if viewController is BCScanViewController {
+      let navigationController = UINavigationController(
+        rootViewController: BCScanViewController())
+      window?.rootViewController?.present(navigationController, animated: true)
+    }
+    return true
+  }
 }
