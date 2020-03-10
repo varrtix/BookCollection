@@ -34,5 +34,52 @@ class BCScanViewController: UIViewController {
     super.viewDidLoad()
     
     view.backgroundColor = .red
+    
+    loadNavigation()
+    loadSubviews()
+  }
+}
+
+// MARK: - Navigation
+extension BCScanViewController {
+  fileprivate func loadNavigation() {
+    // Generate a translucent NavigationBar
+    navigationController?.navigationBar.isTranslucent = true
+    // Clear navigationBar's color and the shadow line of its bottom.
+    navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+    navigationController?.navigationBar.shadowImage = UIImage()
+    
+    // The fucking items ARE NOT INCLUDED in property navigationController of itself.
+    navigationItem.leftBarButtonItem = loadButton("Scan/back-button", action: #selector(back))
+    navigationItem.rightBarButtonItem = loadButton("Scan/light-off", and: "Scan/light-on", action: #selector(light(_:)))
+  }
+  
+  // loadButton
+  fileprivate func loadButton(_ imageNamed: String, and selectImageNamed: String? = nil, action: Selector) -> some UIBarButtonItem {
+    let button = UIButton(type: .custom)
+    button.setImage(UIImage(named: imageNamed), for: .normal)
+    button.tintColor = .white
+    button.sizeToFit()
+    
+    if let name = selectImageNamed { button.setImage(UIImage(named: name), for: .selected) }
+    
+    button.addTarget(self, action: action, for: .touchUpInside)
+    
+    return UIBarButtonItem(customView: button)
+  }
+  
+  // BarButton Actions
+  @objc fileprivate func back() { dismiss(animated: true) }
+  
+  @objc fileprivate func light(_ sender: UIButton) {
+    sender.isSelected.toggle()
+    // TODO: Turn on and off the light.
+  }
+}
+
+// MARK: - Subviews
+extension BCScanViewController {
+  fileprivate func loadSubviews() {
+    
   }
 }

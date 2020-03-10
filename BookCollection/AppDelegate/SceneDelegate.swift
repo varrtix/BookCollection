@@ -73,11 +73,11 @@ extension SceneDelegate {
     tabBarController.viewControllers = bars.map { bar in
       bar.viewController.tabBarItem.title = bar.title
       bar.viewController.tabBarItem.image = UIImage(
-        named: "Tabbar/tabbar-icon-\(bar.title)")
+        named: "Tabbar/tabbar-\(bar.title)")
       return bar.viewController
     }
     tabBarController.tabBar.itemPositioning = .centered
-
+    
     return tabBarController
   }
 }
@@ -90,6 +90,8 @@ extension SceneDelegate: UITabBarControllerDelegate {
     if viewController is BCScanViewController {
       let navigationController = UINavigationController(
         rootViewController: BCScanViewController())
+      navigationController.modalTransitionStyle = .coverVertical
+      navigationController.modalPresentationStyle = .fullScreen
       window?.rootViewController?.present(navigationController, animated: true)
     }
     return true
