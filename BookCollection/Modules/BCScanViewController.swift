@@ -28,6 +28,7 @@
 
 import UIKit
 import AVFoundation
+import Alamofire
 
 class BCScanViewController: UIViewController {
   
@@ -186,6 +187,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
   }
   
   func fetchBookWith(ISBN code: String) {
-    
+    let request = AF.request("https://api.douban.com/v2/book/\(code)")
+//    request.respon
   }
 }
