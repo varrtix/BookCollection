@@ -184,4 +184,8 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
     // Mission completed
     cleanup()
   }
+  
+  func fetchBookWith(ISBN code: String) {
+    
+  }
 }
