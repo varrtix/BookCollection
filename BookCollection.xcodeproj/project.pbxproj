@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		53D8AE3FF563573365D29205 /* libPods-BookCollection.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0519F1BF3DE4AA9273419DA9 /* libPods-BookCollection.a */; };
+		3BEED3F04E181CF248F232A1 /* Pods_BookCollection.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DFCA765E26B5A9157283683 /* Pods_BookCollection.framework */; };
 		564CC8952417911000E9D08B /* BCScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 564CC8942417911000E9D08B /* BCScanView.swift */; };
 		5667FB24241682D2009F9E65 /* BCListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5667FB23241682D2009F9E65 /* BCListViewController.swift */; };
 		5667FB262416833B009F9E65 /* BCScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5667FB252416833B009F9E65 /* BCScanViewController.swift */; };
@@ -39,7 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0519F1BF3DE4AA9273419DA9 /* libPods-BookCollection.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BookCollection.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3DFCA765E26B5A9157283683 /* Pods_BookCollection.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BookCollection.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		564CC8942417911000E9D08B /* BCScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCScanView.swift; sourceTree = "<group>"; };
 		5667FB23241682D2009F9E65 /* BCListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCListViewController.swift; sourceTree = "<group>"; };
 		5667FB252416833B009F9E65 /* BCScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCScanViewController.swift; sourceTree = "<group>"; };
@@ -66,7 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				53D8AE3FF563573365D29205 /* libPods-BookCollection.a in Frameworks */,
+				3BEED3F04E181CF248F232A1 /* Pods_BookCollection.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,7 +90,7 @@
 		3EEB73168846681EE5D551F7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				0519F1BF3DE4AA9273419DA9 /* libPods-BookCollection.a */,
+				3DFCA765E26B5A9157283683 /* Pods_BookCollection.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -221,6 +221,7 @@
 				567B0A3E24167A2D00B595A7 /* Sources */,
 				567B0A3F24167A2D00B595A7 /* Frameworks */,
 				567B0A4024167A2D00B595A7 /* Resources */,
+				35BA3FEB1E32F005A6E6BABF /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -338,6 +339,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		35BA3FEB1E32F005A6E6BABF /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BookCollection/Pods-BookCollection-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BookCollection/Pods-BookCollection-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BookCollection/Pods-BookCollection-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		AB00B744E63C10A46E7BE78E /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

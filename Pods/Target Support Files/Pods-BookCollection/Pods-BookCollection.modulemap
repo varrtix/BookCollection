@@ -1,4 +1,4 @@
-module Pods_BookCollection {
+framework module Pods_BookCollection {
   umbrella header "Pods-BookCollection-umbrella.h"
 
   export *
