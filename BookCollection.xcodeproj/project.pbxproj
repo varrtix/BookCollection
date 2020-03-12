@@ -12,6 +12,7 @@
 		5667FB24241682D2009F9E65 /* BCListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5667FB23241682D2009F9E65 /* BCListViewController.swift */; };
 		5667FB262416833B009F9E65 /* BCScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5667FB252416833B009F9E65 /* BCScanViewController.swift */; };
 		5667FB2824168386009F9E65 /* BCAnalyticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5667FB2724168386009F9E65 /* BCAnalyticViewController.swift */; };
+		566D37DD241A659B00DE970C /* BCViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566D37DC241A659B00DE970C /* BCViewController.swift */; };
 		5671DE002419FEDC00979210 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5671DDFF2419FEDC00979210 /* Book.swift */; };
 		5675CA272417637100437044 /* BCNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5675CA262417637100437044 /* BCNavigationController.swift */; };
 		567B0A4624167A2D00B595A7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567B0A4524167A2D00B595A7 /* AppDelegate.swift */; };
@@ -45,6 +46,7 @@
 		5667FB23241682D2009F9E65 /* BCListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCListViewController.swift; sourceTree = "<group>"; };
 		5667FB252416833B009F9E65 /* BCScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCScanViewController.swift; sourceTree = "<group>"; };
 		5667FB2724168386009F9E65 /* BCAnalyticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCAnalyticViewController.swift; sourceTree = "<group>"; };
+		566D37DC241A659B00DE970C /* BCViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCViewController.swift; sourceTree = "<group>"; };
 		5671DDFF2419FEDC00979210 /* Book.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
 		5675CA262417637100437044 /* BCNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCNavigationController.swift; sourceTree = "<group>"; };
 		567B0A4224167A2D00B595A7 /* BookCollection.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BookCollection.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -129,6 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				5675CA262417637100437044 /* BCNavigationController.swift */,
+				566D37DC241A659B00DE970C /* BCViewController.swift */,
 			);
 			path = Bases;
 			sourceTree = "<group>";
@@ -400,6 +403,7 @@
 				5671DE002419FEDC00979210 /* Book.swift in Sources */,
 				564CC8952417911000E9D08B /* BCScanView.swift in Sources */,
 				5675CA272417637100437044 /* BCNavigationController.swift in Sources */,
+				566D37DD241A659B00DE970C /* BCViewController.swift in Sources */,
 				567B0A4624167A2D00B595A7 /* AppDelegate.swift in Sources */,
 				5667FB262416833B009F9E65 /* BCScanViewController.swift in Sources */,
 			);

@@ -28,7 +28,7 @@
 
 import UIKit
 
-class BCListViewController: UIViewController {
+class BCListViewController: BCViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()

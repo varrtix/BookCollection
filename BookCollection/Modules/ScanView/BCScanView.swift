@@ -44,7 +44,7 @@ class BCScanView: UIView {
   fileprivate var lowerRightPoint: Point
   
   fileprivate var animationReverse = false
-  fileprivate var animationFreeze = true
+  var isAnimating = false
   
   init(frame: CGRect, rectSize: CGSize, offsetY: CGFloat) {
     self.rectSize = rectSize
@@ -180,8 +180,9 @@ extension BCScanView {
 extension BCScanView {
   /// Start scan line animation
   func startAnimation() {
-    guard animationFreeze else { return }
-    animationFreeze = false
+    if isAnimating { return }
+    
+    isAnimating = true
     
     UIView.animate(withDuration: 3.0, delay: 0.5, options: .curveEaseInOut, animations: {
       self.animationLine.frame = self.animationReverse ?
@@ -192,7 +193,7 @@ extension BCScanView {
     }) { completed in
       if completed {
         self.animationReverse.toggle()
-        self.animationFreeze.toggle()
+        self.isAnimating.toggle()
         
         self.startAnimation()
       } else {
@@ -204,7 +205,7 @@ extension BCScanView {
   func stopAnimation() {
     animationLine.removeFromSuperview()
     
-    animationFreeze = true
+    isAnimating = false
     animationReverse = false
     
   }

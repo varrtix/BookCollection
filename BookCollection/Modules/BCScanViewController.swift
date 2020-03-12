@@ -31,13 +31,19 @@ import AVFoundation
 import Alamofire
 //import ESPullToRefresh
 
-class BCScanViewController: UIViewController {
+class BCScanViewController: BCViewController {
   
   lazy var scanView = BCScanView(
     frame: self.view.frame,
     rectSize: CGSize(width: 230.0, height: 230.0), offsetY: -43.0)
   
   lazy var captureSession = AVCaptureSession()
+  
+  deinit {
+    // Check the compact with func 'cleanup()'
+    if captureSession.isRunning { captureSession.stopRunning() }
+    if scanView.isAnimating { scanView.stopAnimation() }
+  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -104,6 +110,7 @@ extension BCScanViewController {
   fileprivate enum CameraError: Error {
     case invalidDevice
     case inputCaptureError
+    case permissionDenied
   }
   
   fileprivate func loadSubviews() {
@@ -123,6 +130,8 @@ extension BCScanViewController {
   }
   
   fileprivate func loadCamera() throws {
+    
+    cameraAuthorization()
     
     captureSession.beginConfiguration()
     
@@ -216,16 +225,41 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
           return
         }
     }
-    //      .responseJSON { response in
-    
-    //        response.data
-    //        switch response.result {
-    //          case .success(let value):
-    //          case .failure(let error):
-    //        }
-    //        guard case let .failure(error) = response.result else {
-    //        guard case let .success(value) = response.result else { return }
-    //        print(response.description)
-    //    }
+  }
+}
+
+// MARK - Device authorization
+extension BCScanViewController {
+  func cameraAuthorization() {
+    defer {
+      dismiss(animated: true) { self.scanView.stopAnimation() }
+    }
+    switch AVCaptureDevice.authorizationStatus(for: .video) {
+      case .restricted: fallthrough
+      case .denied:
+        let app = UIApplication()
+        guard
+          let url = URL(string: UIApplication.openSettingsURLString),
+          app.canOpenURL(url) else { return }
+        
+        let alertController = UIAlertController(
+          title: "Oops",
+          message: "Camera authorization is not allowed!",
+          preferredStyle: .alert)
+        
+        let setting = UIAlertAction(title: "Setting", style: .default) { _ in
+          app.open(url) { _ in
+            self.cameraAuthorization()
+          }
+        }
+        let skip = UIAlertAction(title: "Skip", style: .cancel)
+      
+        alertController.addAction(setting)
+        alertController.addAction(skip)
+      
+      present(alertController, animated: true)
+      
+        default: break
+    }
   }
 }

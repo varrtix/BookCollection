@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   fileprivate typealias BarTuple = (
     title: String,
-    viewController: UIViewController
+    viewController: BCViewController
   )
   
   fileprivate var bars: [BarTuple] = [
@@ -51,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window?.backgroundColor = .white
     window?.makeKeyAndVisible()
     
-    let navigation = UINavigationController(rootViewController: loadTabBarController())
+    let navigation = BCNavigationController(rootViewController: loadTabBarController())
     
     window?.rootViewController = navigation
     
@@ -93,7 +93,7 @@ extension AppDelegate {
     shouldSelect viewController: UIViewController) -> Bool {
     
     if viewController is BCScanViewController {
-      let navigationController = UINavigationController(
+      let navigationController = BCNavigationController(
         rootViewController: BCScanViewController())
       
       navigationController.modalTransitionStyle = .coverVertical
