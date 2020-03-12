@@ -1,16 +1,24 @@
 PODS:
   - Alamofire (5.0.2)
+  - ESPullToRefresh (2.9.2)
+  - SnapKit (5.0.1)
 
 DEPENDENCIES:
   - Alamofire (~> 5.0)
+  - ESPullToRefresh
+  - SnapKit (~> 5.0.0)
 
 SPEC REPOS:
   trunk:
     - Alamofire
+    - ESPullToRefresh
+    - SnapKit
 
 SPEC CHECKSUMS:
   Alamofire: 3ba7a4db18b4f62c4a1c0e1cb39d7f3d52e10ada
+  ESPullToRefresh: efed00d52597065e9a84e1e52fa444fdb1a1dee0
+  SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
 
-PODFILE CHECKSUM: 39579806279b9eaca00c71c838c31b5ef4e5d2ac
+PODFILE CHECKSUM: 57520d3fbc96c4384f1ce4cdbbde44a6c9cb374a
 
 COCOAPODS: 1.9.1

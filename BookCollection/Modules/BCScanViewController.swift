@@ -29,6 +29,7 @@
 import UIKit
 import AVFoundation
 import Alamofire
+//import ESPullToRefresh
 
 class BCScanViewController: UIViewController {
   
@@ -46,7 +47,7 @@ class BCScanViewController: UIViewController {
     loadNavigation()
     loadSubviews()
   }
-
+  
   func cleanup() {
     captureSession.stopRunning()
     scanView.stopAnimation()
@@ -104,7 +105,7 @@ extension BCScanViewController {
     case invalidDevice
     case inputCaptureError
   }
-
+  
   fileprivate func loadSubviews() {
     
     do {
@@ -140,7 +141,7 @@ extension BCScanViewController {
     
     let captureOutput = AVCaptureMetadataOutput()
     captureOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
-
+    
     if captureSession.canAddOutput(captureOutput) {
       captureSession.addOutput(captureOutput)
       // Filter types must be that after addoutput
@@ -151,7 +152,7 @@ extension BCScanViewController {
     let layer = AVCaptureVideoPreviewLayer(session: captureSession)
     layer.frame = view.layer.bounds
     view.layer.addSublayer(layer)
-
+    
     captureSession.commitConfiguration()
     captureSession.startRunning()
   }
@@ -178,16 +179,53 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
     didOutput metadataObjects: [AVMetadataObject],
     from connection: AVCaptureConnection) {
     
-    guard let object = metadataObjects.first as? AVMetadataMachineReadableCodeObject
+    guard
+      let object = metadataObjects.first as? AVMetadataMachineReadableCodeObject,
+      let ISBN = object.stringValue
       else { return }
     
-    print("ISBN: \(object.stringValue ?? String())")
     // Mission completed
     cleanup()
+    
+    fetchBookWith(ISBN)
   }
   
-  func fetchBookWith(ISBN code: String) {
-    let request = AF.request("https://api.douban.com/v2/book/\(code)")
-//    request.respon
+  func fetchBookWith(_ ISBN: String) {
+    AF.request("https://douban.uieee.com/v2/book/isbn/\(ISBN)")
+      .validate()
+      .responseDecodable(of: Book.self) { response in
+        guard case let .failure(error) = response.result else {
+          guard case let .success(book) = response.result else {
+            print("Response success, but it has an unexpected error!")
+            return
+          }
+          let alertController = UIAlertController(
+            title: "Message",
+            message: "\(book.title)\n\(book.isbn13)\n\(book.author[0])",
+            preferredStyle: .alert)
+          let detail = UIAlertAction(title: "Detail", style: .default)
+          alertController.addAction(detail)
+          
+          let next = UIAlertAction(title: "Mark and Continue", style: .default) { _ in
+            self.captureSession.startRunning()
+            self.scanView.startAnimation()
+          }
+          alertController.addAction(next)
+          self.present(alertController, animated: true)
+          
+          return
+        }
+    }
+    //      .responseJSON { response in
+    
+    //        response.data
+    //        switch response.result {
+    //          case .success(let value):
+    //          case .failure(let error):
+    //        }
+    //        guard case let .failure(error) = response.result else {
+    //        guard case let .success(value) = response.result else { return }
+    //        print(response.description)
+    //    }
   }
 }

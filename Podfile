@@ -3,4 +3,6 @@ use_frameworks!
 
 target 'BookCollection' do
 	pod 'Alamofire', '~> 5.0'
+  pod 'ESPullToRefresh'
+  pod 'SnapKit', '~> 5.0.0'
 end
