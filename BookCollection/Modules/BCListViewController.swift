@@ -30,9 +30,35 @@ import UIKit
 
 class BCListViewController: BCViewController {
   
+  lazy fileprivate var scan: BCTools.ViewTuple = ("Scan", BCScanViewController())
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    view.backgroundColor = .green
+    view.backgroundColor = .systemTeal
+    
+//    navigationController =
+
+    settingNavigationBar()
+//    navigationBar.barTintColor = Works!
+    
+  }
+}
+
+// MARK: - Navigation Bar
+extension BCListViewController {
+  fileprivate func settingNavigationBar() {
+//    navigationBar.topItem?.title = "BookCollection"
+//    navigationBar.tintColor = .black
+    
+    let scanButtonItem = UIBarButtonItem(
+      image: UIImage(named: "Main/\(scan.title)"),
+      style: .plain,
+      target: self,
+      action: Selector(unicodeScalarLiteral: "scan(_:)"))
+    scanButtonItem.tintColor = .black
+    
+//    navigationBar.topItem?.rightBarButtonItem = scanButtonItem
+    navigationItem.rightBarButtonItem = scanButtonItem
   }
 }

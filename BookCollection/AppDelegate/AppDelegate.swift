@@ -30,43 +30,43 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+  
   var window: UIWindow?
   
-  fileprivate typealias BarTuple = (
-    title: String,
-    viewController: BCViewController
-  )
-  
-  fileprivate var bars: [BarTuple] = [
+  lazy fileprivate var bars: [BCTools.ViewTuple] = [
     ("Collections", BCListViewController()),
-    ("Scan", BCScanViewController()),
     ("Me", BCAnalyticViewController()),
   ]
   
   func application(
     _ application: UIApplication,
-    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+  ) -> Bool {
     
-    window = UIWindow(frame: UIScreen.main.bounds)
-    window?.backgroundColor = .white
-    window?.makeKeyAndVisible()
-    
-    let navigation = BCNavigationController(rootViewController: loadTabBarController())
-    
-    window?.rootViewController = navigation
+    loadWindow()
     
     return true
   }
-  
 }
 
-// MARK: - Tool functions
+// MARK: - RootViewController Setting
 extension AppDelegate: UITabBarControllerDelegate {
+  
+  fileprivate func loadWindow() {
+    window = UIWindow(frame: UIScreen.main.bounds)
+    
+    window?.backgroundColor = .white
+    window?.makeKeyAndVisible()
+    
+    window?.rootViewController = loadTabBarController()
+  }
   
   fileprivate func loadTabBarController() -> UITabBarController {
     let tabBarController = UITabBarController()
+    
     tabBarController.delegate = self
     
+    tabBarController.tabBar.itemPositioning = .centered
     tabBarController.tabBar.unselectedItemTintColor = .darkGray
     tabBarController.tabBar.barTintColor = UIColor(
       red: 245 / 255.0, green: 245 / 255.0, blue: 245 / 255.0, alpha: 1)
@@ -74,12 +74,11 @@ extension AppDelegate: UITabBarControllerDelegate {
       red: 0, green: 157 / 255.0, blue: 130 / 255.0, alpha: 1)
     
     tabBarController.viewControllers = bars.map { bar in
-      bar.viewController.tabBarItem.title = bar.title
-      bar.viewController.tabBarItem.image = UIImage(
-        named: "Tabbar/tabbar-\(bar.title)")
-      return bar.viewController
+      bar.item.tabBarItem.title = bar.title
+      bar.item.tabBarItem.image = UIImage(
+        named: "Tabbar/\(bar.title)")
+      return bar.item
     }
-    tabBarController.tabBar.itemPositioning = .centered
     
     return tabBarController
   }
@@ -90,18 +89,12 @@ extension AppDelegate {
   
   func tabBarController(
     _ tabBarController: UITabBarController,
-    shouldSelect viewController: UIViewController) -> Bool {
-    
-    if viewController is BCScanViewController {
-      let navigationController = BCNavigationController(
-        rootViewController: BCScanViewController())
-      
-      navigationController.modalTransitionStyle = .coverVertical
-      navigationController.modalPresentationStyle = .fullScreen
-      
-      window?.rootViewController?.present(navigationController, animated: true)
-    }
-    
-    return true
-  }
+    shouldSelect viewController: UIViewController) -> Bool { true }
+}
+
+// MARK: - Guff
+struct BCTools {
+  
+  typealias ViewTuple = (title: String, item: UIViewController)
+  
 }

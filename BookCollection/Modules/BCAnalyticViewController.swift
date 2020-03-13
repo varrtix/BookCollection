@@ -33,6 +33,6 @@ class BCAnalyticViewController: BCViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    view.backgroundColor = .systemBlue
+    view.backgroundColor = .systemGreen
   }
 }

@@ -40,7 +40,7 @@ class BCScanViewController: BCViewController {
   lazy var captureSession = AVCaptureSession()
   
   deinit {
-    // Check the compact with func 'cleanup()'
+    // TODO: Check the compact with func 'cleanup()'
     if captureSession.isRunning { captureSession.stopRunning() }
     if scanView.isAnimating { scanView.stopAnimation() }
   }
@@ -48,7 +48,7 @@ class BCScanViewController: BCViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    view.backgroundColor = .red
+    view.backgroundColor = .systemRed
     
     loadNavigation()
     loadSubviews()
@@ -203,7 +203,8 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
     AF.request("https://douban.uieee.com/v2/book/isbn/\(ISBN)")
       .validate()
       .responseDecodable(of: Book.self) { response in
-        guard case let .failure(error) = response.result else {
+        // TODO: Throws detail
+        guard case .failure(_) = response.result else {
           guard case let .success(book) = response.result else {
             print("Response success, but it has an unexpected error!")
             return
@@ -231,35 +232,35 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
 // MARK - Device authorization
 extension BCScanViewController {
   func cameraAuthorization() {
-    defer {
-      dismiss(animated: true) { self.scanView.stopAnimation() }
-    }
-    switch AVCaptureDevice.authorizationStatus(for: .video) {
-      case .restricted: fallthrough
-      case .denied:
-        let app = UIApplication()
-        guard
-          let url = URL(string: UIApplication.openSettingsURLString),
-          app.canOpenURL(url) else { return }
-        
-        let alertController = UIAlertController(
-          title: "Oops",
-          message: "Camera authorization is not allowed!",
-          preferredStyle: .alert)
-        
-        let setting = UIAlertAction(title: "Setting", style: .default) { _ in
-          app.open(url) { _ in
-            self.cameraAuthorization()
-          }
-        }
-        let skip = UIAlertAction(title: "Skip", style: .cancel)
-      
-        alertController.addAction(setting)
-        alertController.addAction(skip)
-      
-      present(alertController, animated: true)
-      
-        default: break
-    }
+//    defer {
+//      dismiss(animated: true) { self.scanView.stopAnimation() }
+//    }
+//    switch AVCaptureDevice.authorizationStatus(for: .video) {
+//      case .restricted: fallthrough
+//      case .denied:
+//        let app = UIApplication()
+//        guard
+//          let url = URL(string: UIApplication.openSettingsURLString),
+//          app.canOpenURL(url) else { return }
+//
+//        let alertController = UIAlertController(
+//          title: "Oops",
+//          message: "Camera authorization is not allowed!",
+//          preferredStyle: .alert)
+//
+//        let setting = UIAlertAction(title: "Setting", style: .default) { _ in
+//          app.open(url) { _ in
+//            self.cameraAuthorization()
+//          }
+//        }
+//        let skip = UIAlertAction(title: "Skip", style: .cancel)
+//
+//        alertController.addAction(setting)
+//        alertController.addAction(skip)
+//
+//      present(alertController, animated: true)
+//
+//        default: break
+//    }
   }
 }
