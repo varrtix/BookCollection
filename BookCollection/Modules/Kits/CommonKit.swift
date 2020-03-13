@@ -31,10 +31,10 @@ import UIKit
 // MARK: - UIColor Extension
 public extension UIColor {
   convenience init(R: Int, G: Int, B: Int, A: Float) {
-    assert(!(0...255 ~= R), "Invalid red component")
-    assert(!(0...255 ~= G), "Invalid green component")
-    assert(!(0...255 ~= B), "Invalid blue component")
-    assert(!(0.0...1.0 ~= A), "Invalid Alpha component")
+    assert(0...255 ~= R, "Invalid red component")
+    assert(0...255 ~= G, "Invalid green component")
+    assert(0...255 ~= B, "Invalid blue component")
+    assert(0.0...1.0 ~= A, "Invalid Alpha component")
     
     self.init(
       red: CGFloat(R) / 255.0,
@@ -48,7 +48,11 @@ public extension UIColor {
   }
   
   convenience init(HEX value: Int, withAlpha aValue: Float) {
-    self.init(R: (value >> 16) & 0xFF, G: (value >> 8) & 0xFF, B: value & 0xFF, A: aValue)
+    self.init(
+      R: (value >> 16) & 0xFF,
+      G: (value >> 8) & 0xFF,
+      B: value & 0xFF,
+      A: aValue)
   }
   
   convenience init(HEX value: Int) {
@@ -57,10 +61,10 @@ public extension UIColor {
   
   @available(iOS 10.0, *)
   convenience init(displayP3R: Int, G: Int, B: Int, A: Float) {
-    assert(!(0...255 ~= displayP3R), "Invalid red component in P3")
-    assert(!(0...255 ~= G), "Invalid green component in P3")
-    assert(!(0...255 ~= B), "Invalid blue component in P3")
-    assert(!(0.0...1.0 ~= A), "Invalid Alpha component in P3")
+    assert(0...255 ~= displayP3R, "Invalid red component in P3")
+    assert(0...255 ~= G, "Invalid green component in P3")
+    assert(0...255 ~= B, "Invalid blue component in P3")
+    assert(0.0...1.0 ~= A, "Invalid Alpha component in P3")
     
     self.init(
       displayP3Red: CGFloat(displayP3R),
@@ -76,7 +80,11 @@ public extension UIColor {
   
   @available(iOS 10.0, *)
   convenience init(displayP3HEX value: Int, withAlpha aValue: Float) {
-    self.init(displayP3R: (value >> 16) & 0xFF, G: (value >> 8) & 0xFF, B: value & 0xFF, A: aValue)
+    self.init(
+      displayP3R: (value >> 16) & 0xFF,
+      G: (value >> 8) & 0xFF,
+      B: value & 0xFF,
+      A: aValue)
   }
   
   @available(iOS 10.0, *)
