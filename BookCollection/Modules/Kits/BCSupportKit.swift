@@ -32,9 +32,9 @@ typealias ViewTuple = (title: String, item: BCViewController)
 
 struct BCColor {
   enum BarTint {
-    static let selected = UIColor(R: 0, G: 157, B: 130)
-    static let normal = UIColor.darkGray
-    static let background = UIColor(R: 245, G: 245, B: 245)
+    static let green = UIColor(R: 0, G: 157, B: 130)
+    static let white = UIColor(R: 245, G: 245, B: 245)
+    static let gray = UIColor.darkGray
   }
 }
 

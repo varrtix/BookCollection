@@ -67,10 +67,10 @@ extension AppDelegate: UITabBarControllerDelegate {
     
     tabBarController.tabBar.itemPositioning = .centered
     
-    tabBarController.tabBar.unselectedItemTintColor = BCColor.BarTint.normal
-    tabBarController.tabBar.barTintColor = BCColor.BarTint.background
-    tabBarController.tabBar.tintColor = BCColor.BarTint.selected
-
+    tabBarController.tabBar.unselectedItemTintColor = BCColor.BarTint.gray
+    tabBarController.tabBar.barTintColor = BCColor.BarTint.white
+    tabBarController.tabBar.tintColor = BCColor.BarTint.green
+    
     tabBarController.viewControllers = bars.map { bar in
       bar.item.tabBarItem.title = bar.title
       bar.item.tabBarItem.image = UIImage(
