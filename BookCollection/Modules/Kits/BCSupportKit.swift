@@ -38,3 +38,7 @@ struct BCColor {
   }
 }
 
+struct BCScan {
+  static let size = CGSize(width: 230.0, height: 230.0)
+  static let verticalOffset = CGFloat(-43.0)
+}

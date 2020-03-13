@@ -34,20 +34,22 @@ import Alamofire
 class BCScanViewController: BCViewController {
   
   lazy fileprivate var scanView = BCScanView(
-    frame: self.view.frame,
-    rectSize: CGSize(width: 230.0, height: 230.0), offsetY: -43.0)
+    self.view.frame,
+    rect: BCScan.size,
+    vertical: BCScan.verticalOffset
+  )
   
   lazy fileprivate var captureSession = AVCaptureSession()
-
+  
   override func viewDidLoad() {
     super.viewDidLoad()
-
+    
     view.backgroundColor = .systemRed
     
     settingNavigationBar()
     loadSubviews()
   }
-
+  
   func cleanup() {
     if captureSession.isRunning { captureSession.stopRunning() }
     if scanView.isAnimating { scanView.stopAnimation() }
@@ -69,12 +71,12 @@ extension BCScanViewController {
       and: "Scan/light-on",
       action: #selector(light(_:)))
     
-//    guard #available(iOS 13.0, *) else {
+    guard #available(iOS 13.0, *) else {
       navigationItem.leftBarButtonItem = loadButton(
         "Scan/back-button",
         action: #selector(back))
-//      return
-//    }
+      return
+    }
   }
   
   // loadButton
@@ -97,10 +99,10 @@ extension BCScanViewController {
   // BarButton Actions
   @objc fileprivate func back() {
     // TODO: FIX dismiss
-//    dismiss(animated: true) { self.cleanup() }
-//    dismiss(animated: true)
-//      print("dismiss")
-//    }
+    //    dismiss(animated: true) { self.cleanup() }
+    //    dismiss(animated: true)
+    //      print("dismiss")
+    //    }
     navigationController?.dismiss(animated: true)
   }
   

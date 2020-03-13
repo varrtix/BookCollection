@@ -31,15 +31,15 @@ import UIKit
 class BCScanView: UIView {
   fileprivate typealias Point = (x: CGFloat, y: CGFloat)
   /// The size of scanning rectangle
-  fileprivate var rectSize: CGSize
+  fileprivate var size: CGSize
   /// The offset value relative to the center point in the axis of Y.
   /// The positive direction is going down
-  fileprivate var offsetY: CGFloat
+  fileprivate var verticalOffset: CGFloat
   /// Scan Line
   lazy fileprivate var animationLine = UIImageView(frame: CGRect(
     x: upperLeftPoint.x,
     y: upperLeftPoint.y,
-    width: rectSize.width,
+    width: size.width,
     height: 1.0))
   
   // Key pointers
@@ -53,24 +53,22 @@ class BCScanView: UIView {
   
   var isAnimating: Bool { _isAnimating }
   
-  init(frame: CGRect, rectSize: CGSize, offsetY: CGFloat) {
-    self.rectSize = rectSize
-    self.offsetY = offsetY
+  init(_ frame: CGRect, rect size: CGSize, vertical offset: CGFloat) {
+    self.size = size
+    self.verticalOffset = offset
     // Computed reference coordinates
     upperLeftPoint = (
-      (frame.width - rectSize.width) / 2, (frame.height - rectSize.height) / 2 + offsetY
+      (frame.width - size.width) / 2, (frame.height - size.height) / 2 + verticalOffset
     )
     upperRightPoint = (
-      upperLeftPoint.x + rectSize.width, upperLeftPoint.y
+      upperLeftPoint.x + size.width, upperLeftPoint.y
     )
     lowerLeftPoint = (
-      upperLeftPoint.x, upperLeftPoint.y + rectSize.height
+      upperLeftPoint.x, upperLeftPoint.y + size.height
     )
     lowerRightPoint = (
       upperRightPoint.x, lowerLeftPoint.y
     )
-    
-    //    animationLine.image = UIImage(named: "Scan/scanner-line")
     
     super.init(frame: frame)
     
@@ -110,10 +108,10 @@ extension BCScanView {
              width: frame.width, height: frame.height - lowerLeftPoint.y),
       // Left area
       CGRect(x: 0, y: upperLeftPoint.y,
-             width: upperLeftPoint.x, height: rectSize.height),
+             width: upperLeftPoint.x, height: size.height),
       // Right area
       CGRect(x: upperRightPoint.x, y: upperRightPoint.y,
-             width: frame.width - upperRightPoint.x, height: rectSize.height),
+             width: frame.width - upperRightPoint.x, height: size.height),
     ])
   }
   
@@ -125,8 +123,8 @@ extension BCScanView {
     context.stroke(CGRect(
       x: upperLeftPoint.x,
       y: upperLeftPoint.y,
-      width: rectSize.width,
-      height: rectSize.height), width: 0.5)
+      width: size.width,
+      height: size.height), width: 0.5)
   }
   
   /// Draw four white corners around the center area
@@ -195,9 +193,9 @@ extension BCScanView {
     UIView.animate(withDuration: 3.0, delay: 0.5, options: .curveEaseInOut, animations: {
       self.animationLine.frame = self.animationReverse ?
         CGRect(x: self.upperLeftPoint.x, y: self.upperLeftPoint.y,
-               width: self.rectSize.width, height: 1.0) :
+               width: self.size.width, height: 1.0) :
         CGRect(x: self.lowerLeftPoint.x, y: self.lowerLeftPoint.y,
-               width: self.rectSize.width, height: 1.0)
+               width: self.size.width, height: 1.0)
     }) { completed in
       
       if completed {
