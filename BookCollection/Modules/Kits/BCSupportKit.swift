@@ -29,3 +29,12 @@
 import UIKit
 
 typealias ViewTuple = (title: String, item: BCViewController)
+
+//extension UIColor {
+//  class var BarColor: UIColor { BarStatus.default(let color) }
+//}
+
+enum BarColor {
+  static let selected = UIColor.systemGreen
+  static let normal = UIColor.darkGray
+}

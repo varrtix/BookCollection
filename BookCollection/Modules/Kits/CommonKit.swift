@@ -26,4 +26,43 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
-import Foundation
+import UIKit
+
+public extension UIColor {
+  convenience init(R: Int, G: Int, B: Int) {
+    self.init(R: R, G: G, B: B, A: 1.0)
+  }
+  
+  convenience init(R: Int, G: Int, B: Int, A: Float) {
+    assert(!(0...255 ~= R), "Invalid red component")
+    assert(!(0...255 ~= G), "Invalid green component")
+    assert(!(0...255 ~= B), "Invalid blue component")
+    assert(!(0.0...1.0 ~= A), "Invalid Alpha component")
+    
+    self.init(
+      red: CGFloat(R) / 255.0,
+      green: CGFloat(G) / 255.0,
+      blue: CGFloat(B) / 255.0,
+      alpha: CGFloat(A))
+  }
+  
+  @available(iOS 10.0, *)
+  convenience init(displayP3R: Int, G: Int, B: Int, A: Float) {
+    assert(!(0...255 ~= displayP3R), "Invalid red component in P3")
+    assert(!(0...255 ~= G), "Invalid green component in P3")
+    assert(!(0...255 ~= B), "Invalid blue component in P3")
+    assert(!(0.0...1.0 ~= A), "Invalid Alpha component in P3")
+    
+    self.init(
+      displayP3Red: CGFloat(displayP3R),
+      green: CGFloat(G),
+      blue: CGFloat(B),
+      alpha: CGFloat(A))
+  }
+  
+  @available(iOS 10.0, *)
+  convenience init(displayP3R: Int, G: Int, B: Int) {
+    self.init(displayP3R: displayP3R, G: G, B: B, A: 1.0)
+  }
+  
+}

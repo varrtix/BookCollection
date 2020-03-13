@@ -55,7 +55,6 @@ extension AppDelegate: UITabBarControllerDelegate {
   fileprivate func loadWindow() {
     window = UIWindow(frame: UIScreen.main.bounds)
     
-    window?.backgroundColor = .white
     window?.makeKeyAndVisible()
     
     window?.rootViewController = loadTabBarController()
@@ -67,7 +66,7 @@ extension AppDelegate: UITabBarControllerDelegate {
     tabBarController.delegate = self
     
     tabBarController.tabBar.itemPositioning = .centered
-    tabBarController.tabBar.unselectedItemTintColor = .darkGray
+    tabBarController.tabBar.unselectedItemTintColor = BarColor.normal
     tabBarController.tabBar.barTintColor = UIColor(
       red: 245 / 255.0, green: 245 / 255.0, blue: 245 / 255.0, alpha: 1)
     tabBarController.tabBar.tintColor = UIColor(
