@@ -77,6 +77,11 @@ extension AppDelegate: UITabBarControllerDelegate {
       bar.item.tabBarItem.title = bar.title
       bar.item.tabBarItem.image = UIImage(
         named: "Tabbar/\(bar.title)")
+      
+      if bar.item is BCListViewController {
+        return BCNavigationController(rootViewController: bar.item)
+      }
+      
       return bar.item
     }
     

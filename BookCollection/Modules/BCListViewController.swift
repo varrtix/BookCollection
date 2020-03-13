@@ -36,20 +36,14 @@ class BCListViewController: BCViewController {
     super.viewDidLoad()
     
     view.backgroundColor = .systemTeal
-    
-//    navigationController =
-
     settingNavigationBar()
-//    navigationBar.barTintColor = Works!
-    
   }
 }
 
 // MARK: - Navigation Bar
 extension BCListViewController {
   fileprivate func settingNavigationBar() {
-//    navigationBar.topItem?.title = "BookCollection"
-//    navigationBar.tintColor = .black
+    navigationItem.title = "BookCollection"
     
     let scanButtonItem = UIBarButtonItem(
       image: UIImage(named: "Main/\(scan.title)"),
@@ -58,7 +52,6 @@ extension BCListViewController {
       action: Selector(unicodeScalarLiteral: "scan(_:)"))
     scanButtonItem.tintColor = .black
     
-//    navigationBar.topItem?.rightBarButtonItem = scanButtonItem
     navigationItem.rightBarButtonItem = scanButtonItem
   }
 }

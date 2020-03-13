@@ -68,7 +68,7 @@ extension BCScanViewController {
     // Clear navigationBar's color and the shadow line of its bottom.
     navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
     navigationController?.navigationBar.shadowImage = UIImage()
-    
+
     // The fucking items ARE NOT INCLUDED in property navigationController of itself.
     navigationItem.leftBarButtonItem = loadButton(
       "Scan/back-button", action: #selector(back))

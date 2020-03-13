@@ -28,4 +28,4 @@
 
 import UIKit
 
-typealias ViewTuple = (title: String, item: UIViewController)
+typealias ViewTuple = (title: String, item: BCViewController)
