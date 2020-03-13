@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   var window: UIWindow?
   
-  lazy fileprivate var bars: [BCTools.ViewTuple] = [
+  lazy fileprivate var bars: [ViewTuple] = [
     ("Collections", BCListViewController()),
     ("Me", BCAnalyticViewController()),
   ]
@@ -90,11 +90,4 @@ extension AppDelegate {
   func tabBarController(
     _ tabBarController: UITabBarController,
     shouldSelect viewController: UIViewController) -> Bool { true }
-}
-
-// MARK: - Guff
-struct BCTools {
-  
-  typealias ViewTuple = (title: String, item: UIViewController)
-  
 }
