@@ -28,11 +28,8 @@
 
 import UIKit
 
+// MARK: - UIColor Extension
 public extension UIColor {
-  convenience init(R: Int, G: Int, B: Int) {
-    self.init(R: R, G: G, B: B, A: 1.0)
-  }
-  
   convenience init(R: Int, G: Int, B: Int, A: Float) {
     assert(!(0...255 ~= R), "Invalid red component")
     assert(!(0...255 ~= G), "Invalid green component")
@@ -44,6 +41,18 @@ public extension UIColor {
       green: CGFloat(G) / 255.0,
       blue: CGFloat(B) / 255.0,
       alpha: CGFloat(A))
+  }
+  
+  convenience init(R: Int, G: Int, B: Int) {
+    self.init(R: R, G: G, B: B, A: 1.0)
+  }
+  
+  convenience init(HEX value: Int, withAlpha aValue: Float) {
+    self.init(R: (value >> 16) & 0xFF, G: (value >> 8) & 0xFF, B: value & 0xFF, A: aValue)
+  }
+  
+  convenience init(HEX value: Int) {
+    self.init(HEX: value, withAlpha: 1.0)
   }
   
   @available(iOS 10.0, *)
@@ -65,4 +74,13 @@ public extension UIColor {
     self.init(displayP3R: displayP3R, G: G, B: B, A: 1.0)
   }
   
+  @available(iOS 10.0, *)
+  convenience init(displayP3HEX value: Int, withAlpha aValue: Float) {
+    self.init(displayP3R: (value >> 16) & 0xFF, G: (value >> 8) & 0xFF, B: value & 0xFF, A: aValue)
+  }
+  
+  @available(iOS 10.0, *)
+  convenience init(displayP3HEX value: Int) {
+    self.init(displayP3HEX: value, withAlpha: 1.0)
+  }
 }
