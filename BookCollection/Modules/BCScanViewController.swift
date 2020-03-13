@@ -46,8 +46,52 @@ class BCScanViewController: BCViewController {
     
     view.backgroundColor = .systemRed
     
-    settingNavigationBar()
-    loadSubviews()
+    // configure components of view
+    configureNavigationBar()
+    configureScanView()
+    configureTip()
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(load),
+      name: UIApplication.willEnterForegroundNotification,
+      object: nil
+    )
+    
+    navigationBarHyalinization()
+  }
+  
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    
+    load()
+  }
+  
+  override func viewDidDisappear(_ animated: Bool) {
+    NotificationCenter.default.removeObserver(
+      self,
+      name: UIApplication.willEnterForegroundNotification,
+      object: nil
+    )
+    
+    cleanup()
+    
+    super.viewDidDisappear(animated)
+  }
+  
+  @objc func load() {
+    // STEP 1: camera authorization
+    // STEP 2: if allow camera session, else cleanup and dismiss
+    
+    if cameraAuthorization() {
+      // TODO: scan
+    } else {
+      presentAuthorizationAlert()
+    }
   }
   
   func cleanup() {
@@ -58,29 +102,31 @@ class BCScanViewController: BCViewController {
 
 // MARK: - Navigation
 extension BCScanViewController {
-  fileprivate func settingNavigationBar() {
+  fileprivate func navigationBarHyalinization() {
     // Generate a translucent NavigationBar
     navigationController?.navigationBar.isTranslucent = true
     // Clear navigationBar's color and the shadow line of its bottom.
     navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
     navigationController?.navigationBar.shadowImage = UIImage()
-    
+  }
+  
+  fileprivate func configureNavigationBar() {
     // The fucking items ARE NOT INCLUDED in property navigationController of itself.
-    navigationItem.rightBarButtonItem = loadButton(
+    navigationItem.rightBarButtonItem = generateBarButton(
       "Scan/light-off",
       and: "Scan/light-on",
       action: #selector(light(_:)))
     
     guard #available(iOS 13.0, *) else {
-      navigationItem.leftBarButtonItem = loadButton(
+      navigationItem.leftBarButtonItem = generateBarButton(
         "Scan/back-button",
-        action: #selector(back))
+        action: #selector(dismiss(_:)))
       return
     }
   }
   
   // loadButton
-  fileprivate func loadButton(
+  fileprivate func generateBarButton(
     _ imageNamed: String, and selectImageNamed: String? = nil,
     action: Selector) -> UIBarButtonItem {
     
@@ -97,12 +143,7 @@ extension BCScanViewController {
   }
   
   // BarButton Actions
-  @objc fileprivate func back() {
-    // TODO: FIX dismiss
-    //    dismiss(animated: true) { self.cleanup() }
-    //    dismiss(animated: true)
-    //      print("dismiss")
-    //    }
+  @objc fileprivate func dismiss(_ sender: UIButton? = nil) {
     navigationController?.dismiss(animated: true)
   }
   
@@ -110,14 +151,9 @@ extension BCScanViewController {
     sender.isSelected.toggle()
     // TODO: Turn on and off the light.
   }
-  
-  override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
-    print("dismiss")
-    super.dismiss(animated: flag, completion: completion)
-  }
 }
 
-// MARK: - Subviews
+// MARK: - View modules
 extension BCScanViewController {
   
   fileprivate enum CameraError: Error {
@@ -126,25 +162,23 @@ extension BCScanViewController {
     case permissionDenied
   }
   
-  fileprivate func loadSubviews() {
-    
-    do {
-      try loadCamera()
-    } catch CameraError.invalidDevice {
-      print("Invalid Device!")
-    } catch CameraError.inputCaptureError {
-      print("Input Capture Error!")
-    } catch {
-      print("Unexpected error: \(error).")
-    }
-    
-    loadScanView()
-    loadTip()
-  }
+  //  fileprivate func loadSubviews() {
+  
+  //    do {
+  //      try loadCamera()
+  //    } catch CameraError.invalidDevice {
+  //      print("Invalid Device!")
+  //    } catch CameraError.inputCaptureError {
+  //      print("Input Capture Error!")
+  //    } catch {
+  //      print("Unexpected error: \(error).")
+  //    }
+  
+  //    loadScanView()
+  //    loadTip()
+  //  }
   
   fileprivate func loadCamera() throws {
-    
-    cameraAuthorization()
     
     captureSession.beginConfiguration()
     
@@ -179,17 +213,38 @@ extension BCScanViewController {
     captureSession.startRunning()
   }
   
-  fileprivate func loadScanView() {
+  fileprivate func configureScanView() {
     scanView.backgroundColor = .clear
     scanView.autoresizingMask = [.flexibleWidth, .flexibleHeight,]
     
-    scanView.startAnimation()
-    
+    //    scanView.startAnimation()
     view.addSubview(scanView)
   }
   
-  fileprivate func loadTip() {
+  fileprivate func configureTip() {
     
+  }
+  
+  fileprivate func presentAuthorizationAlert() {
+    let alert = UIAlertController(
+      title: "Something wrong",
+      message: "This App need the permission to use iPhone's camera.",
+      preferredStyle: .alert)
+    
+    let settingAction = UIAlertAction(title: "Setting", style: .default) { _ in
+      guard let url = URL(string: UIApplication.openSettingsURLString),
+        UIApplication.shared.canOpenURL(url) else { return }
+      UIApplication.shared.open(url)
+    }
+    let cancelAction = UIAlertAction(title: "OK", style: .cancel)
+    cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
+    
+    alert.addActions([settingAction, cancelAction])
+    alert.view.tintColor = .black
+    
+    if navigationController?.presentedViewController is UIAlertController { return }
+    
+    navigationController?.present(alert, animated: true)
   }
 }
 
@@ -207,7 +262,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
       else { return }
     
     // Mission completed
-    cleanup()
+    //    cleanup()
     
     fetchBookWith(ISBN)
   }
@@ -244,7 +299,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
 
 // MARK - Device authorization
 extension BCScanViewController {
-  func cameraAuthorization() {
+  func cameraAuthorization() -> Bool {
     //    defer {
     //      dismiss(animated: true) { self.scanView.stopAnimation() }
     //    }
@@ -275,5 +330,6 @@ extension BCScanViewController {
     //
     //        default: break
     //    }
+    return false
   }
 }

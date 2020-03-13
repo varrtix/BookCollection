@@ -28,7 +28,7 @@
 
 import UIKit
 
-// MARK: - UIColor Extension
+// MARK: - UIColor Extensions
 public extension UIColor {
   convenience init(R: Int, G: Int, B: Int, A: Float) {
     assert(0...255 ~= R, "Invalid red component")
@@ -91,4 +91,9 @@ public extension UIColor {
   convenience init(displayP3HEX value: Int) {
     self.init(displayP3HEX: value, withAlpha: 1.0)
   }
+}
+
+// MARK: - UIAlertController Extensions
+public extension UIAlertController {
+  func addActions(_ actions: [UIAlertAction]) { actions.forEach { addAction($0) } }
 }
