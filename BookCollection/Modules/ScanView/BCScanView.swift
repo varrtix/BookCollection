@@ -36,7 +36,12 @@ class BCScanView: UIView {
   /// The positive direction is going down
   fileprivate var offsetY: CGFloat
   /// Scan Line
-  fileprivate var animationLine: UIImageView
+  lazy fileprivate var animationLine = UIImageView(frame: CGRect(
+    x: upperLeftPoint.x,
+    y: upperLeftPoint.y,
+    width: rectSize.width,
+    height: 1.0))
+  
   // Key pointers
   fileprivate var upperLeftPoint: Point
   fileprivate var upperRightPoint: Point
@@ -44,7 +49,9 @@ class BCScanView: UIView {
   fileprivate var lowerRightPoint: Point
   
   fileprivate var animationReverse = false
-  var isAnimating = false
+  private var _isAnimating = false
+  
+  var isAnimating: Bool { _isAnimating }
   
   init(frame: CGRect, rectSize: CGSize, offsetY: CGFloat) {
     self.rectSize = rectSize
@@ -63,10 +70,7 @@ class BCScanView: UIView {
       upperRightPoint.x, lowerLeftPoint.y
     )
     
-    animationLine = UIImageView(
-      frame: CGRect(x: upperLeftPoint.x, y: upperLeftPoint.y, width: rectSize.width, height: 1.0)
-    )
-    animationLine.image = UIImage(named: "Scan/scanner-line")
+    //    animationLine.image = UIImage(named: "Scan/scanner-line")
     
     super.init(frame: frame)
     
@@ -180,9 +184,13 @@ extension BCScanView {
 extension BCScanView {
   /// Start scan line animation
   func startAnimation() {
-    if isAnimating { return }
+    if _isAnimating { return }
     
-    isAnimating = true
+    if animationLine.image == nil {
+      animationLine.image = UIImage(named: "Scan/scanner-line")
+    }
+    
+    _isAnimating = true
     
     UIView.animate(withDuration: 3.0, delay: 0.5, options: .curveEaseInOut, animations: {
       self.animationLine.frame = self.animationReverse ?
@@ -191,11 +199,13 @@ extension BCScanView {
         CGRect(x: self.lowerLeftPoint.x, y: self.lowerLeftPoint.y,
                width: self.rectSize.width, height: 1.0)
     }) { completed in
+      
       if completed {
         self.animationReverse.toggle()
-        self.isAnimating.toggle()
+        self._isAnimating = false
         
         self.startAnimation()
+        
       } else {
         self.stopAnimation()
       }
@@ -204,8 +214,9 @@ extension BCScanView {
   
   func stopAnimation() {
     animationLine.removeFromSuperview()
+    animationLine.image = nil
     
-    isAnimating = false
+    _isAnimating = false
     animationReverse = false
     
   }

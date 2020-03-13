@@ -33,30 +33,24 @@ import Alamofire
 
 class BCScanViewController: BCViewController {
   
-  lazy var scanView = BCScanView(
+  lazy fileprivate var scanView = BCScanView(
     frame: self.view.frame,
     rectSize: CGSize(width: 230.0, height: 230.0), offsetY: -43.0)
   
-  lazy var captureSession = AVCaptureSession()
-  
-  deinit {
-    // TODO: Check the compact with func 'cleanup()'
-    if captureSession.isRunning { captureSession.stopRunning() }
-    if scanView.isAnimating { scanView.stopAnimation() }
-  }
-  
+  lazy fileprivate var captureSession = AVCaptureSession()
+
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+
     view.backgroundColor = .systemRed
     
     settingNavigationBar()
     loadSubviews()
   }
-  
+
   func cleanup() {
-    captureSession.stopRunning()
-    scanView.stopAnimation()
+    if captureSession.isRunning { captureSession.stopRunning() }
+    if scanView.isAnimating { scanView.stopAnimation() }
   }
 }
 
@@ -70,10 +64,17 @@ extension BCScanViewController {
     navigationController?.navigationBar.shadowImage = UIImage()
     
     // The fucking items ARE NOT INCLUDED in property navigationController of itself.
-    navigationItem.leftBarButtonItem = loadButton(
-      "Scan/back-button", action: #selector(back))
     navigationItem.rightBarButtonItem = loadButton(
-      "Scan/light-off", and: "Scan/light-on", action: #selector(light(_:)))
+      "Scan/light-off",
+      and: "Scan/light-on",
+      action: #selector(light(_:)))
+    
+//    guard #available(iOS 13.0, *) else {
+      navigationItem.leftBarButtonItem = loadButton(
+        "Scan/back-button",
+        action: #selector(back))
+//      return
+//    }
   }
   
   // loadButton
@@ -95,12 +96,22 @@ extension BCScanViewController {
   
   // BarButton Actions
   @objc fileprivate func back() {
-    dismiss(animated: true) { self.cleanup() }
+    // TODO: FIX dismiss
+//    dismiss(animated: true) { self.cleanup() }
+//    dismiss(animated: true)
+//      print("dismiss")
+//    }
+    navigationController?.dismiss(animated: true)
   }
   
   @objc fileprivate func light(_ sender: UIButton) {
     sender.isSelected.toggle()
     // TODO: Turn on and off the light.
+  }
+  
+  override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+    print("dismiss")
+    super.dismiss(animated: flag, completion: completion)
   }
 }
 
