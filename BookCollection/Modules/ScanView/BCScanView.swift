@@ -181,7 +181,7 @@ extension BCScanView {
 // MARK: - AnimationLine
 extension BCScanView {
   /// Start scan line animation
-  func startAnimation() {
+  func startAnimating() {
     if _isAnimating { return }
     
     if animationLine.image == nil {
@@ -202,15 +202,15 @@ extension BCScanView {
         self.animationReverse.toggle()
         self._isAnimating = false
         
-        self.startAnimation()
+        self.startAnimating()
         
       } else {
-        self.stopAnimation()
+        self.stopAnimating()
       }
     }
   }
   
-  func stopAnimation() {
+  func stopAnimating() {
     animationLine.removeFromSuperview()
     animationLine.image = nil
     

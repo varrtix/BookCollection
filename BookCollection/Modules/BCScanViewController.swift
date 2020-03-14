@@ -96,7 +96,7 @@ class BCScanViewController: BCViewController {
   
   func cleanup() {
     if captureSession.isRunning { captureSession.stopRunning() }
-    if scanView.isAnimating { scanView.stopAnimation() }
+    if scanView.isAnimating { scanView.stopAnimating() }
   }
 }
 
@@ -217,7 +217,7 @@ extension BCScanViewController {
     scanView.backgroundColor = .clear
     scanView.autoresizingMask = [.flexibleWidth, .flexibleHeight,]
     
-    //    scanView.startAnimation()
+    //    scanView.startAnimating()
     view.addSubview(scanView)
   }
   
@@ -286,7 +286,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
           
           let next = UIAlertAction(title: "Mark and Continue", style: .default) { _ in
             self.captureSession.startRunning()
-            self.scanView.startAnimation()
+            self.scanView.startAnimating()
           }
           alertController.addAction(next)
           self.present(alertController, animated: true)
@@ -300,36 +300,11 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
 // MARK - Device authorization
 extension BCScanViewController {
   func cameraAuthorization() -> Bool {
-    //    defer {
-    //      dismiss(animated: true) { self.scanView.stopAnimation() }
-    //    }
-    //    switch AVCaptureDevice.authorizationStatus(for: .video) {
-    //      case .restricted: fallthrough
-    //      case .denied:
-    //        let app = UIApplication()
-    //        guard
-    //          let url = URL(string: UIApplication.openSettingsURLString),
-    //          app.canOpenURL(url) else { return }
-    //
-    //        let alertController = UIAlertController(
-    //          title: "Oops",
-    //          message: "Camera authorization is not allowed!",
-    //          preferredStyle: .alert)
-    //
-    //        let setting = UIAlertAction(title: "Setting", style: .default) { _ in
-    //          app.open(url) { _ in
-    //            self.cameraAuthorization()
-    //          }
-    //        }
-    //        let skip = UIAlertAction(title: "Skip", style: .cancel)
-    //
-    //        alertController.addAction(setting)
-    //        alertController.addAction(skip)
-    //
-    //      present(alertController, animated: true)
-    //
-    //        default: break
-    //    }
-    return false
+    switch AVCaptureDevice.authorizationStatus(for: .video) {
+      case .restricted: fallthrough
+      case .denied: return false
+      default: break
+    }
+    return true
   }
 }
