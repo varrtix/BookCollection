@@ -57,24 +57,24 @@ class BCScanViewController: BCViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     
-    NotificationCenter.default.addObserver(
-      self,
-      selector: #selector(launch),
-      name: UIApplication.willEnterForegroundNotification,
-      object: nil
-    )
-    
     navigationBarHyalinization()
-  }
-  
-  override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
     
     #if targetEnvironment(simulator)
     if !scanView.isAnimating { scanView.startAnimating() }
     #endif
     
     launch()
+  }
+  
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(launch),
+      name: UIApplication.willEnterForegroundNotification,
+      object: nil
+    )
   }
   
   override func viewDidDisappear(_ animated: Bool) {
@@ -211,7 +211,9 @@ extension BCScanViewController {
     // Add preview scene
     let layer = AVCaptureVideoPreviewLayer(session: captureSession)
     layer.frame = view.layer.bounds
-    view.layer.addSublayer(layer)
+    // IMPORTANT: addsublayer will replace the layer of scanView
+    // but isnertsublayer at index 0 will replace parent's layer.
+    view.layer.insertSublayer(layer, at: 0)
     
     captureSession.commitConfiguration()
     sessionIsCommitted = true
