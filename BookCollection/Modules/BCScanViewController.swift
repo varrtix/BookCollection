@@ -30,6 +30,7 @@ import UIKit
 import AVFoundation
 import Alamofire
 //import ESPullToRefresh
+import SnapKit
 
 class BCScanViewController: BCViewController {
   
@@ -39,6 +40,8 @@ class BCScanViewController: BCViewController {
     vertical: BCScan.verticalOffset
   )
   
+  lazy fileprivate var authorizationAlert = getAuthorizationAlert()
+  
   lazy fileprivate var captureSession = AVCaptureSession()
   
   lazy fileprivate var sessionIsCommitted = false
@@ -46,7 +49,7 @@ class BCScanViewController: BCViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    view.backgroundColor = .systemRed
+    view.backgroundColor = BCColor.BarTint.gray
     
     // configure components of view
     configureNavigationBar()
@@ -68,6 +71,10 @@ class BCScanViewController: BCViewController {
   
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
+    
+    #if targetEnvironment(simulator)
+    presentLoadingAlert()
+    #endif
     
     NotificationCenter.default.addObserver(
       self,
@@ -231,7 +238,7 @@ extension BCScanViewController {
     
   }
   
-  fileprivate func presentAuthorizationAlert() {
+  fileprivate func getAuthorizationAlert() -> UIAlertController {
     let alert = UIAlertController(
       title: "Something wrong",
       message: "This App need the permission to use iPhone's camera.",
@@ -244,13 +251,40 @@ extension BCScanViewController {
     }
     let cancelAction = UIAlertAction(title: "OK", style: .cancel)
     cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
-    
+
     alert.addActions([settingAction, cancelAction])
     alert.view.tintColor = .black
     
+    return alert
+  }
+  
+  fileprivate func presentLoadingAlert() {
+    let alert = UIAlertController(title: "Loading", message: nil, preferredStyle: .alert)
+    let action = UIAlertAction(title: "OK", style: .cancel)
+    alert.addAction(action)
+    
+    let indicator = UIActivityIndicatorView(style: .gray)
+    
+    alert.view.addSubview(indicator)
+
+    indicator.snp.makeConstraints {
+      $0.center.equalToSuperview()
+      $0.top.equalToSuperview().inset(50)
+    }
+    
+    indicator.isUserInteractionEnabled = false
+    indicator.startAnimating()
+
+    animatingPresent(alert)
+  }
+}
+
+// MARK: View Actions
+extension BCScanViewController {
+  fileprivate func presentAuthorizationAlert() {
     if navigationController?.presentedViewController is UIAlertController { return }
     
-    navigationController?.present(alert, animated: true)
+    navigationController?.animatingPresent(authorizationAlert)
   }
 }
 
@@ -294,7 +328,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
             self.launch()
           }
           alertController.addAction(next)
-          self.present(alertController, animated: true)
+          self.present(alertController)
           
           return
         }

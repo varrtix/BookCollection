@@ -70,6 +70,6 @@ extension BCListViewController {
     }
     navigation.modalTransitionStyle = .coverVertical
     
-    present(navigation, animated: true)
+    animatingPresent(navigation)
   }
 }
