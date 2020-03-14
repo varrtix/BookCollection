@@ -70,6 +70,10 @@ class BCScanViewController: BCViewController {
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     
+    #if targetEnvironment(simulator)
+    if !scanView.isAnimating { scanView.startAnimating() }
+    #endif
+    
     launch()
   }
   
@@ -92,18 +96,19 @@ class BCScanViewController: BCViewController {
       presentAuthorizationAlert()
       return
     }
-    if !sessionIsCommitted {
-      do {
-        try configureCamera()
-      } catch CameraError.invalidDevice {
-        print("Invalid device")
-      } catch CameraError.inputCaptureError {
-        print("Input capture error")
-      } catch {
-        print("Unexpected error: \(error)")
-      }
+    if sessionIsCommitted {
+      startup()
+      return
     }
-    startup()
+    do {
+      try configureCamera()
+    } catch CameraError.invalidDevice {
+      print("Invalid device")
+    } catch CameraError.inputCaptureError {
+      print("Input capture error")
+    } catch {
+      print("Unexpected error: \(error)")
+    }
   }
   
   func startup() {
@@ -177,9 +182,8 @@ extension BCScanViewController {
     case invalidDevice
     case inputCaptureError
   }
-
+  
   fileprivate func configureCamera() throws {
-    
     captureSession.beginConfiguration()
     
     guard let captureDevice = AVCaptureDevice.default(for: .video)
@@ -211,6 +215,7 @@ extension BCScanViewController {
     
     captureSession.commitConfiguration()
     sessionIsCommitted = true
+    startup()
   }
   
   fileprivate func configureScanView() {

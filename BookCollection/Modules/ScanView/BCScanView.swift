@@ -71,8 +71,6 @@ class BCScanView: UIView {
     )
     
     super.init(frame: frame)
-    
-    addSubview(animationLine)
   }
   
   required init?(coder: NSCoder) {
@@ -186,6 +184,7 @@ extension BCScanView {
     
     if animationLine.image == nil {
       animationLine.image = UIImage(named: "Scan/scanner-line")
+      addSubview(animationLine)
     }
     
     _isAnimating = true
