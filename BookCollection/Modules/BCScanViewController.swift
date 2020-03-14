@@ -41,6 +41,8 @@ class BCScanViewController: BCViewController {
   
   lazy fileprivate var captureSession = AVCaptureSession()
   
+  lazy fileprivate var sessionIsCommitted = false
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -57,7 +59,7 @@ class BCScanViewController: BCViewController {
     
     NotificationCenter.default.addObserver(
       self,
-      selector: #selector(load),
+      selector: #selector(launch),
       name: UIApplication.willEnterForegroundNotification,
       object: nil
     )
@@ -68,7 +70,7 @@ class BCScanViewController: BCViewController {
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     
-    load()
+    launch()
   }
   
   override func viewDidDisappear(_ animated: Bool) {
@@ -83,15 +85,30 @@ class BCScanViewController: BCViewController {
     super.viewDidDisappear(animated)
   }
   
-  @objc func load() {
+  @objc func launch() {
     // STEP 1: camera authorization
     // STEP 2: if allow camera session, else cleanup and dismiss
-    
-    if cameraAuthorization() {
-      // TODO: scan
-    } else {
+    guard cameraAuthorization() else {
       presentAuthorizationAlert()
+      return
     }
+    if !sessionIsCommitted {
+      do {
+        try configureCamera()
+      } catch CameraError.invalidDevice {
+        print("Invalid device")
+      } catch CameraError.inputCaptureError {
+        print("Input capture error")
+      } catch {
+        print("Unexpected error: \(error)")
+      }
+    }
+    startup()
+  }
+  
+  func startup() {
+    if !captureSession.isRunning { captureSession.startRunning() }
+    if !scanView.isAnimating { scanView.startAnimating() }
   }
   
   func cleanup() {
@@ -159,26 +176,9 @@ extension BCScanViewController {
   fileprivate enum CameraError: Error {
     case invalidDevice
     case inputCaptureError
-    case permissionDenied
   }
-  
-  //  fileprivate func loadSubviews() {
-  
-  //    do {
-  //      try loadCamera()
-  //    } catch CameraError.invalidDevice {
-  //      print("Invalid Device!")
-  //    } catch CameraError.inputCaptureError {
-  //      print("Input Capture Error!")
-  //    } catch {
-  //      print("Unexpected error: \(error).")
-  //    }
-  
-  //    loadScanView()
-  //    loadTip()
-  //  }
-  
-  fileprivate func loadCamera() throws {
+
+  fileprivate func configureCamera() throws {
     
     captureSession.beginConfiguration()
     
@@ -210,14 +210,13 @@ extension BCScanViewController {
     view.layer.addSublayer(layer)
     
     captureSession.commitConfiguration()
-    captureSession.startRunning()
+    sessionIsCommitted = true
   }
   
   fileprivate func configureScanView() {
     scanView.backgroundColor = .clear
     scanView.autoresizingMask = [.flexibleWidth, .flexibleHeight,]
     
-    //    scanView.startAnimating()
     view.addSubview(scanView)
   }
   
@@ -262,7 +261,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
       else { return }
     
     // Mission completed
-    //    cleanup()
+    cleanup()
     
     fetchBookWith(ISBN)
   }
@@ -285,8 +284,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
           alertController.addAction(detail)
           
           let next = UIAlertAction(title: "Mark and Continue", style: .default) { _ in
-            self.captureSession.startRunning()
-            self.scanView.startAnimating()
+            self.launch()
           }
           alertController.addAction(next)
           self.present(alertController, animated: true)
