@@ -182,7 +182,7 @@ extension BCScanViewController {
   }
 }
 
-// MARK: - View modules
+// MARK: - Visual modules
 extension BCScanViewController {
   
   fileprivate enum CameraError: Error {
@@ -279,7 +279,7 @@ extension BCScanViewController {
   }
 }
 
-// MARK: View Actions
+// MARK: View actions
 extension BCScanViewController {
   fileprivate func presentAuthorizationAlert() {
     if navigationController?.presentedViewController is UIAlertController { return }
@@ -328,7 +328,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
             self.launch()
           }
           alertController.addAction(next)
-          self.present(alertController)
+          self.animatingPresent(alertController)
           
           return
         }
