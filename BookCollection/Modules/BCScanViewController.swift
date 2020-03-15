@@ -40,12 +40,41 @@ class BCScanViewController: BCViewController {
     vertical: BCScan.verticalOffset
   )
   
-  lazy fileprivate var authorizationAlert = getAuthorizationAlert()
+  fileprivate var authorizationAlert: UIAlertController {
+    let alert = UIAlertController(
+      title: "Something wrong",
+      message: "This App need the permission to use iPhone's camera.",
+      preferredStyle: .alert)
+    
+    let settingAction = UIAlertAction(title: "Setting", style: .default) { _ in
+      guard let url = URL(string: UIApplication.openSettingsURLString),
+        UIApplication.shared.canOpenURL(url) else { return }
+      UIApplication.shared.open(url)
+    }
+    let cancelAction = UIAlertAction(title: "OK", style: .cancel)
+    cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
+    
+    alert.addActions([settingAction, cancelAction])
+    alert.view.tintColor = .black
+    
+    return alert
+  }
+  
+//  lazy fileprivate var responseAlert = UIAlertController(
+//    title: nil,
+//    message: nil,
+//    preferredStyle: .alert
+//  )
+  
+//  fileprivate var state = State.ready {
+//    didSet {
+//    }
+//  }
   
   lazy fileprivate var captureSession = AVCaptureSession()
   
   lazy fileprivate var sessionIsCommitted = false
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -73,7 +102,7 @@ class BCScanViewController: BCViewController {
     super.viewDidAppear(animated)
     
     #if targetEnvironment(simulator)
-    presentLoadingAlert()
+//    presentLoadingAlert()
     #endif
     
     NotificationCenter.default.addObserver(
@@ -100,7 +129,7 @@ class BCScanViewController: BCViewController {
     // STEP 1: camera authorization
     // STEP 2: if allow camera session, else cleanup and dismiss
     guard cameraAuthorization() else {
-      presentAuthorizationAlert()
+      present(alert: authorizationAlert)
       return
     }
     if sessionIsCommitted {
@@ -237,54 +266,40 @@ extension BCScanViewController {
   fileprivate func configureTip() {
     
   }
-  
-  fileprivate func getAuthorizationAlert() -> UIAlertController {
-    let alert = UIAlertController(
-      title: "Something wrong",
-      message: "This App need the permission to use iPhone's camera.",
-      preferredStyle: .alert)
-    
-    let settingAction = UIAlertAction(title: "Setting", style: .default) { _ in
-      guard let url = URL(string: UIApplication.openSettingsURLString),
-        UIApplication.shared.canOpenURL(url) else { return }
-      UIApplication.shared.open(url)
-    }
-    let cancelAction = UIAlertAction(title: "OK", style: .cancel)
-    cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
-
-    alert.addActions([settingAction, cancelAction])
-    alert.view.tintColor = .black
-    
-    return alert
-  }
-  
-  fileprivate func presentLoadingAlert() {
-    let alert = UIAlertController(title: "Loading", message: nil, preferredStyle: .alert)
-    let action = UIAlertAction(title: "OK", style: .cancel)
-    alert.addAction(action)
-    
-    let indicator = UIActivityIndicatorView(style: .gray)
-    
-    alert.view.addSubview(indicator)
-
-    indicator.snp.makeConstraints {
-      $0.center.equalToSuperview()
-      $0.top.equalToSuperview().inset(50)
-    }
-    
-    indicator.isUserInteractionEnabled = false
-    indicator.startAnimating()
-
-    animatingPresent(alert)
-  }
 }
 
-// MARK: View actions
+// MARK: Alert modules
 extension BCScanViewController {
-  fileprivate func presentAuthorizationAlert() {
-    if navigationController?.presentedViewController is UIAlertController { return }
-    
-    navigationController?.animatingPresent(authorizationAlert)
+  fileprivate enum State {
+    case ready, loading, success, failure
+  }
+  //  fileprivate func getResponseAlert() -> UIAlertController {
+  //    UIAlertController(title: "Loading", message: nil, preferredStyle: .alert)
+  //  }
+  
+  //  fileprivate func presentLoadingAlert() {
+  //    let alert = UIAlertController(title: "Loading", message: nil, preferredStyle: .alert)
+  //    let action = UIAlertAction(title: "OK", style: .cancel)
+  //    alert.addAction(action)
+  //
+  //    let indicator = UIActivityIndicatorView(style: .gray)
+  //
+  //    alert.view.addSubview(indicator)
+  //
+  //    indicator.snp.makeConstraints {
+  //      $0.center.equalToSuperview()
+  //      $0.top.equalToSuperview().inset(50)
+  //    }
+  //
+  //    indicator.isUserInteractionEnabled = false
+  //    indicator.startAnimating()
+  //
+  //    animatingPresent(alert)
+  //  }
+
+  fileprivate func present<T: UIAlertController>(alert controller: T) {
+    if navigationController?.presentedViewController is T { return }
+    navigationController?.animatingPresent(controller)
   }
 }
 

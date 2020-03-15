@@ -36,18 +36,51 @@ class BCScanView: UIView {
   /// The positive direction is going down
   fileprivate var verticalOffset: CGFloat
   /// Scan Line
-  lazy fileprivate var animationLine: UIImageView? = getAnimationLine()
+  fileprivate var animationLine: UIImageView?
+  
+  fileprivate var _isAnimating = State.stop {
+    willSet {
+      switch newValue {
+        case .ready:
+          let imageView = UIImageView(frame: CGRect(
+            x: upperLeftPoint.x,
+            y: upperLeftPoint.y,
+            width: size.width,
+            height: 1.0))
+          imageView.image = UIImage(named: "Scan/scanner-line")
+          
+          animationLine = imageView
+          addSubview(animationLine!)
+        
+        case .stop:
+          animationLine?.removeFromSuperview()
+          animationLine = nil
+        
+        default: break
+      }
+    }
+  }
   
   // Key pointers
-  lazy fileprivate var upperLeftPoint = getUpperLeftPoint()
-  lazy fileprivate var upperRightPoint = getUpperRightPoint()
-  lazy fileprivate var lowerLeftPoint = getLowerLeftPoint()
-  lazy fileprivate var lowerRightPoint = getLowerRightPoint()
+  fileprivate var upperLeftPoint: Point {
+    ((frame.width - size.width) / 2, (frame.height - size.height) / 2 + verticalOffset)
+  }
   
+  fileprivate var upperRightPoint: Point {
+    (upperLeftPoint.x + size.width, upperLeftPoint.y)
+  }
+  
+  fileprivate var lowerLeftPoint: Point {
+    (upperLeftPoint.x, upperLeftPoint.y + size.height)
+  }
+  
+  fileprivate var lowerRightPoint: Point {
+    (upperRightPoint.x, lowerLeftPoint.y)
+  }
+ 
   lazy fileprivate var animationReverse = false
-  private var _isAnimating = false
   
-  var isAnimating: Bool { _isAnimating }
+  var isAnimating: Bool { _isAnimating == .animating }
   
   init(_ frame: CGRect, rect size: CGSize, vertical offset: CGFloat) {
     self.size = size
@@ -71,37 +104,6 @@ class BCScanView: UIView {
     
     // Draw four white corners around the center area
     drawBoarderCorners(context)
-  }
-}
-
-// MARK: - Compute variables
-extension BCScanView {
-  fileprivate func getUpperLeftPoint() -> Point {
-    ((frame.width - size.width) / 2, (frame.height - size.height) / 2 + verticalOffset)
-  }
-  
-  fileprivate func getUpperRightPoint() -> Point {
-    (upperLeftPoint.x + size.width, upperLeftPoint.y)
-  }
-  
-  fileprivate func getLowerLeftPoint() -> Point {
-    (upperLeftPoint.x, upperLeftPoint.y + size.height)
-  }
-  
-  fileprivate func getLowerRightPoint() -> Point {
-    (upperRightPoint.x, lowerLeftPoint.y)
-  }
-  
-  fileprivate func getAnimationLine() -> UIImageView {
-    let imageView = UIImageView(frame: CGRect(
-      x: upperLeftPoint.x,
-      y: upperLeftPoint.y,
-      width: size.width,
-      height: 1.0))
-    
-    imageView.image = UIImage(named: "Scan/scanner-line")
-    
-    return imageView
   }
 }
 
@@ -192,25 +194,27 @@ extension BCScanView {
 
 // MARK: - AnimationLine
 extension BCScanView {
+  fileprivate enum State: String {
+    case ready, start, animating, stop
+  }
+  
   /// Start scan line animation
   func startAnimating() {
-    if _isAnimating { return }
-    
-    //    if animationLine.image == nil {
-    //      animationLine.image = UIImage(named: "Scan/scanner-line")
-    //      addSubview(animationLine)
-    //    }
-    guard let animationLine = animationLine else {
-      self.animationLine = getAnimationLine()
-      startAnimating()
-      return
+    switch _isAnimating {
+      case .animating: return
+      case .stop: _isAnimating = .ready
+      default: break
     }
-    addSubview(animationLine)
-    
-    _isAnimating = true
-    
+    _isAnimating = .animating
+
+    assert(
+      animationLine != nil,
+      "The animation line must be impossible to be nil " +
+      "while the property '_isAnimating' is \(_isAnimating.rawValue)"
+    )
+
     UIView.animate(withDuration: 3.0, delay: 0.5, options: .curveEaseInOut, animations: {
-      animationLine.frame = self.animationReverse ?
+      self.animationLine?.frame = self.animationReverse ?
         CGRect(x: self.upperLeftPoint.x, y: self.upperLeftPoint.y,
                width: self.size.width, height: 1.0) :
         CGRect(x: self.lowerLeftPoint.x, y: self.lowerLeftPoint.y,
@@ -219,10 +223,11 @@ extension BCScanView {
       
       if completed {
         self.animationReverse.toggle()
-        self._isAnimating = false
+        
+        self._isAnimating = .start
         
         self.startAnimating()
-        
+
       } else {
         self.stopAnimating()
       }
@@ -230,15 +235,7 @@ extension BCScanView {
   }
   
   func stopAnimating() {
-    guard animationLine == nil else {
-      assert(animationLine != nil, "The animation line must be impossible to nil.")
-      animationLine!.removeFromSuperview()
-      animationLine = nil
-      return
-    }
-    
-    _isAnimating = false
+    _isAnimating = .stop
     animationReverse = false
-    
   }
 }
