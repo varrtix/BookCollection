@@ -39,26 +39,43 @@ class BCScanViewController: BCViewController {
     rect: BCScan.size,
     vertical: BCScan.verticalOffset
   )
-  
-  fileprivate var authorizationAlert: UIAlertController {
-    let alert = UIAlertController(
-      title: "Something wrong",
-      message: "This App need the permission to use iPhone's camera.",
-      preferredStyle: .alert)
-    
-    let settingAction = UIAlertAction(title: "Setting", style: .default) { _ in
-      guard let url = URL(string: UIApplication.openSettingsURLString),
-        UIApplication.shared.canOpenURL(url) else { return }
-      UIApplication.shared.open(url)
+
+  fileprivate var state = State.ready {
+    willSet {
+      switch newValue {
+        case .ready: break
+        case .loading: break
+//        case .success(let book): break
+//        case .failure(let error): break
+        default: break
+      }
     }
-    let cancelAction = UIAlertAction(title: "OK", style: .cancel)
-    cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
-    
-    alert.addActions([settingAction, cancelAction])
-    alert.view.tintColor = .black
-    
-    return alert
   }
+  
+  @BCAlertController(.response) fileprivate var stateAlert: UIAlertController
+  
+  @BCAlertController(.authorization) fileprivate var authorizationAlert: UIAlertController
+
+//  fileprivate var authorizationAlert: BCAlertController {
+    
+//    let alert = UIAlertController(
+//      title: "Something wrong",
+//      message: "This App need the permission to use iPhone's camera.",
+//      preferredStyle: .alert)
+//
+//    let settingAction = UIAlertAction(title: "Setting", style: .default) { _ in
+//      guard let url = URL(string: UIApplication.openSettingsURLString),
+//        UIApplication.shared.canOpenURL(url) else { return }
+//      UIApplication.shared.open(url)
+//    }
+//    let cancelAction = UIAlertAction(title: "OK", style: .cancel)
+//    cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
+//
+//    alert.addActions([settingAction, cancelAction])
+//    alert.view.tintColor = .black
+//
+//    return alert
+//  }
   
 //  lazy fileprivate var responseAlert = UIAlertController(
 //    title: nil,
@@ -74,7 +91,10 @@ class BCScanViewController: BCViewController {
   lazy fileprivate var captureSession = AVCaptureSession()
   
   lazy fileprivate var sessionIsCommitted = false
+}
 
+// MARK: - View lifecycle
+extension BCScanViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -124,7 +144,10 @@ class BCScanViewController: BCViewController {
     
     super.viewDidDisappear(animated)
   }
-  
+}
+
+// MARK: - Launch actions
+extension BCScanViewController {
   @objc func launch() {
     // STEP 1: camera authorization
     // STEP 2: if allow camera session, else cleanup and dismiss
@@ -147,18 +170,18 @@ class BCScanViewController: BCViewController {
     }
   }
   
-  func startup() {
+  fileprivate func startup() {
     if !captureSession.isRunning { captureSession.startRunning() }
     if !scanView.isAnimating { scanView.startAnimating() }
   }
   
-  func cleanup() {
+  fileprivate func cleanup() {
     if captureSession.isRunning { captureSession.stopRunning() }
     if scanView.isAnimating { scanView.stopAnimating() }
   }
 }
 
-// MARK: - Navigation
+// MARK: - Navigation settings
 extension BCScanViewController {
   fileprivate func navigationBarHyalinization() {
     // Generate a translucent NavigationBar
@@ -268,11 +291,68 @@ extension BCScanViewController {
   }
 }
 
-// MARK: Alert modules
+// MARK: - Alert modules
 extension BCScanViewController {
-  fileprivate enum State {
-    case ready, loading, success, failure
+  fileprivate enum Alert {
+    case authorization, response
   }
+  
+  @propertyWrapper
+  fileprivate struct BCAlertController {
+    private var alert: UIAlertController
+
+    init(_ type: Alert) {
+      alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+      alert.view.tintColor = .black
+      
+      guard type == .authorization else { return }
+      
+      alert.title = "Something wrong"
+      alert.message = "This App need the permission to use iPhone's camera."
+      
+      let settingAction = UIAlertAction(title: "Setting", style: .default) { _ in
+        guard let url = URL(string: UIApplication.openSettingsURLString),
+          UIApplication.shared.canOpenURL(url) else { return }
+        UIApplication.shared.open(url)
+      }
+      
+      let cancelAction = UIAlertAction(title: "OK", style: .cancel)
+      cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
+      
+      alert.addActions([settingAction, cancelAction])
+    }
+    
+    var wrappedValue: UIAlertController { alert }
+  }
+//  fileprivate enum Alert {
+//
+//    case authorization, response(State)
+//
+//    static var alertController: UIAlertController {
+//      let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+//      alert.view.tintColor = .black
+//
+//      switch self {
+//        case .authorization:
+//          alert.title = "Something wrong"
+//          alert.message = "This App need the permission to use iPhone's camera."
+//          let settingAction = UIAlertAction(title: "Setting", style: .default) { _ in
+//            guard let url = URL(string: UIApplication.openSettingsURLString),
+//              UIApplication.shared.canOpenURL(url) else { return }
+//            UIApplication.shared.open(url)
+//          }
+//          let cancelAction = UIAlertAction(title: "OK", style: .cancel)
+//          cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
+//
+//          alert.addActions([settingAction, cancelAction])
+//
+////        case .response(let state):
+////          UIView.animate(withDuration: 1.0) {
+//      }
+//
+//      return alert
+//    }
+//  }
   //  fileprivate func getResponseAlert() -> UIAlertController {
   //    UIAlertController(title: "Loading", message: nil, preferredStyle: .alert)
   //  }
@@ -303,8 +383,11 @@ extension BCScanViewController {
   }
 }
 
-// MARK: ISBN identification
+// MARK: - ISBN identification
 extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
+  fileprivate enum State {
+    case ready, loading, success(Book), failure(AFError)
+  }
   
   func metadataOutput(
     _ output: AVCaptureMetadataOutput,
@@ -351,7 +434,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
   }
 }
 
-// MARK - Device authorization
+// MARK: - Device authorization
 extension BCScanViewController {
   func cameraAuthorization() -> Bool {
     switch AVCaptureDevice.authorizationStatus(for: .video) {
