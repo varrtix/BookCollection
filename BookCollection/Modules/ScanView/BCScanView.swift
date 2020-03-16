@@ -49,12 +49,17 @@ class BCScanView: UIView {
             height: 1.0))
           imageView.image = UIImage(named: "Scan/scanner-line")
           
-          animationLine = imageView
-          addSubview(animationLine!)
+          DispatchQueue.main.async {
+            self.animationLine = imageView
+            self.addSubview(self.animationLine!)
+        }
         
         case .stop:
-          animationLine?.removeFromSuperview()
-          animationLine = nil
+          DispatchQueue.main.async {
+            self.layer.removeAllAnimations()
+            self.animationLine?.removeFromSuperview()
+            self.animationLine = nil
+        }
         
         default: break
       }
@@ -77,8 +82,6 @@ class BCScanView: UIView {
   fileprivate var lowerRightPoint: Point {
     (upperRightPoint.x, lowerLeftPoint.y)
   }
- 
-  lazy fileprivate var animationReverse = false
   
   var isAnimating: Bool { _isAnimating == .animating }
   
@@ -206,36 +209,29 @@ extension BCScanView {
       default: break
     }
     _isAnimating = .animating
-
+    
     assert(
       animationLine != nil,
       "The animation line must be impossible to be nil " +
       "while the property '_isAnimating' is \(_isAnimating.rawValue)"
     )
-
-    UIView.animate(withDuration: 3.0, delay: 0.5, options: .curveEaseInOut, animations: {
-      self.animationLine?.frame = self.animationReverse ?
-        CGRect(x: self.upperLeftPoint.x, y: self.upperLeftPoint.y,
-               width: self.size.width, height: 1.0) :
-        CGRect(x: self.lowerLeftPoint.x, y: self.lowerLeftPoint.y,
-               width: self.size.width, height: 1.0)
-    }) { completed in
-      
-      if completed {
-        self.animationReverse.toggle()
-        
-        self._isAnimating = .start
-        
-        self.startAnimating()
-
-      } else {
-        self.stopAnimating()
-      }
+    
+    DispatchQueue.main.async {
+      UIView.animate(
+        withDuration: 3.0,
+        delay: 0.5,
+        options: [.curveEaseInOut, .autoreverse, .repeat],
+        animations: {
+          self.animationLine!.frame = CGRect(
+            x: self.lowerLeftPoint.x,
+            y: self.lowerLeftPoint.y,
+            width: self.size.width,
+            height: 1.0)
+      })
     }
   }
   
   func stopAnimating() {
     _isAnimating = .stop
-    animationReverse = false
   }
 }

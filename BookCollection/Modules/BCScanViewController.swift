@@ -43,11 +43,16 @@ class BCScanViewController: BCViewController {
   fileprivate var state = State.ready {
     willSet {
       switch newValue {
-        case .ready: break
-        case .loading: break
-//        case .success(let book): break
-//        case .failure(let error): break
-        default: break
+        case .ready:
+        stateAlert.title = "Loading"
+        stateAlert.message = "......."
+        print("oldValue\(state)")
+        print("newValue\(newValue)")
+        case .loading:
+          stateAlert.title = "Loading ..."
+        case .success(let book): break
+        case .failure(let error): break
+//        default: break
       }
     }
   }
@@ -56,38 +61,6 @@ class BCScanViewController: BCViewController {
   
   @BCAlertController(.authorization) fileprivate var authorizationAlert: UIAlertController
 
-//  fileprivate var authorizationAlert: BCAlertController {
-    
-//    let alert = UIAlertController(
-//      title: "Something wrong",
-//      message: "This App need the permission to use iPhone's camera.",
-//      preferredStyle: .alert)
-//
-//    let settingAction = UIAlertAction(title: "Setting", style: .default) { _ in
-//      guard let url = URL(string: UIApplication.openSettingsURLString),
-//        UIApplication.shared.canOpenURL(url) else { return }
-//      UIApplication.shared.open(url)
-//    }
-//    let cancelAction = UIAlertAction(title: "OK", style: .cancel)
-//    cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
-//
-//    alert.addActions([settingAction, cancelAction])
-//    alert.view.tintColor = .black
-//
-//    return alert
-//  }
-  
-//  lazy fileprivate var responseAlert = UIAlertController(
-//    title: nil,
-//    message: nil,
-//    preferredStyle: .alert
-//  )
-  
-//  fileprivate var state = State.ready {
-//    didSet {
-//    }
-//  }
-  
   lazy fileprivate var captureSession = AVCaptureSession()
   
   lazy fileprivate var sessionIsCommitted = false
@@ -112,7 +85,10 @@ extension BCScanViewController {
     navigationBarHyalinization()
     
     #if targetEnvironment(simulator)
-    if !scanView.isAnimating { scanView.startAnimating() }
+//    DispatchQueue.main.async {
+      if !self.scanView.isAnimating { self.scanView.startAnimating() }
+//    }
+//    scanView.newStartAnimating()
     #endif
     
     launch()
@@ -122,7 +98,8 @@ extension BCScanViewController {
     super.viewDidAppear(animated)
     
     #if targetEnvironment(simulator)
-//    presentLoadingAlert()
+    state = .ready
+//    present(alert: stateAlert)
     #endif
     
     NotificationCenter.default.addObserver(
@@ -171,13 +148,17 @@ extension BCScanViewController {
   }
   
   fileprivate func startup() {
-    if !captureSession.isRunning { captureSession.startRunning() }
-    if !scanView.isAnimating { scanView.startAnimating() }
+    DispatchQueue.main.async {
+      if !self.captureSession.isRunning { self.captureSession.startRunning() }
+      if !self.scanView.isAnimating { self.scanView.startAnimating() }
+    }
   }
   
   fileprivate func cleanup() {
-    if captureSession.isRunning { captureSession.stopRunning() }
-    if scanView.isAnimating { scanView.stopAnimating() }
+    DispatchQueue.main.async {
+      if self.captureSession.isRunning { self.captureSession.stopRunning() }
+      if self.scanView.isAnimating { self.scanView.stopAnimating() }
+    }
   }
 }
 
@@ -324,36 +305,8 @@ extension BCScanViewController {
     
     var wrappedValue: UIAlertController { alert }
   }
-//  fileprivate enum Alert {
-//
-//    case authorization, response(State)
-//
-//    static var alertController: UIAlertController {
-//      let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
-//      alert.view.tintColor = .black
-//
-//      switch self {
-//        case .authorization:
-//          alert.title = "Something wrong"
-//          alert.message = "This App need the permission to use iPhone's camera."
-//          let settingAction = UIAlertAction(title: "Setting", style: .default) { _ in
-//            guard let url = URL(string: UIApplication.openSettingsURLString),
-//              UIApplication.shared.canOpenURL(url) else { return }
-//            UIApplication.shared.open(url)
-//          }
-//          let cancelAction = UIAlertAction(title: "OK", style: .cancel)
-//          cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
-//
-//          alert.addActions([settingAction, cancelAction])
-//
-////        case .response(let state):
-////          UIView.animate(withDuration: 1.0) {
-//      }
-//
-//      return alert
-//    }
-//  }
-  //  fileprivate func getResponseAlert() -> UIAlertController {
+  
+ //  fileprivate func getResponseAlert() -> UIAlertController {
   //    UIAlertController(title: "Loading", message: nil, preferredStyle: .alert)
   //  }
   
