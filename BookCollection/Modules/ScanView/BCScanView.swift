@@ -49,17 +49,13 @@ class BCScanView: UIView {
             height: 1.0))
           imageView.image = UIImage(named: "Scan/scanner-line")
           
-          DispatchQueue.main.async {
-            self.animationLine = imageView
-            self.addSubview(self.animationLine!)
-        }
+          animationLine = imageView
+          addSubview(animationLine!)
         
         case .stop:
-          DispatchQueue.main.async {
-            self.layer.removeAllAnimations()
-            self.animationLine?.removeFromSuperview()
-            self.animationLine = nil
-        }
+          layer.removeAllAnimations()
+          animationLine?.removeFromSuperview()
+          animationLine = nil
         
         default: break
       }

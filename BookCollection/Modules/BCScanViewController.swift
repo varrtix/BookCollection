@@ -33,37 +33,42 @@ import Alamofire
 import SnapKit
 
 class BCScanViewController: BCViewController {
-  
+  // View variables
   lazy fileprivate var scanView = BCScanView(
     self.view.frame,
     rect: BCScan.size,
     vertical: BCScan.verticalOffset
   )
-
-  fileprivate var state = State.ready {
+  
+  // controller variables
+  lazy fileprivate var sessionIsCommitted = false
+  
+  fileprivate let captureSession = AVCaptureSession()
+  
+  fileprivate var state = State.stop {
     willSet {
       switch newValue {
-        case .ready:
-        stateAlert.title = "Loading"
-        stateAlert.message = "......."
-        print("oldValue\(state)")
-        print("newValue\(newValue)")
-        case .loading:
-          stateAlert.title = "Loading ..."
-        case .success(let book): break
-        case .failure(let error): break
-//        default: break
+        case .ready(let isbn):
+          cleanup()
+          fetchBook(with: isbn)
+        
+        case .loading(let url):
+          present(alert: alertController(.waiting(url)))
+        
+        case .success(let book):
+          dismiss {
+            self.present(alert: self.alertController(.success(book)))
+        }
+        
+        case .failure(let error):
+          dismiss {
+            self.present(alert: self.alertController(.failure(error)))
+        }
+        
+        case .stop: break
       }
     }
   }
-  
-  @BCAlertController(.response) fileprivate var stateAlert: UIAlertController
-  
-  @BCAlertController(.authorization) fileprivate var authorizationAlert: UIAlertController
-
-  lazy fileprivate var captureSession = AVCaptureSession()
-  
-  lazy fileprivate var sessionIsCommitted = false
 }
 
 // MARK: - View lifecycle
@@ -85,10 +90,7 @@ extension BCScanViewController {
     navigationBarHyalinization()
     
     #if targetEnvironment(simulator)
-//    DispatchQueue.main.async {
-      if !self.scanView.isAnimating { self.scanView.startAnimating() }
-//    }
-//    scanView.newStartAnimating()
+    if !scanView.isAnimating { scanView.startAnimating() }
     #endif
     
     launch()
@@ -98,8 +100,8 @@ extension BCScanViewController {
     super.viewDidAppear(animated)
     
     #if targetEnvironment(simulator)
-    state = .ready
-//    present(alert: stateAlert)
+    //    state = .loading()
+    //    present(alert: stateAlert)
     #endif
     
     NotificationCenter.default.addObserver(
@@ -126,10 +128,11 @@ extension BCScanViewController {
 // MARK: - Launch actions
 extension BCScanViewController {
   @objc func launch() {
+    state = .stop
     // STEP 1: camera authorization
     // STEP 2: if allow camera session, else cleanup and dismiss
     guard cameraAuthorization() else {
-      present(alert: authorizationAlert)
+      present(alert: alertController(.authorize))
       return
     }
     if sessionIsCommitted {
@@ -148,17 +151,13 @@ extension BCScanViewController {
   }
   
   fileprivate func startup() {
-    DispatchQueue.main.async {
-      if !self.captureSession.isRunning { self.captureSession.startRunning() }
-      if !self.scanView.isAnimating { self.scanView.startAnimating() }
-    }
+    if !captureSession.isRunning { captureSession.startRunning() }
+    if !scanView.isAnimating { scanView.startAnimating() }
   }
   
   fileprivate func cleanup() {
-    DispatchQueue.main.async {
-      if self.captureSession.isRunning { self.captureSession.stopRunning() }
-      if self.scanView.isAnimating { self.scanView.stopAnimating() }
-    }
+    if captureSession.isRunning { captureSession.stopRunning() }
+    if scanView.isAnimating { scanView.stopAnimating() }
   }
 }
 
@@ -275,71 +274,94 @@ extension BCScanViewController {
 // MARK: - Alert modules
 extension BCScanViewController {
   fileprivate enum Alert {
-    case authorization, response
+    case authorize
+    case waiting(URL)
+    case success(Book)
+    case failure(AFError)
   }
   
-  @propertyWrapper
-  fileprivate struct BCAlertController {
-    private var alert: UIAlertController
-
-    init(_ type: Alert) {
-      alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
-      alert.view.tintColor = .black
+  fileprivate func alertController(_ type: Alert) -> UIAlertController {
+    let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+    alert.view.tintColor = .black
+    
+    switch type {
+      case .authorize:
+        alert.title = "Something wrong"
+        alert.message = "This App need the permission to use iPhone's camera."
+        let settingAction = UIAlertAction(title: "Setting", style: .default) { _ in
+          guard let url = URL(string: UIApplication.openSettingsURLString),
+            UIApplication.shared.canOpenURL(url) else { return }
+          UIApplication.shared.open(url)
+        }
+        
+        let cancelAction = UIAlertAction(title: "OK", style: .cancel)
+        cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
+        
+        alert.addActions([settingAction, cancelAction])
       
-      guard type == .authorization else { return }
-      
-      alert.title = "Something wrong"
-      alert.message = "This App need the permission to use iPhone's camera."
-      
-      let settingAction = UIAlertAction(title: "Setting", style: .default) { _ in
-        guard let url = URL(string: UIApplication.openSettingsURLString),
-          UIApplication.shared.canOpenURL(url) else { return }
-        UIApplication.shared.open(url)
+      case .waiting(let url):
+        alert.title = "Loading"
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+          self.cancelRequest(for: url)
+          self.launch()
+        }
+        
+        alert.message = "..."
+        alert.addAction(cancelAction)
+        DispatchQueue.main.async {
+          UIView.transition(
+            with: alert.view,
+            duration: 1.5,
+            options: [.autoreverse, .repeat, .transitionCrossDissolve, .curveLinear],
+            animations: {
+              alert.message = "... ..."
+          })
       }
       
-      let cancelAction = UIAlertAction(title: "OK", style: .cancel)
-      cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
+      case .success(let book):
+        alert.title = "Book Information"
+        alert.message = "Not found!"
+        //        guard let book = object as? Book else { break }
+        let detailAction = UIAlertAction(title: "Detail", style: .default)
+        let nextAction = UIAlertAction(title: "Mark and Continue", style: .cancel) { _ in
+          self.launch()
+        }
+        alert.message = "\(book.title)\n\(book.isbn13)\n\(book.author[0])"
+        alert.addActions([detailAction, nextAction])
       
-      alert.addActions([settingAction, cancelAction])
+      case .failure(let error):
+        alert.title = "Something wrong"
+        alert.message = "Error: " + String(describing: error.errorDescription)
+        let action = UIAlertAction(title: "OK", style: .cancel) { _ in
+          self.launch()
+        }
+        alert.addAction(action)
     }
     
-    var wrappedValue: UIAlertController { alert }
+    return alert
   }
   
- //  fileprivate func getResponseAlert() -> UIAlertController {
-  //    UIAlertController(title: "Loading", message: nil, preferredStyle: .alert)
-  //  }
-  
-  //  fileprivate func presentLoadingAlert() {
-  //    let alert = UIAlertController(title: "Loading", message: nil, preferredStyle: .alert)
-  //    let action = UIAlertAction(title: "OK", style: .cancel)
-  //    alert.addAction(action)
-  //
-  //    let indicator = UIActivityIndicatorView(style: .gray)
-  //
-  //    alert.view.addSubview(indicator)
-  //
-  //    indicator.snp.makeConstraints {
-  //      $0.center.equalToSuperview()
-  //      $0.top.equalToSuperview().inset(50)
-  //    }
-  //
-  //    indicator.isUserInteractionEnabled = false
-  //    indicator.startAnimating()
-  //
-  //    animatingPresent(alert)
-  //  }
-
   fileprivate func present<T: UIAlertController>(alert controller: T) {
     if navigationController?.presentedViewController is T { return }
     navigationController?.animatingPresent(controller)
+  }
+  
+  fileprivate func dismiss(completion: (() -> Void)? = nil) {
+    guard navigationController?.presentedViewController
+      is UIAlertController else { return }
+    navigationController?.presentedViewController?.view.layer.removeAllAnimations()
+    navigationController?.animatingDismiss(completion: completion)
   }
 }
 
 // MARK: - ISBN identification
 extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
   fileprivate enum State {
-    case ready, loading, success(Book), failure(AFError)
+    case ready(String)
+    case loading(URL)
+    case success(Book)
+    case failure(AFError)
+    case stop
   }
   
   func metadataOutput(
@@ -352,37 +374,39 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
       let ISBN = object.stringValue
       else { return }
     
-    // Mission completed
-    cleanup()
-    
-    fetchBookWith(ISBN)
+    state = .ready(ISBN)
   }
   
-  func fetchBookWith(_ ISBN: String) {
-    AF.request("https://douban.uieee.com/v2/book/isbn/\(ISBN)")
+  func fetchBook(with ISBN: String) {
+    guard let url = URL(string: "https://douban.uieee.com/v2/book/isbn/\(ISBN)") else {
+      return
+    }
+    state = .loading(url)
+    AF.request(url)
       .validate()
       .responseDecodable(of: Book.self) { response in
         // TODO: Throws detail
-        guard case .failure(_) = response.result else {
+        guard case let .failure(error) = response.result else {
           guard case let .success(book) = response.result else {
             print("Response success, but it has an unexpected error!")
             return
           }
-          let alertController = UIAlertController(
-            title: "Message",
-            message: "\(book.title)\n\(book.isbn13)\n\(book.author[0])",
-            preferredStyle: .alert)
-          let detail = UIAlertAction(title: "Detail", style: .default)
-          alertController.addAction(detail)
-          
-          let next = UIAlertAction(title: "Mark and Continue", style: .default) { _ in
-            self.launch()
-          }
-          alertController.addAction(next)
-          self.animatingPresent(alertController)
-          
+          self.state = .success(book)
           return
         }
+        self.state = .failure(error)
+    }
+  }
+  
+  fileprivate func cancelRequest(for url: URL?) {
+    Alamofire.Session.default.session.getAllTasks {
+      $0.forEach { task in
+        guard
+          let url = url,
+          let taskURL = task.currentRequest?.url
+          else { return }
+        if taskURL == url { task.cancel() }
+      }
     }
   }
 }

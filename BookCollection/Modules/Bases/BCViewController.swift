@@ -30,7 +30,37 @@ import UIKit
 
 class BCViewController: UIViewController {
   
+  lazy var shouldShowShadowImage = false
+  
+  lazy var shouldHideBottomBarWhenPushed = false
+  
+  var navigationBarBackgroundImage: UIImage?
+  
   override func viewDidLoad() {
     super.viewDidLoad()
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+  }
+}
+
+// MARK: - Navigation configurations
+extension BCViewController {
+  func adjustNavigator() {
+    if shouldShowShadowImage {
+      navigationController?.navigationBar.shadowImage = nil
+    } else {
+      navigationController?.navigationBar.shadowImage = UIImage()
+      navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+    }
+    
+    if let image = navigationBarBackgroundImage {
+      navigationController?.navigationBar.setBackgroundImage(image, for: .default)
+    } else {
+      navigationController?.navigationBar.barTintColor = UIColor(HEX: 0x009D82)
+      navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
+    }
+    
   }
 }
