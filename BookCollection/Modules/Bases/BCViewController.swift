@@ -58,7 +58,7 @@ extension BCViewController {
     if let image = navigationBarBackgroundImage {
       navigationController?.navigationBar.setBackgroundImage(image, for: .default)
     } else {
-      navigationController?.navigationBar.barTintColor = UIColor(HEX: 0x009D82)
+      navigationController?.navigationBar.barTintColor = BCColor.BarTint.green
       navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
     }
     

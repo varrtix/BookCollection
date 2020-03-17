@@ -53,22 +53,15 @@ extension BCListViewController {
     
     navigationItem.rightBarButtonItem = scanButtonItem
     
-    navigationController?.navigationBar.titleTextAttributes = [
-      NSAttributedString.Key.foregroundColor: BCColor.BarTint.white
-    ]
-    navigationController?.navigationBar.barTintColor = BCColor.BarTint.green
-    navigationController?.navigationBar.tintColor = BCColor.BarTint.white
+//    navigationController?.navigationBar.titleTextAttributes = [
+//      NSAttributedString.Key.foregroundColor: BCColor.BarTint.white
+//    ]
+//    navigationController?.navigationBar.barTintColor = BCColor.BarTint.green
+//    navigationController?.navigationBar.tintColor = BCColor.BarTint.white
   }
   
   @objc func scan(_ sender: UIBarButtonItem) {
     let navigation = BCNavigationController(rootViewController: scan.item)
-    
-    if #available(iOS 13.0, *) {
-      navigation.modalPresentationStyle = .automatic
-    } else {
-      navigation.modalPresentationStyle = .fullScreen
-    }
-    navigation.modalTransitionStyle = .coverVertical
     
     animatingPresent(navigation)
   }
