@@ -87,8 +87,6 @@ extension BCScanViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     
-    navigationBarHyalinization()
-    
     #if targetEnvironment(simulator)
     if !scanView.isAnimating { scanView.startAnimating() }
     #endif
@@ -163,15 +161,9 @@ extension BCScanViewController {
 
 // MARK: - Navigation settings
 extension BCScanViewController {
-  fileprivate func navigationBarHyalinization() {
-    // Generate a translucent NavigationBar
-    navigationController?.navigationBar.isTranslucent = true
-    // Clear navigationBar's color and the shadow line of its bottom.
-    navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-    navigationController?.navigationBar.shadowImage = UIImage()
-  }
-  
   fileprivate func configureNavigationBar() {
+    navigationBarBackgroundImage = UIImage()
+    
     // The fucking items ARE NOT INCLUDED in property navigationController of itself.
     navigationItem.rightBarButtonItem = generateBarButton(
       "Scan/light-off",
