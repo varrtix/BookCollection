@@ -53,16 +53,16 @@ class BCScanViewController: BCViewController {
           fetchBook(with: isbn)
         
         case .loading(let url):
-          present(alert: alertController(.waiting(url)))
+          present(alertController(.waiting(url)), animated: true)
         
         case .success(let book):
           dismiss {
-            self.present(alert: self.alertController(.success(book)))
+            self.present(self.alertController(.success(book)), animated: true)
         }
         
         case .failure(let error):
           dismiss {
-            self.present(alert: self.alertController(.failure(error)))
+            self.present(self.alertController(.failure(error)), animated: true)
         }
         
         case .stop: break
@@ -99,7 +99,8 @@ extension BCScanViewController {
     
     #if targetEnvironment(simulator)
     //    state = .loading()
-    //    present(alert: stateAlert)
+//    present(alert: alertController(.waiting(URL(string: "url")!)))
+    present(alertController(.authorize), animated: true)
     #endif
     
     NotificationCenter.default.addObserver(
@@ -130,7 +131,7 @@ extension BCScanViewController {
     // STEP 1: camera authorization
     // STEP 2: if allow camera session, else cleanup and dismiss
     guard cameraAuthorization() else {
-      present(alert: alertController(.authorize))
+      present(alertController(.authorize), animated: true)
       return
     }
     if sessionIsCommitted {
@@ -268,7 +269,7 @@ extension BCScanViewController {
   fileprivate enum Alert {
     case authorize
     case waiting(URL)
-    case success(Book)
+    case success(BCBook.Coder)
     case failure(AFError)
   }
   
@@ -333,16 +334,17 @@ extension BCScanViewController {
     return alert
   }
   
-  fileprivate func present<T: UIAlertController>(alert controller: T) {
-    if navigationController?.presentedViewController is T { return }
-    navigationController?.animatingPresent(controller)
-  }
+//  fileprivate func present<T: UIAlertController>(alert controller: T) {
+//    if navigationController?.presentedViewController is T { return }
+//    self.navigationController?.animatingPresent(controller)
+//    navigationController?.present(controller, animated: true)
+//  }
   
   fileprivate func dismiss(completion: (() -> Void)? = nil) {
     guard navigationController?.presentedViewController
       is UIAlertController else { return }
     navigationController?.presentedViewController?.view.layer.removeAllAnimations()
-    navigationController?.animatingDismiss(completion: completion)
+    navigationController?.dismiss(animated: true, completion: completion)
   }
 }
 
@@ -351,7 +353,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
   fileprivate enum State {
     case ready(String)
     case loading(URL)
-    case success(Book)
+    case success(BCBook.Coder)
     case failure(AFError)
     case stop
   }
@@ -376,7 +378,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
     state = .loading(url)
     AF.request(url)
       .validate()
-      .responseDecodable(of: Book.self) { response in
+      .responseDecodable(of: BCBook.Coder.self) { response in
         // TODO: Throws detail
         guard case let .failure(error) = response.result else {
           guard case let .success(book) = response.result else {

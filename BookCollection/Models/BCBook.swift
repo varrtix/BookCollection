@@ -33,6 +33,8 @@ import WCDBSwift
 struct BCBook {
   // Part of DB model
   struct DB: BCBookFoundation, TableCodable {
+    
+    let id: Int64? = nil
 
     let bookID: String
     
@@ -74,6 +76,7 @@ struct BCBook {
       
       static let objectRelationalMapping = TableBinding(CodingKeys.self)
       
+      case id
       case bookID = "book_id"
       case title, subtitle
       case originTitle = "origin_title"
@@ -82,7 +85,17 @@ struct BCBook {
       case publisher, isbn10, isbn13, image, binding
       case authorIntroduction = "author_intro"
       case catalog, pages, summary, price
+      
+      static var columnConstraintBindings: [BCBook.DB.CodingKeys : ColumnConstraintBinding]? {
+        [
+          id: ColumnConstraintBinding(isPrimary: true, isAutoIncrement: true, isNotNull: true, isUnique: true)
+        ]
+      }
     }
+    
+    var isAutoIncrement: Bool = true
+    
+    var lastInsertedRowID: Int64 = 0
   }
   
   // Part of Coder model

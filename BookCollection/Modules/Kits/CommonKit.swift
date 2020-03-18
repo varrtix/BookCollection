@@ -97,14 +97,3 @@ public extension UIColor {
 public extension UIAlertController {
   func addActions(_ actions: [UIAlertAction]) { actions.forEach { addAction($0) } }
 }
-
-// MARK: UIViewController Extensions
-public extension UIViewController {
-  func animatingPresent<T: UIViewController>(_ viewControllerToPresent: T, completion: (() -> Void)? = nil) {
-    present(viewControllerToPresent, animated: true, completion: completion)
-  }
-  
-  func animatingDismiss(completion: (() -> Void)? = nil) {
-    dismiss(animated: true, completion: completion)
-  }
-}

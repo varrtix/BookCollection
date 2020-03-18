@@ -63,6 +63,6 @@ extension BCListViewController {
   @objc func scan(_ sender: UIBarButtonItem) {
     let navigation = BCNavigationController(rootViewController: scan.item)
     
-    animatingPresent(navigation)
+    present(navigation, animated: true)
   }
 }

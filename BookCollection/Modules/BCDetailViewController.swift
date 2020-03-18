@@ -28,44 +28,12 @@
 
 import UIKit
 
-class BCNavigationController: UINavigationController {
+class BCDetailViewController: BCViewController {
+  
+//  var book: BCBook.Coder
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    loadBarStyle()
-    
-    loadModalStyle()
-  }
-}
-
-// MARK: - Navigation configurations
-extension BCNavigationController {
-  fileprivate func loadBarStyle() {
-    navigationBar.barTintColor = BCColor.BarTint.green
-    navigationBar.tintColor = BCColor.BarTint.white
-    navigationBar.titleTextAttributes = [
-      NSAttributedString.Key.foregroundColor: BCColor.BarTint.white
-    ]
-  }
-  
-  fileprivate func loadModalStyle() {
-    if #available(iOS 13.0, *) {
-      modalPresentationStyle = .automatic
-    } else {
-      modalPresentationStyle = .fullScreen
-    }
-    modalTransitionStyle = .coverVertical
-  }
-  
-  override func present(
-    _ viewControllerToPresent: UIViewController,
-    animated flag: Bool,
-    completion: (() -> Void)? = nil) {
-    guard viewControllerToPresent is BCViewController else { return }
-    viewControllerToPresent.hidesBottomBarWhenPushed =
-      (viewControllerToPresent as! BCViewController).shouldHideBottomBarWhenPushed
-    
-    super.present(viewControllerToPresent, animated: true, completion: completion)
   }
 }
