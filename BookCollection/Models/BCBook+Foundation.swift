@@ -28,69 +28,73 @@
 
 import Foundation
 
-// MARK: - Top level: Book model
-struct Book: Codable {
-  let rating: Rating
-  let subtitle: String
-  let author: [String]
-  let publishedDate: String
-  let tags: [Tag]
-  let originTitle: String
-  let image: String
-  let binding: String
-  let translator: [String]
-  let catalog: String
-  let pages: String
-  let images: Images
-  let id: String
-  let publisher: String
-  let isbn10: String
-  let isbn13: String
-  let title: String
-  let authorIntroduction: String
-  let summary: String
-  let price: String
+protocol BCBookFoundation {
   
-  enum CodingKeys: String, CodingKey {
-    case rating, subtitle, author, tags
-    case image, binding, translator, catalog, pages
-    case images, id, publisher, isbn10, isbn13
-    case title, summary, price
-    case publishedDate = "pubdate"
-    case authorIntroduction = "author_intro"
-    case originTitle = "origin_title"
-  }
+  var bookID: String { get }
+  
+  var title: String { get }
+  
+  var subtitle: String { get }
+  
+  var originTitle: String { get }
+  
+  var author: [String] { get }
+  
+  var translator: [String] { get }
+  
+  var publishedDate: String { get }
+  
+  var publisher: String { get }
+  
+  var isbn10: String { get }
+  
+  var isbn13: String { get }
+  
+  var image: String { get }
+  
+  var binding: String { get }
+  
+  var authorIntroduction: String { get }
+  
+  var catalog: String { get }
+  
+  var pages: String { get }
+  
+  var summary: String { get }
+  
+  var price: String { get }
 }
 
-// MARK: - Second level: Rating, Tag, Images, Series
-extension Book {
-  struct Rating: Codable {
-    let max: Int
-    let average: String
-    let min: Int
-    let numRaters: Int
-    
-    enum CodingKeys: String, CodingKey {
-      case max, average, min, numRaters
-    }
-  }
+protocol BCTagFoundation {
   
-  struct Tag: Codable {
-    let count: Int
-    let title: String
-    
-    enum CodingKeys: String, CodingKey {
-      case count, title
-    }
-  }
+  var count: Int { get }
   
-  struct Images: Codable {
-    let small: String
-    let medium: String
-    let large: String
-    
-    enum CodingKeys: String, CodingKey {
-      case small, medium, large
-    }
-  }
+  var title: String { get }
+}
+
+protocol BCImagesFoundation {
+  
+  var small: String { get }
+  
+  var medium: String { get }
+  
+  var large: String { get }
+}
+
+protocol BCRatingFoundation {
+  
+  var max: Int { get }
+  
+  var numRaters: Int { get }
+  
+  var average: String { get }
+  
+  var min: Int { get }
+}
+
+protocol BCSeriesFoundation {
+  
+  var id: String { get }
+  
+  var title: String { get }
 }
