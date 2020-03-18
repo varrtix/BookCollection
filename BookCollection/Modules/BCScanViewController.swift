@@ -315,7 +315,11 @@ extension BCScanViewController {
         alert.title = "Book Information"
         alert.message = "Not found!"
         //        guard let book = object as? Book else { break }
-        let detailAction = UIAlertAction(title: "Detail", style: .default)
+        let detailAction = UIAlertAction(title: "Detail", style: .default) { _ in
+          let controller = BCInfoViewController(with: book)
+          self.present(controller, animated: true)
+        }
+        
         let nextAction = UIAlertAction(title: "Mark and Continue", style: .cancel) { _ in
           self.launch()
         }
