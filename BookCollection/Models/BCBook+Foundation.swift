@@ -67,7 +67,14 @@ protocol BCBookFoundation {
   var price: String? { get }
 }
 
-extension BCBookFoundation { public var id: Int64? { nil } }
+extension BCBookFoundation {
+  
+  public var id: Int64? { nil }
+  
+  public var authors: [String]? { nil }
+  
+  public var translators: [String]? { nil }
+}
 
 protocol BCTagFoundation {
   
@@ -118,3 +125,12 @@ protocol BCSeriesFoundation {
 }
 
 extension BCSeriesFoundation { public var bookID: Int64? { nil } }
+
+protocol BCAuthorFoundation {
+  
+  var bookID: Int64? { get }
+  
+  var name: String? { get }
+}
+
+extension BCAuthorFoundation { public var bookID: Int64? { nil } }

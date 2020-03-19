@@ -72,6 +72,12 @@ class BCDatabaseOperation: AsyncOperation {
 extension BCDatabaseOperation {
   func createTable(with database: Database) throws {
     defer { database.close() }
-    
+   
+    do {
+      try database.create(table: "TB_BCBOOK", of: BCBook.DatabaseRoot.self)
+      try database.create(table: "TB_BCTAG", of: BCBook.Tag.self)
+    } catch {
+      throw error
+    }
   }
 }
