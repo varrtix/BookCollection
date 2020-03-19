@@ -48,9 +48,9 @@ class BCInfoViewController: BCViewController {
   
   fileprivate var backgroundImageView = UIImageView(image: UIImage(named: "Info/NavigationBar"))
   
-  var book: BCBook.Coder?
+  var book: BCBook.Root?
   
-  init(with book: BCBook.Coder) {
+  init(with book: BCBook.Root) {
     super.init(nibName: nil, bundle: nil)
     
     self.book = book

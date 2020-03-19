@@ -32,11 +32,11 @@ import WCDBSwift
 // MARK: - Top level: Book model
 struct BCBook {
   // Part of DB model
-  struct DB: BCBookFoundation, TableCodable {
+  struct Database: BCBookFoundation, TableCodable {
     
     let id: Int64? = nil
 
-    let bookID: String?
+    let doubanID: String?
     
     let title: String?
     
@@ -72,12 +72,12 @@ struct BCBook {
     
     
     enum CodingKeys: String, CodingTableKey {
-      typealias Root = BCBook.DB
+      typealias Root = BCBook.Database
       
       static let objectRelationalMapping = TableBinding(CodingKeys.self)
       
       case id
-      case bookID = "book_id"
+      case doubanID = "douban_id"
       case title, subtitle
       case originTitle = "origin_title"
       case authors = "author"
@@ -87,9 +87,10 @@ struct BCBook {
       case authorIntroduction = "author_intro"
       case catalog, pages, summary, price
       
-      static var columnConstraintBindings: [BCBook.DB.CodingKeys : ColumnConstraintBinding]? {
+      static var columnConstraintBindings: [BCBook.Database.CodingKeys : ColumnConstraintBinding]? {
         [
-          id: ColumnConstraintBinding(isPrimary: true, isAutoIncrement: true, isNotNull: true, isUnique: true)
+          id: ColumnConstraintBinding(isPrimary: true, isAutoIncrement: true, isNotNull: true, isUnique: true),
+          doubanID: ColumnConstraintBinding(isUnique: true),
         ]
       }
     }
@@ -99,10 +100,10 @@ struct BCBook {
     var lastInsertedRowID: Int64 = 0
   }
   
-  // Part of Coder model
-  struct Coder: BCBookFoundation, Codable {
+  // Part of Root model
+  struct Root: BCBookFoundation, Codable {
     
-    let bookID: String?
+    let doubanID: String?
     
     let title: String?
     
@@ -145,7 +146,7 @@ struct BCBook {
     let rating: Rating?
     
     enum CodingKeys: String, CodingKey {
-      case bookID = "id"
+      case doubanID = "id"
       case title, subtitle
       case originTitle = "origin_title"
       case authors = "author"
@@ -157,9 +158,9 @@ struct BCBook {
       case tags, images, series, rating
     }
     
-    var dbFormat: DB {
-      DB(
-        bookID: bookID,
+    var database: Database {
+      Database(
+        doubanID: doubanID,
         title: title,
         subtitle: subtitle,
         originTitle: originTitle,
@@ -181,8 +182,8 @@ struct BCBook {
   }
 }
 
-// MARK: - Second level: Rating, Tag, Images, Series
-extension BCBook.Coder {
+// MARK: - Second level in Root: Rating, Tag, Images, Series
+extension BCBook.Root {
   struct Tag: BCTagFoundation, Codable {
     
     let count: Int?
@@ -209,12 +210,13 @@ extension BCBook.Coder {
   
   struct Series: BCSeriesFoundation, Codable {
     
-    let id: String?
+    let seriesID: String?
     
     let title: String?
 
     enum CodingKeys: String, CodingKey {
-      case id, title
+      case seriesID = "id"
+      case title
     }
   }
   
@@ -230,6 +232,88 @@ extension BCBook.Coder {
     
     enum CodingKeys: String, CodingKey {
       case max, numRaters, average, min
+    }
+  }
+}
+
+// MARK: - Second level in Database: Rating, Tag, Images, Series
+extension BCBook {
+  struct Tag: BCTagFoundation, TableCodable {
+    
+    let bookID: Int64? = nil
+    
+    let count: Int?
+    
+    let title: String?
+    
+    enum CodingKeys: String, CodingTableKey {
+      typealias Root = BCBook.Tag
+      
+      static let objectRelationalMapping = TableBinding(CodingKeys.self)
+      
+      case bookID = "book_id"
+      case count, title
+    }
+  }
+  
+  struct Images: BCImagesFoundation, TableCodable {
+    
+    let bookID: Int64? = nil
+    
+    let small: String?
+    
+    let medium: String?
+    
+    let large: String?
+    
+    enum CodingKeys: String, CodingTableKey {
+      typealias Root = BCBook.Images
+      
+      static let objectRelationalMapping = TableBinding(CodingKeys.self)
+      
+      case bookID = "book_id"
+      case small, medium, large
+    }
+  }
+  
+  struct Series: BCSeriesFoundation, TableCodable {
+    
+    let bookID: Int64? = nil
+    
+    let seriesID: String?
+    
+    let title: String?
+    
+    enum CodingKeys: String, CodingTableKey {
+      typealias Root = BCBook.Series
+      
+      static let objectRelationalMapping = TableBinding(CodingKeys.self)
+      
+      case bookID = "book_id"
+      case seriesID = "series_id"
+      case title
+    }
+  }
+  
+  struct Rating: BCRatingFoundation, TableCodable {
+    
+    let bookID: Int64? = nil
+    
+    let max: Int?
+    
+    let numRaters: Int?
+    
+    let average: String?
+    
+    let min: Int?
+    
+    enum CodingKeys: String, CodingTableKey {
+      typealias Root = BCBook.Rating
+      
+      static let objectRelationalMapping = TableBinding(CodingKeys.self)
+      
+      case max, average, min
+      case numRaters = "number_raters"
     }
   }
 }

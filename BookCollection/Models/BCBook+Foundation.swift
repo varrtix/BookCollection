@@ -30,7 +30,9 @@ import Foundation
 
 protocol BCBookFoundation {
   
-  var bookID: String? { get }
+  var id: Int64? { get }
+  
+  var doubanID: String? { get }
   
   var title: String? { get }
   
@@ -65,14 +67,22 @@ protocol BCBookFoundation {
   var price: String? { get }
 }
 
+extension BCBookFoundation { public var id: Int64? { nil } }
+
 protocol BCTagFoundation {
+  
+  var bookID: Int64? { get }
   
   var count: Int? { get }
   
   var title: String? { get }
 }
 
+extension BCTagFoundation { public var bookID: Int64? { nil } }
+
 protocol BCImagesFoundation {
+  
+  var bookID: Int64? { get }
   
   var small: String? { get }
   
@@ -81,7 +91,11 @@ protocol BCImagesFoundation {
   var large: String? { get }
 }
 
+extension BCImagesFoundation { public var bookID: Int64? { nil } }
+
 protocol BCRatingFoundation {
+  
+  var bookID: Int64? { get }
   
   var max: Int? { get }
   
@@ -92,9 +106,15 @@ protocol BCRatingFoundation {
   var min: Int? { get }
 }
 
+extension BCRatingFoundation { public var bookID: Int64? { nil } }
+
 protocol BCSeriesFoundation {
   
-  var id: String? { get }
+  var bookID: Int64? { get }
+  
+  var seriesID: String? { get }
   
   var title: String? { get }
 }
+
+extension BCSeriesFoundation { public var bookID: Int64? { nil } }

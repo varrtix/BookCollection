@@ -27,11 +27,51 @@
 /// THE SOFTWARE.
 
 import Foundation
+import WCDBSwift
 
-//struct BCModel: Codable {
-//  init(with dictionary: Dictionary<String, Any>) throws {
-//    throw NSException(
-//      name: NSExceptionName("BookModelInitializerException"),
-//      reason: "\(#function) is not implemented for the class \(self)")
-//  }
-//}
+class BCDatabaseOperation: AsyncOperation {
+  
+  static var databaseDirectoryURL: URL {
+    URL(
+      fileURLWithPath: "BCDB",
+      relativeTo: FileManager.documentDirectoryURL)
+  }
+  
+  static var databaseURL: URL {
+    URL(
+      fileURLWithPath: "Book.sqlite",
+      relativeTo: databaseDirectoryURL)
+  }
+  
+  override func main() {
+    if !FileManager.default.fileExists(
+      atPath: BCDatabaseOperation
+        .databaseDirectoryURL
+        .absoluteString) {
+      do {
+        try FileManager.default.createDirectory(
+          at: BCDatabaseOperation.databaseDirectoryURL,
+          withIntermediateDirectories: true)
+      } catch {
+        print("Create DB Directory error: \(error)")
+      }
+    }
+    
+    let database = Database(withFileURL: BCDatabaseOperation.databaseURL)
+    
+    guard database.isOpened else { return }
+    
+    do {
+      try createTable(with: database)
+    } catch {
+      print("create DB error: \(error)")
+    }
+  }
+}
+
+extension BCDatabaseOperation {
+  func createTable(with database: Database) throws {
+    defer { database.close() }
+    
+  }
+}

@@ -267,7 +267,7 @@ extension BCScanViewController {
   fileprivate enum Alert {
     case authorize
     case waiting(URL)
-    case success(BCBook.Coder)
+    case success(BCBook.Root)
     case failure(AFError)
   }
   
@@ -360,7 +360,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
   fileprivate enum State {
     case ready(String)
     case loading(URL)
-    case success(BCBook.Coder)
+    case success(BCBook.Root)
     case failure(AFError)
     case stop
   }
@@ -385,7 +385,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
     state = .loading(url)
     AF.request(url)
       .validate()
-      .responseDecodable(of: BCBook.Coder.self) { response in
+      .responseDecodable(of: BCBook.Root.self) { response in
         // TODO: Throws detail
         guard case let .failure(error) = response.result else {
           guard case let .success(book) = response.result else {
