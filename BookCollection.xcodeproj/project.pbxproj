@@ -24,6 +24,7 @@
 		567B0A5D24167A2E00B595A7 /* BookCollectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567B0A5C24167A2E00B595A7 /* BookCollectionTests.swift */; };
 		567B0A6824167A2E00B595A7 /* BookCollectionUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567B0A6724167A2E00B595A7 /* BookCollectionUITests.swift */; };
 		567D76492423625C00F94CD6 /* BCDatabaseOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567D76482423625C00F94CD6 /* BCDatabaseOperation.swift */; };
+		567D764D2423B17000F94CD6 /* BCDataAcessObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567D764C2423B17000F94CD6 /* BCDataAcessObjects.swift */; };
 		56B611E9242210D100C7C6A8 /* BCBook+Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B611E8242210D100C7C6A8 /* BCBook+Foundation.swift */; };
 		56B611EB2422296100C7C6A8 /* BCInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B611EA2422296100C7C6A8 /* BCInfoViewController.swift */; };
 /* End PBXBuildFile section */
@@ -69,6 +70,7 @@
 		567B0A6724167A2E00B595A7 /* BookCollectionUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCollectionUITests.swift; sourceTree = "<group>"; };
 		567B0A6924167A2E00B595A7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		567D76482423625C00F94CD6 /* BCDatabaseOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCDatabaseOperation.swift; sourceTree = "<group>"; };
+		567D764C2423B17000F94CD6 /* BCDataAcessObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCDataAcessObjects.swift; sourceTree = "<group>"; };
 		56B611E8242210D100C7C6A8 /* BCBook+Foundation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCBook+Foundation.swift"; sourceTree = "<group>"; };
 		56B611EA2422296100C7C6A8 /* BCInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCInfoViewController.swift; sourceTree = "<group>"; };
 		C3AEABD81807DB8C6E651C4D /* Pods-BookCollection.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookCollection.release.xcconfig"; path = "Target Support Files/Pods-BookCollection/Pods-BookCollection.release.xcconfig"; sourceTree = "<group>"; };
@@ -210,6 +212,8 @@
 		567B0A4424167A2D00B595A7 /* BookCollection */ = {
 			isa = PBXGroup;
 			children = (
+				567D764B24239FB900F94CD6 /* DataAcessObjects */,
+				567D764A24239FA300F94CD6 /* Services */,
 				5671DDFE2419FEB900979210 /* Models */,
 				5675CA2A2417644600437044 /* Assets */,
 				5667FB2224168259009F9E65 /* Modules */,
@@ -243,6 +247,21 @@
 				567D76482423625C00F94CD6 /* BCDatabaseOperation.swift */,
 			);
 			path = Database;
+			sourceTree = "<group>";
+		};
+		567D764A24239FA300F94CD6 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		567D764B24239FB900F94CD6 /* DataAcessObjects */ = {
+			isa = PBXGroup;
+			children = (
+				567D764C2423B17000F94CD6 /* BCDataAcessObjects.swift */,
+			);
+			path = DataAcessObjects;
 			sourceTree = "<group>";
 		};
 		61C4266BA1D85BAB2D658C5D /* Pods */ = {
@@ -436,6 +455,7 @@
 				567D76492423625C00F94CD6 /* BCDatabaseOperation.swift in Sources */,
 				564CC8952417911000E9D08B /* BCScanView.swift in Sources */,
 				5675CA272417637100437044 /* BCNavigationController.swift in Sources */,
+				567D764D2423B17000F94CD6 /* BCDataAcessObjects.swift in Sources */,
 				563F9C86241B7BCE005B8E5E /* CommonKit.swift in Sources */,
 				56B611E9242210D100C7C6A8 /* BCBook+Foundation.swift in Sources */,
 				566D37DD241A659B00DE970C /* BCViewController.swift in Sources */,

@@ -29,60 +29,11 @@
 import Foundation
 import WCDBSwift
 
-class BCDatabaseOperation: AsyncOperation {
+class BCDataAcessObjects {
   
-  static var databaseDirectoryURL: URL {
-    URL(
-      fileURLWithPath: "BCDB",
-      relativeTo: FileManager.documentDirectoryURL)
-  }
-  
-  static var databaseURL: URL {
-    URL(
-      fileURLWithPath: "Book.sqlite",
-      relativeTo: databaseDirectoryURL)
-  }
-  
-  override func main() {
-    if !FileManager.default.fileExists(
-      atPath: BCDatabaseOperation
-        .databaseDirectoryURL
-        .absoluteString) {
-      do {
-        try FileManager.default.createDirectory(
-          at: BCDatabaseOperation.databaseDirectoryURL,
-          withIntermediateDirectories: true)
-      } catch {
-        print("Create DB Directory error: \(error)")
-      }
-    }
-    
-    let database = Database(withFileURL: BCDatabaseOperation.databaseURL)
-    
-    guard database.isOpened else { return }
-    
-    do {
-      try createTable(with: database)
-    } catch {
-      print("create DB error: \(error)")
-    }
-  }
-}
-
-extension BCDatabaseOperation {
-  func createTable(with database: Database) throws {
-    defer { if database.isOpened { database.close() } }
-   
-    do {
-      try database.create(table: "TB_BC_ROOT_BOOK", of: BCBook.DatabaseRoot.self)
-      try database.create(table: "TB_BC_AUTHORS", of: BCBook.Author.self)
-      try database.create(table: "TB_BC_TRANSLATORS", of: BCBook.Translator.self)
-      try database.create(table: "TB_BC_TAGS", of: BCBook.Tag.self)
-      try database.create(table: "TB_BC_IMAGES", of: BCBook.Images.self)
-      try database.create(table: "TB_BC_SERIES", of: BCBook.Series.self)
-      try database.create(table: "TB_BC_RATINGS", of: BCBook.Rating.self)
-      
-    } catch { throw error }
-    
+  static func insert(_ object: BCBook, with database: Database) {
+    fatalError(
+      "insert(_ object: BCBook, with database: Database) has not been implemented"
+    )
   }
 }

@@ -94,3 +94,19 @@ extension AppDelegate {
     _ tabBarController: UITabBarController,
     shouldSelect viewController: UIViewController) -> Bool { true }
 }
+
+// MARK: - Database
+extension AppDelegate {
+  func launchDatabase() {
+    if !FileManager.default.fileExists(
+      atPath: BCDatabaseOperation.databaseURL.absoluteString) {
+      
+      let database = BCDatabaseOperation()
+      database.start()
+      #if DEBUG
+      // MARK: TODO: Write all logs to a log file
+      print("Database path: \(BCDatabaseOperation.databaseURL)")
+      #endif
+    }
+  }
+}

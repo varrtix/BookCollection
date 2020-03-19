@@ -111,7 +111,6 @@ extension BCInfoViewController {
   // MARK: Scroll view
   fileprivate func configureScrollView() {
     
-//    let scrollView = UIScrollView()
     let scrollView = UIScrollView(frame: CGRect(
       x: 0,
       y: topDistance,
