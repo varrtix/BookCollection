@@ -137,7 +137,10 @@ extension BCInfoViewController {
     // Cover
     let coverImageView = UIImageView()
     coverImageView.backgroundColor = BCColor.BarTint.white
-    
+    if let image = book?.image {
+      coverImageView.kf.setImage(with: URL(string: image))
+    }
+
     headView.addSubview(coverImageView)
     
     coverImageView.snp.makeConstraints { make in
@@ -288,7 +291,9 @@ extension BCInfoViewController {
 extension BCInfoViewController: UIScrollViewDelegate {
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
     // Scroll down when content offset y is negative.
-    backgroundImageView.frame = CGRect(
+    // Fix bug: in iOS 13, view frame is not show when frame has changed.
+    // but, it works for view.layer.frame!
+    backgroundImageView.layer.frame = CGRect(
       x: 0,
       y: 0,
       width: view.frame.width,
