@@ -29,13 +29,14 @@
 import Foundation
 import WCDBSwift
 
-// MARK: - Top level: Book model
+// MARK: - Lv. 1th Book model
 struct BCBook {
-  // Part of DB model
+  
+  // MARK: - Lv. 2nd Database model
   struct Database: BCBookFoundation, TableCodable {
     
     let id: Int64? = nil
-
+    
     let doubanID: String?
     
     let title: String?
@@ -100,7 +101,7 @@ struct BCBook {
     var lastInsertedRowID: Int64 = 0
   }
   
-  // Part of Root model
+  // MARK: - Lv. 2nd Root model
   struct Root: BCBookFoundation, Codable {
     
     let doubanID: String?
@@ -182,8 +183,10 @@ struct BCBook {
   }
 }
 
-// MARK: - Second level in Root: Rating, Tag, Images, Series
+// MARK: - Lv. 2nd in Root: Rating, Tag, Images, Series models
 extension BCBook.Root {
+  
+  // MARK: - Lv. 3rd Tag model
   struct Tag: BCTagFoundation, Codable {
     
     let count: Int?
@@ -195,6 +198,7 @@ extension BCBook.Root {
     }
   }
   
+  // MARK: - Lv. 3rd Images model
   struct Images: BCImagesFoundation, Codable {
     
     let small: String?
@@ -208,18 +212,20 @@ extension BCBook.Root {
     }
   }
   
+  // MARK: - Lv. 3rd Series model
   struct Series: BCSeriesFoundation, Codable {
     
     let seriesID: String?
     
     let title: String?
-
+    
     enum CodingKeys: String, CodingKey {
       case seriesID = "id"
       case title
     }
   }
   
+  // MARK: - Lv. 3rd Rating model
   struct Rating: BCRatingFoundation, Codable {
     
     let max: Int?
@@ -236,8 +242,10 @@ extension BCBook.Root {
   }
 }
 
-// MARK: - Second level in Database: Rating, Tag, Images, Series
+// MARK: - Lv. 2nd in BCBook: Rating, Tag, Images, Series models
 extension BCBook {
+  
+  // MARK: - Lv. 2nd Tag model
   struct Tag: BCTagFoundation, TableCodable {
     
     let bookID: Int64? = nil
@@ -256,6 +264,7 @@ extension BCBook {
     }
   }
   
+  // MARK: - Lv. 2nd Images model
   struct Images: BCImagesFoundation, TableCodable {
     
     let bookID: Int64? = nil
@@ -276,6 +285,7 @@ extension BCBook {
     }
   }
   
+  // MARK: - Lv. 2nd Series model
   struct Series: BCSeriesFoundation, TableCodable {
     
     let bookID: Int64? = nil
@@ -295,6 +305,7 @@ extension BCBook {
     }
   }
   
+  // MARK: - Lv. 2nd Rating model
   struct Rating: BCRatingFoundation, TableCodable {
     
     let bookID: Int64? = nil
