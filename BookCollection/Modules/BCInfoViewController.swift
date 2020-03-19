@@ -28,8 +28,23 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
 
 class BCInfoViewController: BCViewController {
+  
+  fileprivate var backgroundHeight: CGFloat = 270.5
+  
+  fileprivate var topDistance: CGFloat {
+    if #available(iOS 13.0, *) {
+      return 20.0
+    } else {
+      let barHeight = navigationController?.navigationBar.frame.height ?? 44.0
+      let statusHeight = UIApplication.shared.isStatusBarHidden ?
+        20.0 : UIApplication.shared.statusBarFrame.height
+      
+      return barHeight + statusHeight
+    }
+  }
   
   fileprivate var backgroundImageView = UIImageView(image: UIImage(named: "Info/NavigationBar"))
   
@@ -37,7 +52,7 @@ class BCInfoViewController: BCViewController {
   
   init(with book: BCBook.Coder) {
     super.init(nibName: nil, bundle: nil)
-
+    
     self.book = book
   }
   
@@ -62,7 +77,7 @@ extension BCInfoViewController {
 }
 
 // MARK: - View configure
-extension BCInfoViewController: UIScrollViewDelegate {
+extension BCInfoViewController {
   
   fileprivate func configureNavigation() {
     navigationItem.title = "Book Information"
@@ -73,7 +88,7 @@ extension BCInfoViewController: UIScrollViewDelegate {
     
     shouldHideBottomBarWhenPushed = true
   }
-  // MARK: configure subviews
+  // MARK: configure Subviews
   fileprivate func configureSubviews() {
     configureBackgroundView()
     
@@ -81,19 +96,27 @@ extension BCInfoViewController: UIScrollViewDelegate {
   }
   
   fileprivate func configureBackgroundView() {
-    backgroundImageView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 270.5)
-    backgroundImageView.autoresizingMask = .flexibleWidth
-    
+//    backgroundImageView.frame = CGRect(
+//      x: 0,
+//      y: 0,
+//      width: self.view.frame.width,
+//      height: backgroundHeight
+//    )
+//
+//    backgroundImageView.autoresizingMask = .flexibleWidth
+//
     view.addSubview(backgroundImageView)
   }
   
+  // MARK: Scroll view
   fileprivate func configureScrollView() {
-    guard let barHeight = navigationController?.navigationBar.frame.height else { return }
+    
+//    let scrollView = UIScrollView()
     let scrollView = UIScrollView(frame: CGRect(
       x: 0,
-      y: barHeight,
+      y: topDistance,
       width: self.view.frame.width,
-      height: self.view.frame.height - barHeight
+      height: self.view.frame.height - topDistance
     ))
     
     scrollView.alwaysBounceVertical = true
@@ -102,35 +125,175 @@ extension BCInfoViewController: UIScrollViewDelegate {
     
     view.addSubview(scrollView)
     
+    // MARK: - The head of scroll view
     let headView = UIView()
     
     scrollView.addSubview(headView)
     
-    scrollView.snp.makeConstraints { make in
+    headView.snp.makeConstraints { make in
       make.top.width.equalToSuperview()
-      make.height.equalTo(206.5)
+      make.height.greaterThanOrEqualTo(206.5).priority(750)
     }
+    // Cover
+    let coverImageView = UIImageView()
+    coverImageView.backgroundColor = BCColor.BarTint.white
     
-    let cover = UIImageView()
-    cover.backgroundColor = BCColor.BarTint.white
+    headView.addSubview(coverImageView)
     
-    headView.addSubview(cover)
-    
-    cover.snp.makeConstraints { make in
+    coverImageView.snp.makeConstraints { make in
       make.size.equalTo(CGSize(width: 115, height: 161))
-      make.top.left.equalTo(16)
+      make.left.equalToSuperview().inset(16)
+      make.centerY.equalToSuperview()
     }
-    
+    // Title
     let titleLabel = UILabel()
     titleLabel.text = book?.title
     titleLabel.font = UIFont.systemFont(ofSize: 17.0)
     titleLabel.textColor = BCColor.BarTint.white
-    
+    titleLabel.numberOfLines = 0
+
     headView.addSubview(titleLabel)
     
     titleLabel.snp.makeConstraints { make in
-      make.left.equalTo(cover.snp.right).inset(14)
-      make.right.greaterThanOrEqualToSuperview().inset(15)
+      make.left.equalTo(coverImageView.snp.right).offset(14)
+      make.right.lessThanOrEqualToSuperview().inset(15)
+      make.top.equalToSuperview().inset(16)
     }
+    
+    var items = [String]()
+    
+    if let authors = book?.authors, !authors.isEmpty {
+      var author = String()
+      authors.forEach { author += $0 + " " }
+      items.append("Author: \(author)")
+    }
+    
+    if let translators = book?.translators, !translators.isEmpty {
+      var translator = String()
+      translators.forEach { translator += $0 + " " }
+      items.append("Translator: \(translator)")
+    }
+    
+    if book?.publisher != nil { items.append("Publisher: \(book!.publisher!)") }
+    
+    if book?.publishedDate != nil { items.append("Published Date: \(book!.publishedDate!)") }
+    
+    if book?.price != nil { items.append("Price: \(book!.price!)") }
+    
+    if let isbn = book?.isbn13 {
+      items.append("ISBN: \(isbn)")
+    } else if let isbn = book?.isbn10 {
+      items.append("ISBN: \(isbn)")
+    }
+    // Info text
+    let stackView = UIStackView(
+      arrangedSubviews: items.map { item in
+        let label = UILabel()
+        label.text = item
+        label.font = UIFont.systemFont(ofSize: 11.0)
+        label.textColor = BCColor.BarTint.white
+        label.numberOfLines = 0
+        
+        return label
+      }
+    )
+    stackView.axis = .vertical
+    stackView.spacing = 4
+    
+    headView.addSubview(stackView)
+    
+    stackView.snp.makeConstraints { make in
+      make.top.equalTo(titleLabel.snp.bottom).offset(4)
+      make.left.right.equalTo(titleLabel)
+    }
+    // Mark button
+    let markButton = UIButton(type: .custom)
+    markButton.titleLabel?.font = UIFont.systemFont(ofSize: 12.0)
+    markButton.backgroundColor = BCColor.BarTint.white
+    
+    markButton.setTitle("Mark", for: .normal)
+    markButton.setTitle("Unmark", for: .disabled)
+    markButton.setTitleColor(UIColor(HEX: 0x00A25B), for: .normal)
+    markButton.setTitleColor(UIColor(HEX: 0xB8B8B8), for: .disabled)
+    markButton.layer.cornerRadius = 2.0
+    
+    markButton.addTarget(self, action: #selector(mark(_:)), for: .touchUpInside)
+    
+    headView.addSubview(markButton)
+    
+    markButton.snp.makeConstraints { make in
+      make.left.equalTo(titleLabel)
+      make.size.equalTo(CGSize(width: 70, height: 27))
+      make.top.equalTo(stackView.snp.bottom).offset(6)
+      make.bottom.equalToSuperview().inset(4)
+    }
+    
+    // ImageView layout
+    backgroundImageView.snp.makeConstraints { make in
+      make.top.centerX.width.equalToSuperview()
+      make.height.equalTo(headView).offset(topDistance)
+    }
+
+    // MARK: - The body of scroll view
+    let bodyView = UIView()
+    bodyView.backgroundColor = BCColor.BarTint.white
+    
+    scrollView.addSubview(bodyView)
+    
+    bodyView.snp.makeConstraints { make in
+      make.width.bottom.equalToSuperview()
+      make.top.equalTo(headView.snp.bottom)
+    }
+    
+    // summary
+    let summaryLabel = UILabel()
+    summaryLabel.text = "Summary"
+    summaryLabel.font = UIFont.systemFont(ofSize: 16.0)
+    summaryLabel.textColor = UIColor(HEX: 0x555555)
+    
+    bodyView.addSubview(summaryLabel)
+    
+    summaryLabel.snp.makeConstraints { make in
+      make.top.left.right.equalToSuperview().inset(15)
+    }
+    
+    // content detail
+    let detailLabel = UILabel()
+    detailLabel.numberOfLines = 0
+    detailLabel.font = UIFont.systemFont(ofSize: 15.0)
+    detailLabel.textColor = UIColor(HEX: 0x999999)
+    
+    detailLabel.text = book?.summary
+    
+    bodyView.addSubview(detailLabel)
+    
+    detailLabel.snp.makeConstraints { make in
+      make.left.right.bottom.equalToSuperview().inset(15)
+      make.top.equalTo(summaryLabel.snp.bottom).offset(6.5)
+    }
+    
+    view.layoutIfNeeded()
+    backgroundHeight = headView.frame.height + topDistance
+  }
+}
+
+// MARK: - Actions
+extension BCInfoViewController {
+  @objc func mark(_ sender: UIButton? = nil) {
+    
+  }
+}
+
+// MARK: - ScrollView Delegate
+extension BCInfoViewController: UIScrollViewDelegate {
+  func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    // Scroll down when content offset y is negative.
+    backgroundImageView.frame = CGRect(
+      x: 0,
+      y: 0,
+      width: view.frame.width,
+      height: scrollView.contentOffset.y < 0 ?
+        backgroundHeight - scrollView.contentOffset.y : backgroundHeight
+    )
   }
 }

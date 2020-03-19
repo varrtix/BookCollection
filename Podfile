@@ -6,4 +6,5 @@ target 'BookCollection' do
   pod 'ESPullToRefresh'
   pod 'SnapKit', '~> 5.0.0'
 	pod 'WCDB.swift'
+  pod 'Kingfisher'
 end

@@ -36,39 +36,39 @@ struct BCBook {
     
     let id: Int64? = nil
 
-    let bookID: String
+    let bookID: String?
     
-    let title: String
+    let title: String?
     
-    let subtitle: String
+    let subtitle: String?
     
-    let originTitle: String
+    let originTitle: String?
     
-    let author: [String]
+    let authors: [String]?
     
-    let translator: [String]
+    let translators: [String]?
     
-    let publishedDate: String
+    let publishedDate: String?
     
-    let publisher: String
+    let publisher: String?
     
-    let isbn10: String
+    let isbn10: String?
     
-    let isbn13: String
+    let isbn13: String?
     
-    let image: String
+    let image: String?
     
-    let binding: String
+    let binding: String?
     
-    let authorIntroduction: String
+    let authorIntroduction: String?
     
-    let catalog: String
+    let catalog: String?
     
-    let pages: String
+    let pages: String?
     
-    let summary: String
+    let summary: String?
     
-    let price: String
+    let price: String?
     
     
     enum CodingKeys: String, CodingTableKey {
@@ -80,7 +80,8 @@ struct BCBook {
       case bookID = "book_id"
       case title, subtitle
       case originTitle = "origin_title"
-      case author, translator
+      case authors = "author"
+      case translators = "translator"
       case publishedDate = "pubdate"
       case publisher, isbn10, isbn13, image, binding
       case authorIntroduction = "author_intro"
@@ -101,39 +102,39 @@ struct BCBook {
   // Part of Coder model
   struct Coder: BCBookFoundation, Codable {
     
-    let bookID: String
+    let bookID: String?
     
-    let title: String
+    let title: String?
     
-    let subtitle: String
+    let subtitle: String?
     
-    let originTitle: String
+    let originTitle: String?
     
-    let author: [String]
+    let authors: [String]?
     
-    let translator: [String]
+    let translators: [String]?
     
-    let publishedDate: String
+    let publishedDate: String?
     
-    let publisher: String
+    let publisher: String?
     
-    let isbn10: String
+    let isbn10: String?
     
-    let isbn13: String
+    let isbn13: String?
     
-    let image: String
+    let image: String?
     
-    let binding: String
+    let binding: String?
     
-    let authorIntroduction: String
+    let authorIntroduction: String?
     
-    let catalog: String
+    let catalog: String?
     
-    let pages: String
+    let pages: String?
     
-    let summary: String
+    let summary: String?
     
-    let price: String
+    let price: String?
     
     let tags: [Tag]?
     
@@ -147,7 +148,8 @@ struct BCBook {
       case bookID = "id"
       case title, subtitle
       case originTitle = "origin_title"
-      case author, translator
+      case authors = "author"
+      case translators = "translator"
       case publishedDate = "pubdate"
       case publisher, isbn10, isbn13, image, binding
       case authorIntroduction = "author_intro"
@@ -161,8 +163,8 @@ struct BCBook {
         title: title,
         subtitle: subtitle,
         originTitle: originTitle,
-        author: author,
-        translator: translator,
+        authors: authors,
+        translators: translators,
         publishedDate: publishedDate,
         publisher: publisher,
         isbn10: isbn10,
@@ -183,9 +185,9 @@ struct BCBook {
 extension BCBook.Coder {
   struct Tag: BCTagFoundation, Codable {
     
-    let count: Int
+    let count: Int?
     
-    let title: String
+    let title: String?
     
     enum CodingKeys: String, CodingKey {
       case count, title
@@ -194,11 +196,11 @@ extension BCBook.Coder {
   
   struct Images: BCImagesFoundation, Codable {
     
-    let small: String
+    let small: String?
     
-    let medium: String
+    let medium: String?
     
-    let large: String
+    let large: String?
     
     enum CodingKeys: String, CodingKey {
       case small, medium, large
@@ -207,9 +209,9 @@ extension BCBook.Coder {
   
   struct Series: BCSeriesFoundation, Codable {
     
-    let id: String
+    let id: String?
     
-    let title: String
+    let title: String?
 
     enum CodingKeys: String, CodingKey {
       case id, title
@@ -218,13 +220,13 @@ extension BCBook.Coder {
   
   struct Rating: BCRatingFoundation, Codable {
     
-    let max: Int
+    let max: Int?
     
-    let numRaters: Int
+    let numRaters: Int?
     
-    let average: String
+    let average: String?
     
-    let min: Int
+    let min: Int?
     
     enum CodingKeys: String, CodingKey {
       case max, numRaters, average, min

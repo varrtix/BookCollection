@@ -98,9 +98,7 @@ extension BCScanViewController {
     super.viewDidAppear(animated)
     
     #if targetEnvironment(simulator)
-    //    state = .loading()
-//    present(alert: alertController(.waiting(URL(string: "url")!)))
-    present(alertController(.authorize), animated: true)
+    state = .ready("9787115352118")
     #endif
     
     NotificationCenter.default.addObserver(
@@ -323,7 +321,12 @@ extension BCScanViewController {
         let nextAction = UIAlertAction(title: "Mark and Continue", style: .cancel) { _ in
           self.launch()
         }
-        alert.message = "\(book.title)\n\(book.isbn13)\n\(book.author[0])"
+        alert.message = """
+        \(book.title ?? "No title")
+        \(book.isbn13 ?? "No ISBN13")
+        \(book.authors?.first ?? "No author")
+        """
+        
         alert.addActions([detailAction, nextAction])
       
       case .failure(let error):

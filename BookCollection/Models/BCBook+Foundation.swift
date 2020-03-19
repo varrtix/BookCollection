@@ -30,71 +30,71 @@ import Foundation
 
 protocol BCBookFoundation {
   
-  var bookID: String { get }
+  var bookID: String? { get }
   
-  var title: String { get }
+  var title: String? { get }
   
-  var subtitle: String { get }
+  var subtitle: String? { get }
   
-  var originTitle: String { get }
+  var originTitle: String? { get }
   
-  var author: [String] { get }
+  var authors: [String]? { get }
   
-  var translator: [String] { get }
+  var translators: [String]? { get }
   
-  var publishedDate: String { get }
+  var publishedDate: String? { get }
   
-  var publisher: String { get }
+  var publisher: String? { get }
   
-  var isbn10: String { get }
+  var isbn10: String? { get }
   
-  var isbn13: String { get }
+  var isbn13: String? { get }
   
-  var image: String { get }
+  var image: String? { get }
   
-  var binding: String { get }
+  var binding: String? { get }
   
-  var authorIntroduction: String { get }
+  var authorIntroduction: String? { get }
   
-  var catalog: String { get }
+  var catalog: String? { get }
   
-  var pages: String { get }
+  var pages: String? { get }
   
-  var summary: String { get }
+  var summary: String? { get }
   
-  var price: String { get }
+  var price: String? { get }
 }
 
 protocol BCTagFoundation {
   
-  var count: Int { get }
+  var count: Int? { get }
   
-  var title: String { get }
+  var title: String? { get }
 }
 
 protocol BCImagesFoundation {
   
-  var small: String { get }
+  var small: String? { get }
   
-  var medium: String { get }
+  var medium: String? { get }
   
-  var large: String { get }
+  var large: String? { get }
 }
 
 protocol BCRatingFoundation {
   
-  var max: Int { get }
+  var max: Int? { get }
   
-  var numRaters: Int { get }
+  var numRaters: Int? { get }
   
-  var average: String { get }
+  var average: String? { get }
   
-  var min: Int { get }
+  var min: Int? { get }
 }
 
 protocol BCSeriesFoundation {
   
-  var id: String { get }
+  var id: String? { get }
   
-  var title: String { get }
+  var title: String? { get }
 }
