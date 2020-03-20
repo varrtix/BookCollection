@@ -72,17 +72,33 @@ class BCDatabaseOperation: AsyncOperation {
 extension BCDatabaseOperation {
   func createTable(with database: Database) throws {
     defer { if database.isOpened { database.close() } }
-   
+    
     do {
-      try database.create(table: "TB_BC_ROOT_BOOK", of: BCBook.DB.self)
-      try database.create(table: "TB_BC_AUTHORS", of: BCAuthor.DB.self)
-      try database.create(table: "TB_BC_TRANSLATORS", of: BCTranslator.DB.self)
-      try database.create(table: "TB_BC_TAGS", of: BCTag.DB.self)
-      try database.create(table: "TB_BC_IMAGES", of: BCImages.DB.self)
-      try database.create(table: "TB_BC_SERIES", of: BCSeries.DB.self)
-      try database.create(table: "TB_BC_RATINGS", of: BCRating.DB.self)
-      
+      try database.create(table: BCTable.root.rawName, of: BCBook.DB.self)
+      try database.create(table: BCTable.authors.rawName, of: BCAuthor.DB.self)
+      try database.create(table: BCTable.translators.rawName, of: BCTranslator.DB.self)
+      try database.create(table: BCTable.images.rawName, of: BCImages.DB.self)
+      try database.create(table: BCTable.series.rawName, of: BCSeries.DB.self)
+      try database.create(table: BCTable.ratings.rawName, of: BCRating.DB.self)
     } catch { throw error }
     
+  }
+}
+
+enum BCTable {
+  case root, book, authors, translators
+  case tags, images, series, ratings
+  
+  var rawName: String {
+    switch self {
+      case .root: fallthrough
+      case .book: return "TB_BC_ROOT_BOOK"
+      case .authors: return "TB_BC_AUTHORS"
+      case .translators: return "TB_BC_TRANSLATORS"
+      case .tags: return "TB_BC_TAGS"
+      case .images: return "TB_BC_IMAGES"
+      case .series: return "TB_BC_SERIES"
+      case .ratings: return "TB_BC_RATINGS"
+    }
   }
 }

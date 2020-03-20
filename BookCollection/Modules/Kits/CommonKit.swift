@@ -151,9 +151,9 @@ public enum V2RXError: Error {
   }
 }
 
-extension V2RXError: LocalizedError { }
+extension V2RXError: LocalizedError {}
 
-extension V2RXError.Fatal {
+public extension V2RXError.Fatal {
   var localizedDescription: String {
     switch self {
       case let .location(method):

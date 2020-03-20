@@ -36,8 +36,8 @@ class BCScanViewController: BCViewController {
   // View variables
   lazy fileprivate var scanView = BCScanView(
     self.view.frame,
-    rect: BCScan.size,
-    vertical: BCScan.verticalOffset
+    rect: BCScanView.Constraint.size,
+    vertical: BCScanView.Constraint.verticalOffset
   )
   
   // controller variables

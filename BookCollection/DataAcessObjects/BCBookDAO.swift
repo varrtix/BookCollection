@@ -31,6 +31,8 @@ import WCDBSwift
 
 class BCBookDAO: BCDataAcessObjects {
   
-  class func insert(_ object: BCBook.DB, with database: Database) {
+  class func insert(_ object: BCBook.DB, with database: Database) throws -> Int64? {
+    
+    return nil
   }
 }

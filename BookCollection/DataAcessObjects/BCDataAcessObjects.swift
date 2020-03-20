@@ -35,7 +35,7 @@ class BCDataAcessObjects {
     fatalError(V2RXError.Fatal.location(method: #function).localizedDescription)
   }
   
-  class func insert(_ object: BCModel, with database: Database) {
+  class func insert(_ object: BCModel, with database: Database) throws -> Int64? {
     fatalError(V2RXError.Fatal.location(method: #function).localizedDescription)
   }
 }
