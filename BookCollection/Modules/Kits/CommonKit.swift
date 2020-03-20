@@ -144,3 +144,20 @@ public extension FileManager {
     `default`.urls(for: .documentDirectory, in: .userDomainMask)[0]
   }
 }
+
+public enum V2RXError: Error {
+  public enum Fatal {
+    case location(method: String)
+  }
+}
+
+extension V2RXError: LocalizedError { }
+
+extension V2RXError.Fatal {
+  var localizedDescription: String {
+    switch self {
+      case let .location(method):
+      return "\(method) has not been implemented"
+    }
+  }
+}

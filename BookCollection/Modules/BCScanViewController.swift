@@ -267,7 +267,7 @@ extension BCScanViewController {
   fileprivate enum Alert {
     case authorize
     case waiting(URL)
-    case success(BCBook.Root)
+    case success(BCBook.JSON)
     case failure(AFError)
   }
   
@@ -341,11 +341,11 @@ extension BCScanViewController {
     return alert
   }
   
-//  fileprivate func present<T: UIAlertController>(alert controller: T) {
-//    if navigationController?.presentedViewController is T { return }
-//    self.navigationController?.animatingPresent(controller)
-//    navigationController?.present(controller, animated: true)
-//  }
+  //  fileprivate func present<T: UIAlertController>(alert controller: T) {
+  //    if navigationController?.presentedViewController is T { return }
+  //    self.navigationController?.animatingPresent(controller)
+  //    navigationController?.present(controller, animated: true)
+  //  }
   
   fileprivate func dismiss(completion: (() -> Void)? = nil) {
     guard navigationController?.presentedViewController
@@ -360,7 +360,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
   fileprivate enum State {
     case ready(String)
     case loading(URL)
-    case success(BCBook.Root)
+    case success(BCBook.JSON)
     case failure(AFError)
     case stop
   }
@@ -379,13 +379,14 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
   }
   
   func fetchBook(with ISBN: String) {
-    guard let url = URL(string: "https://douban.uieee.com/v2/book/isbn/\(ISBN)") else {
-      return
-    }
+    guard let url = URL(string: "https://douban.uieee.com/v2/book/isbn/\(ISBN)")
+      else { return }
+    
     state = .loading(url)
+    
     AF.request(url)
       .validate()
-      .responseDecodable(of: BCBook.Root.self) { response in
+      .responseDecodable(of: BCBook.JSON.self) { response in
         // TODO: Throws detail
         guard case let .failure(error) = response.result else {
           guard case let .success(book) = response.result else {

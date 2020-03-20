@@ -29,386 +29,134 @@
 import Foundation
 import WCDBSwift
 
-// MARK: - Lv. 1th Book model
-struct BCBook {
+struct BCBook: BCModelORM {
   
-  // MARK: - Lv. 2nd Database model
-  struct DatabaseRoot: BCBookFoundation, TableCodable {
-    
-    let id: Int64? = nil
-    
-    let doubanID: String?
-    
-    let title: String?
-    
-    let subtitle: String?
-    
-    let originTitle: String?
-    
-//    let authors: [String]?
-    
-//    let translators: [String]?
-    
-    let publishedDate: String?
-    
-    let publisher: String?
-    
-    let isbn10: String?
-    
-    let isbn13: String?
-    
-    let image: String?
-    
-    let binding: String?
-    
-    let authorIntroduction: String?
-    
-    let catalog: String?
-    
-    let pages: String?
-    
-    let summary: String?
-    
-    let price: String?
-    
-    
-    enum CodingKeys: String, CodingTableKey {
-      typealias Root = BCBook.DatabaseRoot
-      
-      static let objectRelationalMapping = TableBinding(CodingKeys.self)
-      
-      case id
-      case doubanID = "douban_id"
-      case title, subtitle
-      case originTitle = "origin_title"
-//      case authors = "author"
-//      case translators = "translator"
-      case publishedDate = "pubdate"
-      case publisher, isbn10, isbn13, image, binding
-      case authorIntroduction = "author_intro"
-      case catalog, pages, summary, price
-      
-      static var columnConstraintBindings:
-        [BCBook.DatabaseRoot.CodingKeys : ColumnConstraintBinding]? {
-        [
-          id: ColumnConstraintBinding(
-            isPrimary: true,
-            isAutoIncrement: true,
-            isNotNull: true,
-            isUnique: true
-          ),
-          doubanID: ColumnConstraintBinding(isUnique: true),
-        ]
-      }
-    }
-    
-    var isAutoIncrement: Bool = true
-    
-    var lastInsertedRowID: Int64 = 0
-  }
+  typealias DB = BCBookDB
   
-  // MARK: - Lv. 2nd Root model
-  struct Root: BCBookFoundation, Codable {
-    
-    let doubanID: String?
-    
-    let title: String?
-    
-    let subtitle: String?
-    
-    let originTitle: String?
-    
-    let authors: [String]?
-    
-    let translators: [String]?
-    
-    let publishedDate: String?
-    
-    let publisher: String?
-    
-    let isbn10: String?
-    
-    let isbn13: String?
-    
-    let image: String?
-    
-    let binding: String?
-    
-    let authorIntroduction: String?
-    
-    let catalog: String?
-    
-    let pages: String?
-    
-    let summary: String?
-    
-    let price: String?
-    
-    let tags: [Tag]?
-    
-    let images: Images?
-    
-    let series: Series?
-    
-    let rating: Rating?
-    
-    enum CodingKeys: String, CodingKey {
-      case doubanID = "id"
-      case title, subtitle
-      case originTitle = "origin_title"
-      case authors = "author"
-      case translators = "translator"
-      case publishedDate = "pubdate"
-      case publisher, isbn10, isbn13, image, binding
-      case authorIntroduction = "author_intro"
-      case catalog, pages, summary, price
-      case tags, images, series, rating
-    }
-    
+  typealias JSON = BCBookJSON
+}
 
-    var databaseRoot: DatabaseRoot {
-      DatabaseRoot(
-        doubanID: doubanID,
-        title: title,
-        subtitle: subtitle,
-        originTitle: originTitle,
-//        authors: authors,
-//        translators: translators,
-        publishedDate: publishedDate,
-        publisher: publisher,
-        isbn10: isbn10,
-        isbn13: isbn13,
-        image: image,
-        binding: binding,
-        authorIntroduction: authorIntroduction,
-        catalog: catalog,
-        pages: pages,
-        summary: summary,
-        price: price
-      )
-    }
-    
-    var databaseAuthors: [BCBook.Author]? {
-      guard authors != nil else { return nil }
-      return authors!.map { BCBook.Author(name: $0) }
-    }
-    
-    var databaseTranslators: [BCBook.Translator]? {
-      guard translators != nil else { return nil }
-      return translators!.map { BCBook.Translator(name: $0) }
-    }
-    
-    var databaseTags: [BCBook.Tag]? {
-      guard tags != nil else { return nil }
-      return tags!.map { BCBook.Tag(count: $0.count, title: $0.title) }
-    }
-    
-    var databaseImages: BCBook.Images? {
-      guard images != nil else { return nil }
-      return BCBook.Images(
-        small: images!.small,
-        medium: images!.medium,
-        large: images!.large
-      )
-    }
-    
-    var databaseSeries: BCBook.Series? {
-      guard series != nil else { return nil }
-      return BCBook.Series(
-        seriesID: series!.seriesID,
-        title: series!.title
-      )
-    }
-    
-    var databaseRating: BCBook.Rating? {
-      guard rating != nil else { return nil }
-      return BCBook.Rating(
-        max: rating!.max,
-        numRaters: rating!.numRaters,
-        average: rating!.average,
-        min: rating!.min
-      )
-    }
+class BCBookJSON: BCModel, BCBookFoundation, Codable {
+  
+  let doubanID: String?
+  
+  let title: String?
+  
+  let subtitle: String?
+  
+  let originTitle: String?
+  
+  let publishedDate: String?
+  
+  let publisher: String?
+  
+  let isbn10: String?
+  
+  let isbn13: String?
+  
+  let image: String?
+  
+  let binding: String?
+  
+  let authorIntroduction: String?
+  
+  let catalog: String?
+  
+  let pages: String?
+  
+  let summary: String?
+  
+  let price: String?
+  
+  let authors: [String]?
+  
+  let translators: [String]?
+  
+  let tags: [BCTag.JSON]?
+  
+  let images: BCImages.JSON?
+  
+  let series: BCSeries.JSON?
+  
+  let rating: BCRating.JSON?
+  
+  enum CodingKeys: String, CodingKey {
+    case doubanID = "id"
+    case title, subtitle
+    case originTitle = "origin_title"
+    case publishedDate = "pubdate"
+    case publisher, isbn10, isbn13, image, binding
+    case authorIntroduction = "author_intro"
+    case catalog, pages, summary, price
+    case authors = "author"
+    case translators = "translator"
+    case tags, images, series, rating
   }
 }
 
-// MARK: - Lv. 2nd in Root: Rating, Tag, Images, Series models
-extension BCBook.Root {
+class BCBookDB: BCModel, BCBookFoundation, TableCodable {
   
-  // MARK: - Lv. 3rd Tag model
-  struct Tag: BCTagFoundation, Codable {
+  let id: Int64?
+  
+  let doubanID: String?
+  
+  let title: String?
+  
+  let subtitle: String?
+  
+  let originTitle: String?
+  
+  let publishedDate: String?
+  
+  let publisher: String?
+  
+  let isbn10: String?
+  
+  let isbn13: String?
+  
+  let image: String?
+  
+  let binding: String?
+  
+  let authorIntroduction: String?
+  
+  let catalog: String?
+  
+  let pages: String?
+  
+  let summary: String?
+  
+  let price: String?
+  
+  enum CodingKeys: String, CodingTableKey {
+    typealias Root = BCBookDB
     
-    let count: Int?
+    static let objectRelationalMapping = TableBinding(CodingKeys.self)
     
-    let title: String?
+    case id
+    case doubanID = "douban_id"
+    case title, subtitle
+    case originTitle = "origin_title"
+    case publishedDate = "pubdate"
+    case publisher, isbn10, isbn13, image, binding
+    case authorIntroduction = "author_intro"
+    case catalog, pages, summary, price
     
-    enum CodingKeys: String, CodingKey {
-      case count, title
+    static var columnConstraintBindings:
+      [BCBookDB.CodingKeys : ColumnConstraintBinding]? {
+      [
+        id: ColumnConstraintBinding(
+          isPrimary: true,
+          isAutoIncrement: true,
+          isNotNull: true,
+          isUnique: true
+        ),
+        doubanID: ColumnConstraintBinding(isUnique: true),
+      ]
     }
   }
   
-  // MARK: - Lv. 3rd Images model
-  struct Images: BCImagesFoundation, Codable {
-    
-    let small: String?
-    
-    let medium: String?
-    
-    let large: String?
-    
-    enum CodingKeys: String, CodingKey {
-      case small, medium, large
-    }
-  }
+  var isAutoIncrement: Bool = true
   
-  // MARK: - Lv. 3rd Series model
-  struct Series: BCSeriesFoundation, Codable {
-    
-    let seriesID: String?
-    
-    let title: String?
-    
-    enum CodingKeys: String, CodingKey {
-      case seriesID = "id"
-      case title
-    }
-  }
-  
-  // MARK: - Lv. 3rd Rating model
-  struct Rating: BCRatingFoundation, Codable {
-    
-    let max: Int?
-    
-    let numRaters: Int?
-    
-    let average: String?
-    
-    let min: Int?
-    
-    enum CodingKeys: String, CodingKey {
-      case max, numRaters, average, min
-    }
-  }
-}
-
-// MARK: - Lv. 2nd in BCBook: Rating, Tag, Images, Series models
-extension BCBook {
-  
-  // MARK: - Lv. 2nd Tag model
-  struct Tag: BCTagFoundation, TableCodable {
-    
-    let bookID: Int64? = nil
-    
-    let count: Int?
-    
-    let title: String?
-    
-    enum CodingKeys: String, CodingTableKey {
-      typealias Root = BCBook.Tag
-      
-      static let objectRelationalMapping = TableBinding(CodingKeys.self)
-      
-      case bookID = "book_id"
-      case count, title
-    }
-  }
-  
-  // MARK: - Lv. 2nd Images model
-  struct Images: BCImagesFoundation, TableCodable {
-    
-    let bookID: Int64? = nil
-    
-    let small: String?
-    
-    let medium: String?
-    
-    let large: String?
-    
-    enum CodingKeys: String, CodingTableKey {
-      typealias Root = BCBook.Images
-      
-      static let objectRelationalMapping = TableBinding(CodingKeys.self)
-      
-      case bookID = "book_id"
-      case small, medium, large
-    }
-  }
-  
-  // MARK: - Lv. 2nd Series model
-  struct Series: BCSeriesFoundation, TableCodable {
-    
-    let bookID: Int64? = nil
-    
-    let seriesID: String?
-    
-    let title: String?
-    
-    enum CodingKeys: String, CodingTableKey {
-      typealias Root = BCBook.Series
-      
-      static let objectRelationalMapping = TableBinding(CodingKeys.self)
-      
-      case bookID = "book_id"
-      case seriesID = "series_id"
-      case title
-    }
-  }
-  
-  // MARK: - Lv. 2nd Rating model
-  struct Rating: BCRatingFoundation, TableCodable {
-    
-    let bookID: Int64? = nil
-    
-    let max: Int?
-    
-    let numRaters: Int?
-    
-    let average: String?
-    
-    let min: Int?
-    
-    enum CodingKeys: String, CodingTableKey {
-      typealias Root = BCBook.Rating
-      
-      static let objectRelationalMapping = TableBinding(CodingKeys.self)
-      
-      case max, average, min
-      case numRaters = "number_raters"
-      case bookID = "book_id"
-    }
-  }
-  
-  // MARK: - Lv. 2nd Authors model
-  struct Author: BCAuthorFoundation, TableCodable {
-    
-    let bookID: Int64? = nil
-    
-    let name: String?
-    
-    enum CodingKeys: String, CodingTableKey {
-      typealias Root = BCBook.Author
-      
-      static let objectRelationalMapping = TableBinding(CodingKeys.self)
-      
-      case bookID = "book_id"
-      case name
-    }
-  }
-  
-  // MARK: - Lv. 2nd Translator model
-  struct Translator: BCAuthorFoundation, TableCodable {
-    
-    let bookID: Int64? = nil
-    
-    let name: String?
-    
-    enum CodingKeys: String, CodingTableKey {
-      typealias Root = BCBook.Translator
-      
-      static let objectRelationalMapping = TableBinding(CodingKeys.self)
-      
-      case bookID = "book_id"
-      case name
-    }
-  }
+  var lastInsertedRowID: Int64 = 0
 }

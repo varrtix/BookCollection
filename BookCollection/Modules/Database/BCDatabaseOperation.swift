@@ -74,13 +74,13 @@ extension BCDatabaseOperation {
     defer { if database.isOpened { database.close() } }
    
     do {
-      try database.create(table: "TB_BC_ROOT_BOOK", of: BCBook.DatabaseRoot.self)
-      try database.create(table: "TB_BC_AUTHORS", of: BCBook.Author.self)
-      try database.create(table: "TB_BC_TRANSLATORS", of: BCBook.Translator.self)
-      try database.create(table: "TB_BC_TAGS", of: BCBook.Tag.self)
-      try database.create(table: "TB_BC_IMAGES", of: BCBook.Images.self)
-      try database.create(table: "TB_BC_SERIES", of: BCBook.Series.self)
-      try database.create(table: "TB_BC_RATINGS", of: BCBook.Rating.self)
+      try database.create(table: "TB_BC_ROOT_BOOK", of: BCBook.DB.self)
+      try database.create(table: "TB_BC_AUTHORS", of: BCAuthor.DB.self)
+      try database.create(table: "TB_BC_TRANSLATORS", of: BCTranslator.DB.self)
+      try database.create(table: "TB_BC_TAGS", of: BCTag.DB.self)
+      try database.create(table: "TB_BC_IMAGES", of: BCImages.DB.self)
+      try database.create(table: "TB_BC_SERIES", of: BCSeries.DB.self)
+      try database.create(table: "TB_BC_RATINGS", of: BCRating.DB.self)
       
     } catch { throw error }
     

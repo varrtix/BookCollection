@@ -8,6 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		3BEED3F04E181CF248F232A1 /* Pods_BookCollection.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DFCA765E26B5A9157283683 /* Pods_BookCollection.framework */; };
+		560175DA242468D5008C9578 /* BCModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175D9242468D5008C9578 /* BCModel.swift */; };
+		560175DC2424742A008C9578 /* BCTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175DB2424742A008C9578 /* BCTag.swift */; };
+		560175DE242477C8008C9578 /* BCImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175DD242477C8008C9578 /* BCImages.swift */; };
+		560175E02424789C008C9578 /* BCSeries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175DF2424789C008C9578 /* BCSeries.swift */; };
+		560175E324247979008C9578 /* BCRating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175E224247979008C9578 /* BCRating.swift */; };
+		560175E524247A00008C9578 /* BCAuthor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175E424247A00008C9578 /* BCAuthor.swift */; };
+		560175E72424A331008C9578 /* BCModel+Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175E62424A331008C9578 /* BCModel+Foundation.swift */; };
 		563F9C84241B7B85005B8E5E /* BCSupportKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563F9C83241B7B85005B8E5E /* BCSupportKit.swift */; };
 		563F9C86241B7BCE005B8E5E /* CommonKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563F9C85241B7BCE005B8E5E /* CommonKit.swift */; };
 		564CC8952417911000E9D08B /* BCScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 564CC8942417911000E9D08B /* BCScanView.swift */; };
@@ -25,7 +32,7 @@
 		567B0A6824167A2E00B595A7 /* BookCollectionUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567B0A6724167A2E00B595A7 /* BookCollectionUITests.swift */; };
 		567D76492423625C00F94CD6 /* BCDatabaseOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567D76482423625C00F94CD6 /* BCDatabaseOperation.swift */; };
 		567D764D2423B17000F94CD6 /* BCDataAcessObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567D764C2423B17000F94CD6 /* BCDataAcessObjects.swift */; };
-		56B611E9242210D100C7C6A8 /* BCBook+Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B611E8242210D100C7C6A8 /* BCBook+Foundation.swift */; };
+		567D764F2423BF4600F94CD6 /* BCBookDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567D764E2423BF4500F94CD6 /* BCBookDAO.swift */; };
 		56B611EB2422296100C7C6A8 /* BCInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B611EA2422296100C7C6A8 /* BCInfoViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -48,6 +55,13 @@
 
 /* Begin PBXFileReference section */
 		3DFCA765E26B5A9157283683 /* Pods_BookCollection.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BookCollection.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		560175D9242468D5008C9578 /* BCModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCModel.swift; sourceTree = "<group>"; };
+		560175DB2424742A008C9578 /* BCTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCTag.swift; sourceTree = "<group>"; };
+		560175DD242477C8008C9578 /* BCImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCImages.swift; sourceTree = "<group>"; };
+		560175DF2424789C008C9578 /* BCSeries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCSeries.swift; sourceTree = "<group>"; };
+		560175E224247979008C9578 /* BCRating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCRating.swift; sourceTree = "<group>"; };
+		560175E424247A00008C9578 /* BCAuthor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCAuthor.swift; sourceTree = "<group>"; };
+		560175E62424A331008C9578 /* BCModel+Foundation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCModel+Foundation.swift"; sourceTree = "<group>"; };
 		563F9C83241B7B85005B8E5E /* BCSupportKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCSupportKit.swift; sourceTree = "<group>"; };
 		563F9C85241B7BCE005B8E5E /* CommonKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonKit.swift; sourceTree = "<group>"; };
 		564CC8942417911000E9D08B /* BCScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCScanView.swift; sourceTree = "<group>"; };
@@ -71,7 +85,7 @@
 		567B0A6924167A2E00B595A7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		567D76482423625C00F94CD6 /* BCDatabaseOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCDatabaseOperation.swift; sourceTree = "<group>"; };
 		567D764C2423B17000F94CD6 /* BCDataAcessObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCDataAcessObjects.swift; sourceTree = "<group>"; };
-		56B611E8242210D100C7C6A8 /* BCBook+Foundation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCBook+Foundation.swift"; sourceTree = "<group>"; };
+		567D764E2423BF4500F94CD6 /* BCBookDAO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCBookDAO.swift; sourceTree = "<group>"; };
 		56B611EA2422296100C7C6A8 /* BCInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCInfoViewController.swift; sourceTree = "<group>"; };
 		C3AEABD81807DB8C6E651C4D /* Pods-BookCollection.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookCollection.release.xcconfig"; path = "Target Support Files/Pods-BookCollection/Pods-BookCollection.release.xcconfig"; sourceTree = "<group>"; };
 		F4CF3752E322A66A69ADE8E9 /* Pods-BookCollection.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookCollection.debug.xcconfig"; path = "Target Support Files/Pods-BookCollection/Pods-BookCollection.debug.xcconfig"; sourceTree = "<group>"; };
@@ -111,6 +125,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		560175E12424794A008C9578 /* Bases */ = {
+			isa = PBXGroup;
+			children = (
+				560175D9242468D5008C9578 /* BCModel.swift */,
+				560175E62424A331008C9578 /* BCModel+Foundation.swift */,
+			);
+			path = Bases;
+			sourceTree = "<group>";
+		};
 		563F9C87241B7BDA005B8E5E /* Kits */ = {
 			isa = PBXGroup;
 			children = (
@@ -146,8 +169,13 @@
 		5671DDFE2419FEB900979210 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				560175E12424794A008C9578 /* Bases */,
 				5671DDFF2419FEDC00979210 /* BCBook.swift */,
-				56B611E8242210D100C7C6A8 /* BCBook+Foundation.swift */,
+				560175DB2424742A008C9578 /* BCTag.swift */,
+				560175DD242477C8008C9578 /* BCImages.swift */,
+				560175DF2424789C008C9578 /* BCSeries.swift */,
+				560175E224247979008C9578 /* BCRating.swift */,
+				560175E424247A00008C9578 /* BCAuthor.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -260,6 +288,7 @@
 			isa = PBXGroup;
 			children = (
 				567D764C2423B17000F94CD6 /* BCDataAcessObjects.swift */,
+				567D764E2423BF4500F94CD6 /* BCBookDAO.swift */,
 			);
 			path = DataAcessObjects;
 			sourceTree = "<group>";
@@ -453,14 +482,21 @@
 				56B611EB2422296100C7C6A8 /* BCInfoViewController.swift in Sources */,
 				5671DE002419FEDC00979210 /* BCBook.swift in Sources */,
 				567D76492423625C00F94CD6 /* BCDatabaseOperation.swift in Sources */,
+				560175E02424789C008C9578 /* BCSeries.swift in Sources */,
 				564CC8952417911000E9D08B /* BCScanView.swift in Sources */,
 				5675CA272417637100437044 /* BCNavigationController.swift in Sources */,
 				567D764D2423B17000F94CD6 /* BCDataAcessObjects.swift in Sources */,
+				560175E72424A331008C9578 /* BCModel+Foundation.swift in Sources */,
+				560175E524247A00008C9578 /* BCAuthor.swift in Sources */,
+				560175DE242477C8008C9578 /* BCImages.swift in Sources */,
+				560175E324247979008C9578 /* BCRating.swift in Sources */,
 				563F9C86241B7BCE005B8E5E /* CommonKit.swift in Sources */,
-				56B611E9242210D100C7C6A8 /* BCBook+Foundation.swift in Sources */,
 				566D37DD241A659B00DE970C /* BCViewController.swift in Sources */,
 				567B0A4624167A2D00B595A7 /* AppDelegate.swift in Sources */,
 				563F9C84241B7B85005B8E5E /* BCSupportKit.swift in Sources */,
+				567D764F2423BF4600F94CD6 /* BCBookDAO.swift in Sources */,
+				560175DA242468D5008C9578 /* BCModel.swift in Sources */,
+				560175DC2424742A008C9578 /* BCTag.swift in Sources */,
 				5667FB262416833B009F9E65 /* BCScanViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

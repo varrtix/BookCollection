@@ -29,13 +29,22 @@
 import Foundation
 import WCDBSwift
 
-class BCDataAcessObjects {
+struct BCAuthor: BCModelDB { typealias DB = BCAuthorDB }
+
+struct BCTranslator: BCModelDB { typealias DB = BCAuthorDB }
+
+class BCAuthorDB: BCModel, BCAuthorFoundation, TableCodable {
   
-  required init() {
-    fatalError(V2RXError.Fatal.location(method: #function).localizedDescription)
-  }
+  let bookID: Int64
   
-  class func insert(_ object: BCModel, with database: Database) {
-    fatalError(V2RXError.Fatal.location(method: #function).localizedDescription)
+  let name: String?
+  
+  enum CodingKeys: String, CodingTableKey {
+    typealias Root = BCAuthorDB
+    
+    static let objectRelationalMapping = TableBinding(CodingKeys.self)
+    
+    case bookID = "book_id"
+    case name
   }
 }

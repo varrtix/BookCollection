@@ -29,13 +29,47 @@
 import Foundation
 import WCDBSwift
 
-class BCDataAcessObjects {
+struct BCRating: BCModel, Codable {
   
-  required init() {
-    fatalError(V2RXError.Fatal.location(method: #function).localizedDescription)
+  typealias DB = BCRatingDB
+  
+  typealias JSON = BCRatingJSON
+}
+
+class BCRatingJSON: BCModel, BCRatingFoundation, Codable {
+  
+  let max: Int?
+  
+  let numRaters: Int?
+  
+  let average: String?
+  
+  let min: Int?
+  
+  enum CodingKeys: String, CodingKey {
+    case max, numRaters, average, min
   }
+}
+
+class BCRatingDB: BCModel, BCRatingFoundation, TableCodable {
   
-  class func insert(_ object: BCModel, with database: Database) {
-    fatalError(V2RXError.Fatal.location(method: #function).localizedDescription)
+  let bookID: Int64?
+  
+  let max: Int?
+  
+  let numRaters: Int?
+  
+  let average: String?
+  
+  let min: Int?
+  
+  enum CodingKeys: String, CodingTableKey {
+    typealias Root = BCRatingDB
+    
+    static let objectRelationalMapping = TableBinding(CodingKeys.self)
+    
+    case max, average, min
+    case numRaters = "number_raters"
+    case bookID = "book_id"
   }
 }

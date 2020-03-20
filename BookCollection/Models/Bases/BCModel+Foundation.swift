@@ -28,6 +28,20 @@
 
 import Foundation
 
+protocol BCModelFoundation {}
+
+protocol BCModelDB { associatedtype DB: Codable }
+
+protocol BCModelJSON { associatedtype JSON: Codable }
+
+typealias BCModelORM = BCModelDB & BCModelJSON
+
+protocol BCModelEncodable: Encodable, BCModelFoundation {}
+
+protocol BCModelDecodable: Decodable, BCModelFoundation {}
+
+typealias BCModelCodable = BCModelEncodable & BCModelDecodable
+
 protocol BCBookFoundation {
   
   var id: Int64? { get }
@@ -65,31 +79,45 @@ protocol BCBookFoundation {
   var summary: String? { get }
   
   var price: String? { get }
+  
+  var tags: [BCTagFoundation]? { get }
+  
+  var images: BCImagesFoundation? { get }
+  
+  var series: BCSeriesFoundation? { get }
+  
+  var rating: BCRatingFoundation? { get }
 }
 
 extension BCBookFoundation {
   
-  public var id: Int64? { nil }
+  var id: Int64? { nil }
   
-  public var authors: [String]? { nil }
+  var authors: [String]? { nil }
   
-  public var translators: [String]? { nil }
+  var translators: [String]? { nil }
+  
+  var tags: [BCTagFoundation]? { nil }
+  
+  var images: BCImagesFoundation? { nil }
+  
+  var series: BCSeriesFoundation? { nil }
+  
+  var rating: BCRatingFoundation? { nil }
 }
 
-protocol BCTagFoundation {
-  
-  var bookID: Int64? { get }
+protocol BCBookPrimaryKey { var bookID: Int64? { get } }
+
+extension BCBookPrimaryKey { var bookID: Int64? { nil } }
+
+protocol BCTagFoundation: BCBookPrimaryKey {
   
   var count: Int? { get }
   
   var title: String? { get }
 }
 
-extension BCTagFoundation { public var bookID: Int64? { nil } }
-
-protocol BCImagesFoundation {
-  
-  var bookID: Int64? { get }
+protocol BCImagesFoundation: BCBookPrimaryKey {
   
   var small: String? { get }
   
@@ -98,11 +126,7 @@ protocol BCImagesFoundation {
   var large: String? { get }
 }
 
-extension BCImagesFoundation { public var bookID: Int64? { nil } }
-
-protocol BCRatingFoundation {
-  
-  var bookID: Int64? { get }
+protocol BCRatingFoundation: BCBookPrimaryKey {
   
   var max: Int? { get }
   
@@ -113,24 +137,11 @@ protocol BCRatingFoundation {
   var min: Int? { get }
 }
 
-extension BCRatingFoundation { public var bookID: Int64? { nil } }
-
-protocol BCSeriesFoundation {
-  
-  var bookID: Int64? { get }
+protocol BCSeriesFoundation: BCBookPrimaryKey {
   
   var seriesID: String? { get }
   
   var title: String? { get }
 }
 
-extension BCSeriesFoundation { public var bookID: Int64? { nil } }
-
-protocol BCAuthorFoundation {
-  
-  var bookID: Int64? { get }
-  
-  var name: String? { get }
-}
-
-extension BCAuthorFoundation { public var bookID: Int64? { nil } }
+protocol BCAuthorFoundation: BCBookPrimaryKey { var name: String? { get } }

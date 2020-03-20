@@ -29,13 +29,8 @@
 import Foundation
 import WCDBSwift
 
-class BCDataAcessObjects {
+class BCBookDAO: BCDataAcessObjects {
   
-  required init() {
-    fatalError(V2RXError.Fatal.location(method: #function).localizedDescription)
-  }
-  
-  class func insert(_ object: BCModel, with database: Database) {
-    fatalError(V2RXError.Fatal.location(method: #function).localizedDescription)
+  class func insert(_ object: BCBook.DB, with database: Database) {
   }
 }
