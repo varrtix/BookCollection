@@ -67,4 +67,10 @@ class BCImagesDB: BCModel, BCImagesFoundation, TableCodable {
     case bookID = "book_id"
     case small, medium, large
   }
+  
+  init(small: String?, medium: String?, large: String?) {
+    self.small = small
+    self.medium = medium
+    self.large = large
+  }
 }

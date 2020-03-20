@@ -29,13 +29,20 @@
 import Foundation
 import WCDBSwift
 
-class BCDataAcessObjects {
+class BCBookInfoService {
   
-  required init() {
-    fatalError(V2RXError.Fatal.location(method: #function).localizedDescription)
-  }
-  
-  class func insert(_ object: BCModel, with database: Database) throws -> Int64? {
-    fatalError(V2RXError.Fatal.location(method: #function).localizedDescription)
+  class func mark(book object: BCBook.JSON) throws -> Int64 {
+    let database = Database(withFileURL: BCDatabaseOperation.databaseURL)
+    
+    let bookID: Int64
+    
+    do {
+    
+    try BCDataAcessObjects.insert(object.bookDB, with: database, into: .book)
+    } catch <#pattern#> {
+      <#statements#>
+    }
+    
+    return bookID
   }
 }

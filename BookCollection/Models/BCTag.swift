@@ -63,4 +63,9 @@ class BCTagDB: BCModel, BCTagFoundation, TableCodable {
     case bookID = "book_id"
     case count, title
   }
+  
+  init(count: Int?, title: String?) {
+    self.count = count
+    self.title = title
+  }
 }

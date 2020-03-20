@@ -80,7 +80,7 @@ extension BCDatabaseOperation {
       try database.create(table: BCTable.images.rawName, of: BCImages.DB.self)
       try database.create(table: BCTable.series.rawName, of: BCSeries.DB.self)
       try database.create(table: BCTable.ratings.rawName, of: BCRating.DB.self)
-    } catch { throw error }
+    } catch let error as WCDBSwift.Error { throw error }
     
   }
 }

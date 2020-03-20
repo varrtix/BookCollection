@@ -156,7 +156,99 @@ class BCBookDB: BCModel, BCBookFoundation, TableCodable {
     }
   }
   
+  init(
+    doubanID: String?,
+    title: String?,
+    subtitle: String?,
+    originTitle: String?,
+    publishedDate: String?,
+    publisher: String?,
+    isbn10: String?,
+    isbn13: String?,
+    image: String?,
+    binding: String?,
+    authorIntroduction: String?,
+    catalog: String?,
+    pages: String?,
+    price: String?
+  ) {
+    self.doubanID = doubanID
+    self.title = title
+    self.subtitle = subtitle
+    self.originTitle = originTitle
+    self.publishedDate = publishedDate
+    self.publisher = publisher
+    self.isbn10 = isbn10
+    self.isbn13 = isbn13
+    self.image = image
+    self.binding = binding
+    self.authorIntroduction = authorIntroduction
+    self.catalog = catalog
+    self.pages = pages
+    self.price = price
+  }
+  
   var isAutoIncrement: Bool = true
   
   var lastInsertedRowID: Int64 = 0
+}
+
+extension BCBookJSON {
+  var bookDB: BCBookDB? {
+    BCBookDB(
+      doubanID: doubanID,
+      title: title,
+      subtitle: subtitle,
+      originTitle: originTitle,
+      publishedDate: publishedDate,
+      publisher: publisher,
+      isbn10: isbn10,
+      isbn13: isbn13,
+      image: image,
+      binding: binding,
+      authorIntroduction: authorIntroduction,
+      catalog: catalog,
+      pages: pages,
+      price: price
+    )
+  }
+  
+  var tagsDB: [BCTagDB]? {
+    guard tags != nil else { return nil }
+    return tags!.map { BCTagDB(count: $0.count, title: $0.title) }
+  }
+  
+  var imagesDB: BCImagesDB? {
+    guard images != nil else { return nil }
+    return BCImagesDB(
+      small: images!.small,
+      medium: images!.medium,
+      large: images!.large
+    )
+  }
+  
+  var seriesDB: BCSeriesDB? {
+    guard series != nil else { return nil }
+    return BCSeriesDB(seriesID: series!.seriesID, title: series!.title)
+  }
+  
+  var ratingDB: BCRatingDB? {
+    guard rating != nil else { return nil }
+    return BCRatingDB(
+      max: rating!.max,
+      numRaters: rating!.numRaters,
+      average: rating!.average,
+      min: rating!.min
+    )
+  }
+  
+  var authorsDB: [BCAuthorDB]? {
+    guard authors != nil else { return nil }
+    return authors!.map { BCAuthorDB(name: $0) }
+  }
+  
+  var translatorsDB: [BCTranslatorDB]? {
+    guard translators != nil else { return nil }
+    return translators!.map { BCTranslatorDB(name: $0) }
+  }
 }

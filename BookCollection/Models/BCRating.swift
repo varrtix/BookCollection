@@ -72,4 +72,11 @@ class BCRatingDB: BCModel, BCRatingFoundation, TableCodable {
     case numRaters = "number_raters"
     case bookID = "book_id"
   }
+  
+  init(max: Int?, numRaters: Int?, average: String?, min: Int?) {
+    self.max = max
+    self.numRaters = numRaters
+    self.average = average
+    self.min = min
+  }
 }

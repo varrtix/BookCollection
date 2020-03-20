@@ -31,7 +31,9 @@ import WCDBSwift
 
 struct BCAuthor: BCModelDB { typealias DB = BCAuthorDB }
 
-struct BCTranslator: BCModelDB { typealias DB = BCAuthorDB }
+struct BCTranslator: BCModelDB { typealias DB = BCTranslatorDB }
+
+typealias BCTranslatorDB = BCAuthorDB
 
 class BCAuthorDB: BCModel, BCAuthorFoundation, TableCodable {
   
@@ -47,4 +49,6 @@ class BCAuthorDB: BCModel, BCAuthorFoundation, TableCodable {
     case bookID = "book_id"
     case name
   }
+  
+  init(name: String?) { self.name = name }
 }

@@ -65,4 +65,9 @@ class BCSeriesDB: BCModel, BCSeriesFoundation, TableCodable {
     case seriesID = "series_id"
     case title
   }
+  
+  init(seriesID: String?, title: String?) {
+    self.seriesID = seriesID
+    self.title = title
+  }
 }

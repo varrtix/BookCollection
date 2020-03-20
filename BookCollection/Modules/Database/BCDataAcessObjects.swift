@@ -29,10 +29,27 @@
 import Foundation
 import WCDBSwift
 
-class BCBookDAO: BCDataAcessObjects {
+class BCDataAcessObjects {
   
-  class func insert(_ object: BCBook.DB, with database: Database) throws -> Int64? {
+  class func insert<OBJ: TableCodable>(
+    _ object: OBJ,
+    with database: Database,
+    into table: BCTable) throws -> Int64? {
+    do {
+      try database.insert(objects: object, intoTable: table.rawName)
+    } catch let error as WCDBSwift.Error { throw error }
     
-    return nil
+    return object.lastInsertedRowID
+  }
+  
+  class func insert<OBJ: TableCodable>(
+    _ objects: [OBJ],
+    with database: Database,
+    into table: BCTable) throws -> Int64? {
+    do {
+      try database.insert(objects: objects, intoTable: table.rawName)
+    } catch let error as WCDBSwift.Error { throw error }
+    
+    return objects.last?.lastInsertedRowID
   }
 }
