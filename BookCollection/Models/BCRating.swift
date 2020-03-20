@@ -29,7 +29,7 @@
 import Foundation
 import WCDBSwift
 
-struct BCRating: BCModel, Codable {
+struct BCRating: BCModelORM {
   
   typealias DB = BCRatingDB
   
