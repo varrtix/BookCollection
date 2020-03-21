@@ -30,3 +30,7 @@ import Foundation
 import WCDBSwift
 
 class BCModel: BCModelFoundation {}
+
+typealias BCCodable = BCModel & Codable
+
+typealias BCTableCodable = BCModel & TableCodable

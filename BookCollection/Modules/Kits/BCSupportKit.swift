@@ -27,6 +27,7 @@
 /// THE SOFTWARE.
 
 import UIKit
+import WCDBSwift
 
 typealias ViewTuple = (title: String, item: BCViewController)
 
@@ -37,3 +38,5 @@ struct BCColor {
     static let gray = UIColor.darkGray
   }
 }
+
+public extension Database { func shutdown() { if isOpened { close() } } }

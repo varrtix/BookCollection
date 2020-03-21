@@ -36,7 +36,7 @@ struct BCTag: BCModelORM {
   typealias JSON = BCTagJSON
 }
 
-class BCTagJSON: BCModel, BCTagFoundation, Codable {
+class BCTagJSON: BCCodable, BCTagFoundation {
   
   let count: Int?
   
@@ -47,9 +47,9 @@ class BCTagJSON: BCModel, BCTagFoundation, Codable {
   }
 }
 
-class BCTagDB: BCModel, BCTagFoundation, TableCodable {
+class BCTagDB: BCTableCodable, BCTagFoundation {
   
-  let bookID: Int64?
+  let bookID: Int64? = nil
   
   let count: Int?
   

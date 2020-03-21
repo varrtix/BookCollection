@@ -31,17 +31,43 @@ import WCDBSwift
 
 class BCBookInfoService {
   
-  class func mark(book object: BCBook.JSON) throws -> Int64 {
+  class func mark(book object: BCBook.JSON) throws -> Int64? {
     let database = Database(withFileURL: BCDatabaseOperation.databaseURL)
     
-    let bookID: Int64
+    defer { database.shutdown() }
+    
+    let bookID: Int64?
     
     do {
-    
-    try BCDataAcessObjects.insert(object.bookDB, with: database, into: .book)
-    } catch <#pattern#> {
-      <#statements#>
-    }
+      if object.bookDB != nil {
+        bookID = try BCDataAcessObjects.insert(
+          object.bookDB!,
+          with: database,
+          into: .book)
+      } else { bookID = nil }
+      
+      if object.authorsDB != nil {
+        let _ = try BCDataAcessObjects.insert(
+          object.authorsDB!,
+          with: database,
+          into: .authors)
+      }
+      
+      if object.translatorsDB != nil {
+        let _ = try BCDataAcessObjects.insert(
+          object.translatorsDB!,
+          with: database,
+          into: .translators)
+      }
+      
+      if object.tagsDB != nil {
+        let _ = try BCDataAcessObjects.insert(
+          object.tagsDB!,
+          with: database,
+          into: .tags)
+      }
+      
+    } catch let error as WCDBSwift.Error { throw error }
     
     return bookID
   }

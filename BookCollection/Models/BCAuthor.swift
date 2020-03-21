@@ -35,9 +35,9 @@ struct BCTranslator: BCModelDB { typealias DB = BCTranslatorDB }
 
 typealias BCTranslatorDB = BCAuthorDB
 
-class BCAuthorDB: BCModel, BCAuthorFoundation, TableCodable {
+class BCAuthorDB: BCTableCodable, BCAuthorFoundation {
   
-  let bookID: Int64
+  let bookID: Int64? = nil
   
   let name: String?
   

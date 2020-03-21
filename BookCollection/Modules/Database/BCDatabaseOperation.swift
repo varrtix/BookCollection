@@ -70,8 +70,9 @@ class BCDatabaseOperation: AsyncOperation {
 }
 
 extension BCDatabaseOperation {
+  
   func createTable(with database: Database) throws {
-    defer { if database.isOpened { database.close() } }
+    defer { database.shutdown() }
     
     do {
       try database.create(table: BCTable.root.rawName, of: BCBook.DB.self)

@@ -36,7 +36,7 @@ struct BCRating: BCModelORM {
   typealias JSON = BCRatingJSON
 }
 
-class BCRatingJSON: BCModel, BCRatingFoundation, Codable {
+class BCRatingJSON: BCCodable, BCRatingFoundation {
   
   let max: Int?
   
@@ -51,9 +51,9 @@ class BCRatingJSON: BCModel, BCRatingFoundation, Codable {
   }
 }
 
-class BCRatingDB: BCModel, BCRatingFoundation, TableCodable {
+class BCRatingDB: BCTableCodable, BCRatingFoundation {
   
-  let bookID: Int64?
+  let bookID: Int64? = nil
   
   let max: Int?
   

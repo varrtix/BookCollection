@@ -36,7 +36,7 @@ struct BCImages: BCModelORM {
   typealias JSON = BCImagesJSON
 }
 
-class BCImagesJSON: BCModel, BCImagesFoundation, Codable {
+class BCImagesJSON: BCCodable, BCImagesFoundation {
   
   let small: String?
   
@@ -49,9 +49,9 @@ class BCImagesJSON: BCModel, BCImagesFoundation, Codable {
   }
 }
 
-class BCImagesDB: BCModel, BCImagesFoundation, TableCodable {
+class BCImagesDB: BCTableCodable, BCImagesFoundation {
   
-  let bookID: Int64?
+  let bookID: Int64? = nil
   
   let small: String?
   

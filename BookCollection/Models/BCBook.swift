@@ -36,7 +36,7 @@ struct BCBook: BCModelORM {
   typealias JSON = BCBookJSON
 }
 
-class BCBookJSON: BCModel, BCBookFoundation, Codable {
+class BCBookJSON: BCCodable, BCBookFoundation {
   
   let doubanID: String?
   
@@ -94,9 +94,9 @@ class BCBookJSON: BCModel, BCBookFoundation, Codable {
   }
 }
 
-class BCBookDB: BCModel, BCBookFoundation, TableCodable {
-  
-  let id: Int64?
+class BCBookDB: BCTableCodable, BCBookFoundation {
+
+  let id: Int64? = nil
   
   let doubanID: String?
   
@@ -170,6 +170,7 @@ class BCBookDB: BCModel, BCBookFoundation, TableCodable {
     authorIntroduction: String?,
     catalog: String?,
     pages: String?,
+    summary: String?,
     price: String?
   ) {
     self.doubanID = doubanID
@@ -185,6 +186,7 @@ class BCBookDB: BCModel, BCBookFoundation, TableCodable {
     self.authorIntroduction = authorIntroduction
     self.catalog = catalog
     self.pages = pages
+    self.summary = summary
     self.price = price
   }
   
@@ -209,6 +211,7 @@ extension BCBookJSON {
       authorIntroduction: authorIntroduction,
       catalog: catalog,
       pages: pages,
+      summary: summary,
       price: price
     )
   }

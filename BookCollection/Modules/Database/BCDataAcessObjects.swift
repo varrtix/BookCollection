@@ -31,10 +31,10 @@ import WCDBSwift
 
 class BCDataAcessObjects {
   
-  class func insert<OBJ: TableCodable>(
-    _ object: OBJ,
+  class func insert<T: BCTableCodable>(
+    _ object: T,
     with database: Database,
-    into table: BCTable) throws -> Int64? {
+    into table: BCTable) throws -> Int64 {
     do {
       try database.insert(objects: object, intoTable: table.rawName)
     } catch let error as WCDBSwift.Error { throw error }
@@ -42,14 +42,14 @@ class BCDataAcessObjects {
     return object.lastInsertedRowID
   }
   
-  class func insert<OBJ: TableCodable>(
-    _ objects: [OBJ],
+  class func insert<T: BCTableCodable>(
+    _ objects: [T],
     with database: Database,
-    into table: BCTable) throws -> Int64? {
+    into table: BCTable) throws -> Int64 {
     do {
       try database.insert(objects: objects, intoTable: table.rawName)
     } catch let error as WCDBSwift.Error { throw error }
     
-    return objects.last?.lastInsertedRowID
+    return objects.last!.lastInsertedRowID
   }
 }
