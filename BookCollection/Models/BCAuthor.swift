@@ -37,7 +37,7 @@ typealias BCTranslatorDB = BCAuthorDB
 
 class BCAuthorDB: BCTableCodable, BCAuthorFoundation {
   
-  let bookID: Int64? = nil
+  var bookID: Int64? 
   
   let name: String?
   
@@ -48,6 +48,11 @@ class BCAuthorDB: BCTableCodable, BCAuthorFoundation {
     
     case bookID = "book_id"
     case name
+    
+    static var tableConstraintBindings: [String : TableConstraintBinding]? {
+      let foreginBinding = ForeignKeyBinding(bookID, foreignKey: BCBook.DB.foreginKey)
+      return ["ForeignKeyBinding": foreginBinding]
+    }
   }
   
   init(name: String?) { self.name = name }

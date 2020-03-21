@@ -27,61 +27,35 @@
 /// THE SOFTWARE.
 
 import Foundation
-import WCDBSwift
 
-struct BCRating: BCModelORM {
+struct BCDatabase {
+  static var databaseDirectoryURL: URL {
+    URL(
+      fileURLWithPath: "BCDB",
+      relativeTo: FileManager.documentDirectoryURL)
+  }
   
-  typealias DB = BCRatingDB
-  
-  typealias JSON = BCRatingJSON
-}
-
-class BCRatingJSON: BCCodable, BCRatingFoundation {
-  
-  let max: Int?
-  
-  let numRaters: Int?
-  
-  let average: String?
-  
-  let min: Int?
-  
-  enum CodingKeys: String, CodingKey {
-    case max, numRaters, average, min
+  static var databaseURL: URL {
+    URL(
+      fileURLWithPath: "Book.sqlite",
+      relativeTo: databaseDirectoryURL)
   }
 }
 
-class BCRatingDB: BCTableCodable, BCRatingFoundation {
+enum BCTable {
+  case root, book, authors, translators
+  case tags, images, series, ratings
   
-  var bookID: Int64? 
-  
-  let max: Int?
-  
-  let numRaters: Int?
-  
-  let average: String?
-  
-  let min: Int?
-  
-  enum CodingKeys: String, CodingTableKey {
-    typealias Root = BCRatingDB
-    
-    static let objectRelationalMapping = TableBinding(CodingKeys.self)
-    
-    case max, average, min
-    case numRaters = "number_raters"
-    case bookID = "book_id"
-    
-    static var tableConstraintBindings: [String : TableConstraintBinding]? {
-      let foreginBinding = ForeignKeyBinding(bookID, foreignKey: BCBook.DB.foreginKey)
-      return ["ForeignKeyBinding": foreginBinding]
+  var rawName: String {
+    switch self {
+      case .root: fallthrough
+      case .book: return "TB_BC_ROOT_BOOK"
+      case .authors: return "TB_BC_AUTHORS"
+      case .translators: return "TB_BC_TRANSLATORS"
+      case .tags: return "TB_BC_TAGS"
+      case .images: return "TB_BC_IMAGES"
+      case .series: return "TB_BC_SERIES"
+      case .ratings: return "TB_BC_RATINGS"
     }
-  }
-  
-  init(max: Int?, numRaters: Int?, average: String?, min: Int?) {
-    self.max = max
-    self.numRaters = numRaters
-    self.average = average
-    self.min = min
   }
 }

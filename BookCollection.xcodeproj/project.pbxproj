@@ -34,6 +34,7 @@
 		567D76492423625C00F94CD6 /* BCDatabaseOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567D76482423625C00F94CD6 /* BCDatabaseOperation.swift */; };
 		567D764D2423B17000F94CD6 /* BCDataAcessObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567D764C2423B17000F94CD6 /* BCDataAcessObjects.swift */; };
 		56B611EB2422296100C7C6A8 /* BCInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B611EA2422296100C7C6A8 /* BCInfoViewController.swift */; };
+		56BB95B42426313000555EEA /* BCDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BB95B32426313000555EEA /* BCDatabase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,6 +88,7 @@
 		567D76482423625C00F94CD6 /* BCDatabaseOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCDatabaseOperation.swift; sourceTree = "<group>"; };
 		567D764C2423B17000F94CD6 /* BCDataAcessObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCDataAcessObjects.swift; sourceTree = "<group>"; };
 		56B611EA2422296100C7C6A8 /* BCInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCInfoViewController.swift; sourceTree = "<group>"; };
+		56BB95B32426313000555EEA /* BCDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCDatabase.swift; sourceTree = "<group>"; };
 		C3AEABD81807DB8C6E651C4D /* Pods-BookCollection.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookCollection.release.xcconfig"; path = "Target Support Files/Pods-BookCollection/Pods-BookCollection.release.xcconfig"; sourceTree = "<group>"; };
 		F4CF3752E322A66A69ADE8E9 /* Pods-BookCollection.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookCollection.debug.xcconfig"; path = "Target Support Files/Pods-BookCollection/Pods-BookCollection.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -272,6 +274,7 @@
 			isa = PBXGroup;
 			children = (
 				567D764C2423B17000F94CD6 /* BCDataAcessObjects.swift */,
+				56BB95B32426313000555EEA /* BCDatabase.swift */,
 				567D76482423625C00F94CD6 /* BCDatabaseOperation.swift */,
 			);
 			path = Database;
@@ -478,6 +481,7 @@
 				560175E02424789C008C9578 /* BCSeries.swift in Sources */,
 				564CC8952417911000E9D08B /* BCScanView.swift in Sources */,
 				5675CA272417637100437044 /* BCNavigationController.swift in Sources */,
+				56BB95B42426313000555EEA /* BCDatabase.swift in Sources */,
 				567D764D2423B17000F94CD6 /* BCDataAcessObjects.swift in Sources */,
 				560175E72424A331008C9578 /* BCModel+Foundation.swift in Sources */,
 				560175E524247A00008C9578 /* BCAuthor.swift in Sources */,

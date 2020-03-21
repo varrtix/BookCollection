@@ -31,21 +31,24 @@ import WCDBSwift
 
 class BCBookInfoService {
   
-  class func mark(book object: BCBook.JSON) throws -> Int64? {
-    let database = Database(withFileURL: BCDatabaseOperation.databaseURL)
+  class func mark(book object: BCBook.JSON) throws -> Int64 {
+    let database = Database(withFileURL: BCDatabase.databaseURL)
     
-    defer { database.shutdown() }
+    guard database.canOpen else {
+      print("Database can not open in \(#file): \(#function), \(#line)")
+      return -1
+    }
     
-    let bookID: Int64?
+    let bookID: Int64
     
     do {
-      if object.bookDB != nil {
-        bookID = try BCDataAcessObjects.insert(
-          object.bookDB!,
-          with: database,
-          into: .book)
-      } else { bookID = nil }
-      
+      guard object.bookDB != nil else { return -1 }
+      bookID = try BCDataAcessObjects.insert(
+        object.bookDB!,
+        with: database,
+        into: .book)
+      guard bookID >= 0 else { return -1 }
+
       if object.authorsDB != nil {
         let _ = try BCDataAcessObjects.insert(
           object.authorsDB!,
@@ -67,8 +70,40 @@ class BCBookInfoService {
           into: .tags)
       }
       
+      if object.imagesDB != nil {
+        let _ = try BCDataAcessObjects.insert(
+          object.imagesDB!,
+          with: database,
+          into: .images)
+      }
+      
+      if object.seriesDB != nil {
+        let _ = try BCDataAcessObjects.insert(
+          object.seriesDB!,
+          with: database,
+          into: .series)
+      }
+      
+      if object.ratingDB != nil {
+        let _ = try BCDataAcessObjects.insert(
+          object.ratingDB!,
+          with: database,
+          into: .ratings)
+      }
+      
     } catch let error as WCDBSwift.Error { throw error }
     
     return bookID
+  }
+  
+  class func findBook(with doubanID: Int) throws -> BCBook.JSON? {
+    let database = Database(withFileURL: BCDatabase.databaseURL)
+    
+    guard database.canOpen else {
+      print("Database can not open in \(#file): \(#function), \(#line)")
+      return nil
+    }
+    
+    return nil
   }
 }

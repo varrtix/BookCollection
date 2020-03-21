@@ -52,4 +52,18 @@ class BCDataAcessObjects {
     
     return objects.last!.lastInsertedRowID
   }
+  
+  class func extractObject(
+    by doubanID: String,
+    with database: Database) throws -> BCBook.JSON? {
+    
+    do {
+      let object: BCBook.DB? = try database.getObject(
+        on: BCBook.DB.Properties.doubanID,
+        fromTable: BCTable.root.rawName,
+        where: BCBook.DB.Properties.doubanID == doubanID)
+    } catch let error as WCDBSwift.Error { throw error }
+    
+    return nil
+  }
 }

@@ -43,6 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     
+    launchDatabase()
     loadWindow()
     
     return true
@@ -99,13 +100,13 @@ extension AppDelegate {
 extension AppDelegate {
   func launchDatabase() {
     if !FileManager.default.fileExists(
-      atPath: BCDatabaseOperation.databaseURL.absoluteString) {
+      atPath: BCDatabase.databaseURL.absoluteString) {
       
       let database = BCDatabaseOperation()
       database.start()
       #if DEBUG
       // MARK: TODO: Write all logs to a log file
-      print("Database path: \(BCDatabaseOperation.databaseURL)")
+      print("Database path: \(BCDatabase.databaseURL)")
       #endif
     }
   }

@@ -50,7 +50,7 @@ class BCSeriesJSON: BCCodable, BCSeriesFoundation {
 
 class BCSeriesDB: BCTableCodable, BCSeriesFoundation {
   
-  let bookID: Int64?  = nil
+  var bookID: Int64?
   
   let seriesID: String?
   
@@ -64,6 +64,11 @@ class BCSeriesDB: BCTableCodable, BCSeriesFoundation {
     case bookID = "book_id"
     case seriesID = "series_id"
     case title
+    
+    static var tableConstraintBindings: [String : TableConstraintBinding]? {
+      let foreginBinding = ForeignKeyBinding(bookID, foreignKey: BCBook.DB.foreginKey)
+      return ["ForeignKeyBinding": foreginBinding]
+    }
   }
   
   init(seriesID: String?, title: String?) {

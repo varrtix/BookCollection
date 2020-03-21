@@ -49,7 +49,7 @@ class BCTagJSON: BCCodable, BCTagFoundation {
 
 class BCTagDB: BCTableCodable, BCTagFoundation {
   
-  let bookID: Int64? = nil
+  var bookID: Int64?
   
   let count: Int?
   
@@ -62,6 +62,11 @@ class BCTagDB: BCTableCodable, BCTagFoundation {
     
     case bookID = "book_id"
     case count, title
+    
+    static var tableConstraintBindings: [String : TableConstraintBinding]? {
+      let foreginBinding = ForeignKeyBinding(bookID, foreignKey: BCBook.DB.foreginKey)
+      return ["ForeignKeyBinding": foreginBinding]
+    }
   }
   
   init(count: Int?, title: String?) {

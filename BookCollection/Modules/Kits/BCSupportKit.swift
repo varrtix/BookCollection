@@ -38,5 +38,3 @@ struct BCColor {
     static let gray = UIColor.darkGray
   }
 }
-
-public extension Database { func shutdown() { if isOpened { close() } } }

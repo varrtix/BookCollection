@@ -96,7 +96,7 @@ class BCBookJSON: BCCodable, BCBookFoundation {
 
 class BCBookDB: BCTableCodable, BCBookFoundation {
 
-  let id: Int64? = nil
+  var id: Int64?
   
   let doubanID: String?
   
@@ -154,6 +154,10 @@ class BCBookDB: BCTableCodable, BCBookFoundation {
         doubanID: ColumnConstraintBinding(isUnique: true),
       ]
     }
+  }
+  
+  static var foreginKey: ForeignKey {
+    ForeignKey(withForeignTable: BCTable.root.rawName, and: BCBookDB.CodingKeys.id)
   }
   
   init(

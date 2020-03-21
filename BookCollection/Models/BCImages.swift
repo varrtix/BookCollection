@@ -51,7 +51,7 @@ class BCImagesJSON: BCCodable, BCImagesFoundation {
 
 class BCImagesDB: BCTableCodable, BCImagesFoundation {
   
-  let bookID: Int64? = nil
+  var bookID: Int64?
   
   let small: String?
   
@@ -66,6 +66,11 @@ class BCImagesDB: BCTableCodable, BCImagesFoundation {
     
     case bookID = "book_id"
     case small, medium, large
+    
+    static var tableConstraintBindings: [String : TableConstraintBinding]? {
+      let foreginBinding = ForeignKeyBinding(bookID, foreignKey: BCBook.DB.foreginKey)
+      return ["ForeignKeyBinding": foreginBinding]
+    }
   }
   
   init(small: String?, medium: String?, large: String?) {
