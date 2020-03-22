@@ -29,8 +29,9 @@
 import Foundation
 import WCDBSwift
 
-class BCDataAcessObjects {
+class BCDataAccessObjects {
   
+  @discardableResult
   class func insert<T: BCTableCodable>(
     _ object: T,
     with database: Database,
@@ -42,6 +43,7 @@ class BCDataAcessObjects {
     return object.lastInsertedRowID
   }
   
+  @discardableResult
   class func insert<T: BCTableCodable>(
     _ objects: [T],
     with database: Database,
@@ -54,16 +56,40 @@ class BCDataAcessObjects {
   }
   
   class func extractObject(
+    queue: DispatchQueue = .main,
     by doubanID: String,
-    with database: Database) throws -> BCBook.JSON? {
+    with database: Database,
+    completionHandler: @escaping (BCDAOResult<BCBook.JSON?>) -> Void) {
     
-    do {
-      let object: BCBook.DB? = try database.getObject(
-        on: BCBook.DB.Properties.doubanID,
-        fromTable: BCTable.root.rawName,
-        where: BCBook.DB.Properties.doubanID == doubanID)
-    } catch let error as WCDBSwift.Error { throw error }
+    database.get(
+      of: BCBook.DB.self,
+      on: BCBook.DB.Properties.doubanID,
+      fromTable: BCTable.root.rawName) { result in
+    }
+  }
+}
+
+extension SelectInterface where Self: Core {
+
+  func get<Object: TableDecodable>(
+    of type: Object.Type,
+    on propertyConvertibleList: PropertyConvertible,
+    fromTable table: String,
+    where condition: Condition? = nil,
+    orderBy orderList: [OrderBy]? = nil,
+    offset: Offset? = nil,
+    completionHandler: @escaping (BCDBResult<Object?>) -> Void) {
     
-    return nil
+    BCDatabase.queue.async {
+      let result: BCDBResult<Object?> = Result {
+        try self.getObject(
+          on: propertyConvertibleList,
+          fromTable: table,
+          where: condition,
+          orderBy: orderList,
+          offset: offset)
+      }
+      completionHandler(result)
+    }
   }
 }

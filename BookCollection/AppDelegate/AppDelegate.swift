@@ -100,13 +100,13 @@ extension AppDelegate {
 extension AppDelegate {
   func launchDatabase() {
     if !FileManager.default.fileExists(
-      atPath: BCDatabase.databaseURL.absoluteString) {
+      atPath: BCDatabase.fileURL.absoluteString) {
       
       let database = BCDatabaseOperation()
       database.start()
       #if DEBUG
       // MARK: TODO: Write all logs to a log file
-      print("Database path: \(BCDatabase.databaseURL)")
+      print("Database path: \(BCDatabase.fileURL)")
       #endif
     }
   }

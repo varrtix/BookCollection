@@ -26,16 +26,47 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
-import UIKit
+import Foundation
 
-typealias ViewTuple = (title: String, item: BCViewController)
+typealias BCDBResult<Success> = Result<Success, BCError>
 
-typealias BCError = Error
+typealias BCDAOResult<Success> = BCResult<Success, BCError>
 
-struct BCColor {
-  enum BarTint {
-    static let green = UIColor(HEX: 0x009D82)
-    static let white = UIColor(R: 245, G: 245, B: 245)
-    static let gray = UIColor.darkGray
+struct BCResult<Success, Failure: BCError> {
+  
+  let result: Result<Success, Failure>
+  
+  var value: Success? { result.success }
+  
+  var error: Failure? { result.failure }
+  
+  init(result: Result<Success, Failure>) { self.result = result }
+  
+  init(value: Success, error: Failure?) {
+    if let error = error {
+      self.result = .failure(error)
+    } else {
+      self.result = .success(value)
+    }
+  }
+}
+
+extension Result {
+  var success: Success? {
+    guard case let .success(value) = self else { return nil }
+    return value
+  }
+  
+  var failure: Failure? {
+    guard case let .failure(error) = self else { return nil }
+    return error
+  }
+  
+  init(value: Success, error: Failure?) {
+    if let error = error {
+      self = .failure(error)
+    } else {
+      self = .success(value)
+    }
   }
 }

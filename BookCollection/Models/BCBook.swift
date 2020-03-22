@@ -68,17 +68,17 @@ class BCBookJSON: BCCodable, BCBookFoundation {
   
   let price: String?
   
-  let authors: [String]?
+  var authors: [String]?
   
-  let translators: [String]?
+  var translators: [String]?
   
-  let tags: [BCTag.JSON]?
+  var tags: [BCTag.JSON]?
   
-  let images: BCImages.JSON?
+  var images: BCImages.JSON?
   
-  let series: BCSeries.JSON?
+  var series: BCSeries.JSON?
   
-  let rating: BCRating.JSON?
+  var rating: BCRating.JSON?
   
   enum CodingKeys: String, CodingKey {
     case doubanID = "id"
@@ -92,10 +92,44 @@ class BCBookJSON: BCCodable, BCBookFoundation {
     case translators = "translator"
     case tags, images, series, rating
   }
+  
+  init(
+    doubanID: String?,
+    title: String?,
+    subtitle: String?,
+    originTitle: String?,
+    publishedDate: String?,
+    publisher: String?,
+    isbn10: String?,
+    isbn13: String?,
+    image: String?,
+    binding: String?,
+    authorIntroduction: String?,
+    catalog: String?,
+    pages: String?,
+    summary: String?,
+    price: String?
+  ) {
+    self.doubanID = doubanID
+    self.title = title
+    self.subtitle = subtitle
+    self.originTitle = originTitle
+    self.publishedDate = publishedDate
+    self.publisher = publisher
+    self.isbn10 = isbn10
+    self.isbn13 = isbn13
+    self.image = image
+    self.binding = binding
+    self.authorIntroduction = authorIntroduction
+    self.catalog = catalog
+    self.pages = pages
+    self.summary = summary
+    self.price = price
+  }
 }
 
 class BCBookDB: BCTableCodable, BCBookFoundation {
-
+  
   var id: Int64?
   
   let doubanID: String?
@@ -200,7 +234,8 @@ class BCBookDB: BCTableCodable, BCBookFoundation {
 }
 
 extension BCBookJSON {
-  var bookDB: BCBookDB? {
+  
+  var bookDB: BCBook.DB? {
     BCBookDB(
       doubanID: doubanID,
       title: title,
@@ -220,12 +255,12 @@ extension BCBookJSON {
     )
   }
   
-  var tagsDB: [BCTagDB]? {
+  var tagsDB: [BCTag.DB]? {
     guard tags != nil else { return nil }
     return tags!.map { BCTagDB(count: $0.count, title: $0.title) }
   }
   
-  var imagesDB: BCImagesDB? {
+  var imagesDB: BCImages.DB? {
     guard images != nil else { return nil }
     return BCImagesDB(
       small: images!.small,
@@ -234,12 +269,12 @@ extension BCBookJSON {
     )
   }
   
-  var seriesDB: BCSeriesDB? {
+  var seriesDB: BCSeries.DB? {
     guard series != nil else { return nil }
     return BCSeriesDB(seriesID: series!.seriesID, title: series!.title)
   }
   
-  var ratingDB: BCRatingDB? {
+  var ratingDB: BCRating.DB? {
     guard rating != nil else { return nil }
     return BCRatingDB(
       max: rating!.max,
@@ -249,13 +284,35 @@ extension BCBookJSON {
     )
   }
   
-  var authorsDB: [BCAuthorDB]? {
+  var authorsDB: [BCAuthor.DB]? {
     guard authors != nil else { return nil }
     return authors!.map { BCAuthorDB(name: $0) }
   }
   
-  var translatorsDB: [BCTranslatorDB]? {
+  var translatorsDB: [BCTranslator.DB]? {
     guard translators != nil else { return nil }
     return translators!.map { BCTranslatorDB(name: $0) }
+  }
+}
+
+extension BCBookDB {
+  var bookJSON: BCBook.JSON {
+    BCBookJSON(
+      doubanID: doubanID,
+      title: title,
+      subtitle: subtitle,
+      originTitle: originTitle,
+      publishedDate: publishedDate,
+      publisher: publisher,
+      isbn10: isbn10,
+      isbn13: isbn13,
+      image: image,
+      binding: binding,
+      authorIntroduction: authorIntroduction,
+      catalog: catalog,
+      pages: pages,
+      summary: summary,
+      price: price
+    )
   }
 }

@@ -29,17 +29,22 @@
 import Foundation
 
 struct BCDatabase {
-  static var databaseDirectoryURL: URL {
+  static var directoryURL: URL {
     URL(
       fileURLWithPath: "BCDB",
       relativeTo: FileManager.documentDirectoryURL)
   }
   
-  static var databaseURL: URL {
+  static var fileURL: URL {
     URL(
       fileURLWithPath: "Book.sqlite",
-      relativeTo: databaseDirectoryURL)
+      relativeTo: directoryURL)
   }
+  
+  static let queue = DispatchQueue(
+    label: "com.varrtix.bcdatabase",
+    qos: .background,
+    attributes: .concurrent)
 }
 
 enum BCTable {

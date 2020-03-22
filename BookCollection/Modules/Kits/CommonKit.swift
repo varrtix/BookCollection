@@ -146,8 +146,12 @@ public extension FileManager {
 }
 
 public enum V2RXError: Error {
-  public enum Fatal {
+  public enum Fatal: Error {
     case location(method: String)
+  }
+  
+  public enum DataAccessObjects: Error {
+    case invalidData
   }
 }
 
@@ -158,6 +162,15 @@ public extension V2RXError.Fatal {
     switch self {
       case let .location(method):
       return "\(method) has not been implemented"
+    }
+  }
+}
+
+public extension V2RXError.DataAccessObjects {
+  var localizedDescription: String {
+    switch self {
+      case .invalidData:
+        return "Data invalid!"
     }
   }
 }

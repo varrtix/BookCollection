@@ -34,18 +34,18 @@ class BCDatabaseOperation: AsyncOperation {
   override func main() {
     if !FileManager.default.fileExists(
       atPath: BCDatabase
-        .databaseDirectoryURL
+        .directoryURL
         .absoluteString) {
       do {
         try FileManager.default.createDirectory(
-          at: BCDatabase.databaseDirectoryURL,
+          at: BCDatabase.directoryURL,
           withIntermediateDirectories: true)
       } catch {
         print("Create DB Directory error: \(error)")
       }
     }
     
-    let database = Database(withFileURL: BCDatabase.databaseURL)
+    let database = Database(withFileURL: BCDatabase.fileURL)
     
     guard database.canOpen else {
       print("Database can not open in \(#file): \(#function), \(#line)")

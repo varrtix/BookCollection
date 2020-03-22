@@ -32,7 +32,7 @@ import WCDBSwift
 class BCBookInfoService {
   
   class func mark(book object: BCBook.JSON) throws -> Int64 {
-    let database = Database(withFileURL: BCDatabase.databaseURL)
+    let database = Database(withFileURL: BCDatabase.fileURL)
     
     guard database.canOpen else {
       print("Database can not open in \(#file): \(#function), \(#line)")
@@ -43,49 +43,49 @@ class BCBookInfoService {
     
     do {
       guard object.bookDB != nil else { return -1 }
-      bookID = try BCDataAcessObjects.insert(
+      bookID = try BCDataAccessObjects.insert(
         object.bookDB!,
         with: database,
         into: .book)
       guard bookID >= 0 else { return -1 }
 
       if object.authorsDB != nil {
-        let _ = try BCDataAcessObjects.insert(
+        try BCDataAccessObjects.insert(
           object.authorsDB!,
           with: database,
           into: .authors)
       }
       
       if object.translatorsDB != nil {
-        let _ = try BCDataAcessObjects.insert(
+        try BCDataAccessObjects.insert(
           object.translatorsDB!,
           with: database,
           into: .translators)
       }
       
       if object.tagsDB != nil {
-        let _ = try BCDataAcessObjects.insert(
+        try BCDataAccessObjects.insert(
           object.tagsDB!,
           with: database,
           into: .tags)
       }
       
       if object.imagesDB != nil {
-        let _ = try BCDataAcessObjects.insert(
+        try BCDataAccessObjects.insert(
           object.imagesDB!,
           with: database,
           into: .images)
       }
       
       if object.seriesDB != nil {
-        let _ = try BCDataAcessObjects.insert(
+        try BCDataAccessObjects.insert(
           object.seriesDB!,
           with: database,
           into: .series)
       }
       
       if object.ratingDB != nil {
-        let _ = try BCDataAcessObjects.insert(
+        try BCDataAccessObjects.insert(
           object.ratingDB!,
           with: database,
           into: .ratings)
@@ -97,7 +97,7 @@ class BCBookInfoService {
   }
   
   class func findBook(with doubanID: Int) throws -> BCBook.JSON? {
-    let database = Database(withFileURL: BCDatabase.databaseURL)
+    let database = Database(withFileURL: BCDatabase.fileURL)
     
     guard database.canOpen else {
       print("Database can not open in \(#file): \(#function), \(#line)")
