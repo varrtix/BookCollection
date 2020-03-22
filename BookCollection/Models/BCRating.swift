@@ -29,15 +29,17 @@
 import Foundation
 import WCDBSwift
 
-struct BCRating: BCModelORM {
+struct BCRating: BCORMAlias {
   
   typealias DB = BCRatingDB
   
   typealias JSON = BCRatingJSON
 }
 
-class BCRatingJSON: BCCodable, BCRatingFoundation {
+class BCRatingJSON: BCJSONModelCodable, BCRatingFoundation {
   
+  typealias DBType = BCRating.DB
+
   let max: Int?
   
   let numRaters: Int?
@@ -49,10 +51,23 @@ class BCRatingJSON: BCCodable, BCRatingFoundation {
   enum CodingKeys: String, CodingKey {
     case max, numRaters, average, min
   }
+  
+  init(max: Int?, numRaters: Int?, average: String?, min: Int?) {
+    self.max = max
+    self.numRaters = numRaters
+    self.average = average
+    self.min = min
+  }
+  
+  var dbFormat: BCRating.DB {
+    BCRating.DB(max: max, numRaters: numRaters, average: average, min: min)
+  }
 }
 
-class BCRatingDB: BCTableCodable, BCRatingFoundation {
+class BCRatingDB: BCDBModelCodable, BCRatingFoundation {
   
+  typealias JSONType = BCRating.JSON
+
   var bookID: Int64? 
   
   let max: Int?
@@ -83,5 +98,9 @@ class BCRatingDB: BCTableCodable, BCRatingFoundation {
     self.numRaters = numRaters
     self.average = average
     self.min = min
+  }
+  
+  var jsonFormat: BCRating.JSON {
+    BCRating.JSON(max: max, numRaters: numRaters, average: average, min: min)
   }
 }

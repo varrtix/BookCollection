@@ -29,14 +29,26 @@
 import Foundation
 import WCDBSwift
 
-struct BCAuthor: BCModelDB { typealias DB = BCAuthorDB }
+struct BCAuthor: BCORMAlias {
+  
+  typealias DB = BCAuthorDB
+  
+  typealias JSON = String
+}
 
-struct BCTranslator: BCModelDB { typealias DB = BCTranslatorDB }
+struct BCTranslator: BCORMAlias {
+  
+  typealias DB = BCTranslatorDB
+  
+  typealias JSON = String
+}
 
 typealias BCTranslatorDB = BCAuthorDB
 
-class BCAuthorDB: BCTableCodable, BCAuthorFoundation {
-  
+class BCAuthorDB: BCDBModelCodable, BCAuthorFoundation {
+
+  typealias JSONType = String
+
   var bookID: Int64? 
   
   let name: String?
@@ -56,4 +68,6 @@ class BCAuthorDB: BCTableCodable, BCAuthorFoundation {
   }
   
   init(name: String?) { self.name = name }
+  
+  var jsonFormat: String { name ?? String() }
 }

@@ -29,14 +29,16 @@
 import Foundation
 import WCDBSwift
 
-struct BCSeries: BCModelORM {
+struct BCSeries: BCORMAlias {
   
   typealias DB = BCSeriesDB
   
   typealias JSON = BCSeriesJSON
 }
 
-class BCSeriesJSON: BCCodable, BCSeriesFoundation {
+class BCSeriesJSON: BCJSONModelCodable, BCSeriesFoundation {
+  
+  typealias DBType = BCSeries.DB
   
   let seriesID: String?
   
@@ -46,9 +48,18 @@ class BCSeriesJSON: BCCodable, BCSeriesFoundation {
     case seriesID = "id"
     case title
   }
+  
+  init(seriesID: String?, title: String?) {
+    self.seriesID = seriesID
+    self.title = title
+  }
+  
+  var dbFormat: BCSeries.DB { BCSeries.DB(seriesID: seriesID, title: title) }
 }
 
-class BCSeriesDB: BCTableCodable, BCSeriesFoundation {
+class BCSeriesDB: BCDBModelCodable, BCSeriesFoundation {
+  
+  typealias JSONType = BCSeries.JSON
   
   var bookID: Int64?
   
@@ -75,4 +86,6 @@ class BCSeriesDB: BCTableCodable, BCSeriesFoundation {
     self.seriesID = seriesID
     self.title = title
   }
+  
+  var jsonFormat: BCSeries.JSON { BCSeries.JSON(seriesID: seriesID, title: title) }
 }

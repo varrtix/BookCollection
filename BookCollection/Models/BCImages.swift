@@ -29,14 +29,16 @@
 import Foundation
 import WCDBSwift
 
-struct BCImages: BCModelORM {
-  
+struct BCImages: BCORMAlias {
+
   typealias DB = BCImagesDB
   
   typealias JSON = BCImagesJSON
 }
 
-class BCImagesJSON: BCCodable, BCImagesFoundation {
+class BCImagesJSON: BCJSONModelCodable, BCImagesFoundation {
+  
+  typealias DBType = BCImages.DB
   
   let small: String?
   
@@ -47,9 +49,19 @@ class BCImagesJSON: BCCodable, BCImagesFoundation {
   enum CodingKeys: String, CodingKey {
     case small, medium, large
   }
+  
+  init(small: String?, medium: String?, large: String?) {
+    self.small = small
+    self.medium = medium
+    self.large = large
+  }
+  
+  var dbFormat: BCImages.DB { BCImages.DB(small: small, medium: medium, large: large) }
 }
 
-class BCImagesDB: BCTableCodable, BCImagesFoundation {
+class BCImagesDB: BCDBModelCodable, BCImagesFoundation {
+  
+  typealias JSONType = BCImages.JSON
   
   var bookID: Int64?
   
@@ -78,4 +90,6 @@ class BCImagesDB: BCTableCodable, BCImagesFoundation {
     self.medium = medium
     self.large = large
   }
+  
+  var jsonFormat: BCImages.JSON { BCImages.JSON(small: small, medium: medium, large: large) }
 }

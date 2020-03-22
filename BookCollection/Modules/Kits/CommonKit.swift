@@ -152,6 +152,8 @@ public enum V2RXError: Error {
   
   public enum DataAccessObjects: Error {
     case invalidData
+    case invalidForeignKey
+    case unexpected
   }
 }
 
@@ -170,7 +172,11 @@ public extension V2RXError.DataAccessObjects {
   var localizedDescription: String {
     switch self {
       case .invalidData:
-        return "Data invalid!"
+        return "Data is invalid!"
+      case .invalidForeignKey:
+        return "Foreign key is invalid!"
+      case .unexpected:
+        return "Unexpected: catch it from Data Access Object ERROR!"
     }
   }
 }

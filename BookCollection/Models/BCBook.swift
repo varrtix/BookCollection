@@ -29,14 +29,16 @@
 import Foundation
 import WCDBSwift
 
-struct BCBook: BCModelORM {
+struct BCBook: BCORMAlias {
   
   typealias DB = BCBookDB
   
   typealias JSON = BCBookJSON
 }
 
-class BCBookJSON: BCCodable, BCBookFoundation {
+class BCBookJSON: BCJSONModelCodable, BCBookFoundation {
+  
+  typealias DBType = BCBook.DB
   
   let doubanID: String?
   
@@ -128,7 +130,42 @@ class BCBookJSON: BCCodable, BCBookFoundation {
   }
 }
 
-class BCBookDB: BCTableCodable, BCBookFoundation {
+extension BCBookJSON {
+  
+  var dbFormat: BCBook.DB {
+    BCBookDB(
+      doubanID: doubanID,
+      title: title,
+      subtitle: subtitle,
+      originTitle: originTitle,
+      publishedDate: publishedDate,
+      publisher: publisher,
+      isbn10: isbn10,
+      isbn13: isbn13,
+      image: image,
+      binding: binding,
+      authorIntroduction: authorIntroduction,
+      catalog: catalog,
+      pages: pages,
+      summary: summary,
+      price: price
+    )
+  }
+  
+  var dbTags: [BCTag.DB]? { tags == nil ? nil : tags!.map { $0.dbFormat } }
+  
+  var dbImages: BCImages.DB? { images == nil ? nil : images!.dbFormat }
+
+  var dbSeries: BCSeries.DB? { series == nil ? nil : series!.dbFormat }
+
+  var dbRating: BCRating.DB? { rating == nil ? nil : rating!.dbFormat }
+
+  var dbAuthors: [BCAuthor.DB]? { authors == nil ? nil : authors!.map { BCAuthor.DB(name: $0) } }
+    
+  var dbTranslators: [BCTranslator.DB]? { translators == nil ? nil : translators!.map { BCTranslator.DB(name: $0) } }
+}
+
+class BCBookDB: BCDBModelCodable, BCBookFoundation {
   
   var id: Int64?
   
@@ -233,70 +270,8 @@ class BCBookDB: BCTableCodable, BCBookFoundation {
   var lastInsertedRowID: Int64 = 0
 }
 
-extension BCBookJSON {
-  
-  var bookDB: BCBook.DB? {
-    BCBookDB(
-      doubanID: doubanID,
-      title: title,
-      subtitle: subtitle,
-      originTitle: originTitle,
-      publishedDate: publishedDate,
-      publisher: publisher,
-      isbn10: isbn10,
-      isbn13: isbn13,
-      image: image,
-      binding: binding,
-      authorIntroduction: authorIntroduction,
-      catalog: catalog,
-      pages: pages,
-      summary: summary,
-      price: price
-    )
-  }
-  
-  var tagsDB: [BCTag.DB]? {
-    guard tags != nil else { return nil }
-    return tags!.map { BCTagDB(count: $0.count, title: $0.title) }
-  }
-  
-  var imagesDB: BCImages.DB? {
-    guard images != nil else { return nil }
-    return BCImagesDB(
-      small: images!.small,
-      medium: images!.medium,
-      large: images!.large
-    )
-  }
-  
-  var seriesDB: BCSeries.DB? {
-    guard series != nil else { return nil }
-    return BCSeriesDB(seriesID: series!.seriesID, title: series!.title)
-  }
-  
-  var ratingDB: BCRating.DB? {
-    guard rating != nil else { return nil }
-    return BCRatingDB(
-      max: rating!.max,
-      numRaters: rating!.numRaters,
-      average: rating!.average,
-      min: rating!.min
-    )
-  }
-  
-  var authorsDB: [BCAuthor.DB]? {
-    guard authors != nil else { return nil }
-    return authors!.map { BCAuthorDB(name: $0) }
-  }
-  
-  var translatorsDB: [BCTranslator.DB]? {
-    guard translators != nil else { return nil }
-    return translators!.map { BCTranslatorDB(name: $0) }
-  }
-}
-
 extension BCBookDB {
-  var bookJSON: BCBook.JSON {
+  var jsonFormat: BCBook.JSON {
     BCBookJSON(
       doubanID: doubanID,
       title: title,

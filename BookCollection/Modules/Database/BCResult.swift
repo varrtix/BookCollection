@@ -34,7 +34,7 @@ typealias BCDAOResult<Success> = BCResult<Success, BCError>
 
 struct BCResult<Success, Failure: BCError> {
   
-  let result: Result<Success, Failure>
+  var result: Result<Success, Failure>
   
   var value: Success? { result.success }
   

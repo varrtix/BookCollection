@@ -31,29 +31,122 @@ import WCDBSwift
 
 class BCDataAccessObjects {
   
-  @discardableResult
-  class func insert<T: BCTableCodable>(
-    _ object: T,
+  class func insert<Object: BCDBModelCodable>(
+    _ object: Object,
     with database: Database,
-    into table: BCTable) throws -> Int64 {
-    do {
-      try database.insert(objects: object, intoTable: table.rawName)
-    } catch let error as WCDBSwift.Error { throw error }
-    
-    return object.lastInsertedRowID
+    into table: BCTable,
+    or replace: Bool = false,
+    on propertyConvertibleList: [PropertyConvertible]? = nil,
+    completionHandler: @escaping (BCDBResult<Int64>) -> Void
+  ) {
+    BCDatabase.queue.async {
+      let result: BCDBResult<Int64> = Result {
+        do {
+          if replace {
+            try database.insertOrReplace(
+              objects: object,
+              on: propertyConvertibleList,
+              intoTable: table.rawName
+            )
+          } else {
+            try database.insert(
+              objects: object,
+              on: propertyConvertibleList,
+              intoTable: table.rawName
+            )
+          }
+        } catch { throw error }
+        
+        return object.lastInsertedRowID
+      }
+      completionHandler(result)
+    }
   }
   
-  @discardableResult
-  class func insert<T: BCTableCodable>(
-    _ objects: [T],
+  class func multiInsert<Object: BCDBModelCodable>(
+    _ objects: [Object],
     with database: Database,
-    into table: BCTable) throws -> Int64 {
-    do {
-      try database.insert(objects: objects, intoTable: table.rawName)
-    } catch let error as WCDBSwift.Error { throw error }
-    
-    return objects.last!.lastInsertedRowID
+    into table: BCTable,
+    or replace: Bool = false,
+    on propertyConvertibleList: [PropertyConvertible]? = nil,
+    completionHandler: @escaping (BCDBResult<Int64>) -> Void
+  ) {
+    BCDatabase.queue.async {
+      let result: BCDBResult<Int64> = Result {
+        do {
+          if replace {
+            try database.insertOrReplace(
+              objects: objects,
+              on: propertyConvertibleList,
+              intoTable: table.rawName
+            )
+          } else {
+            try database.insert(
+              objects: objects,
+              on: propertyConvertibleList,
+              intoTable: table.rawName
+            )
+          }
+        } catch { throw error }
+        
+        return objects.last!.lastInsertedRowID
+      }
+      completionHandler(result)
+    }
   }
+
+  class func get<Object: BCDBModelCodable>(
+    of type: Object.Type,
+    on propertyConvertibleList: PropertyConvertible,
+    from table: BCTable,
+    with database: Database,
+    where condition: Condition? = nil,
+    orderBy orderList: [OrderBy]? = nil,
+    offsetBy offset: Offset? = nil,
+    completionHandler: @escaping (BCDBResult<Object?>) -> Void
+  ) {
+    BCDatabase.queue.async {
+      let result: BCDBResult<Object?> = Result {
+        try database.getObject(
+          on: propertyConvertibleList,
+          fromTable: table.rawName,
+          where: condition,
+          orderBy: orderList,
+          offset: offset
+        )
+      }
+      completionHandler(result)
+    }
+  }
+  
+  class func multiGet<Object: BCDBModelCodable>(
+    of type: Object.Type,
+    on propertyConvertibleList: PropertyConvertible,
+    from table: BCTable,
+    with database: Database,
+    where condition: Condition? = nil,
+    orderBy orderList: [OrderBy]? = nil,
+    limitBy limit: Limit? = nil,
+    offsetBy offset: Offset? = nil,
+    completionHandler: @escaping (BCDBResult<[Object]?>) -> Void
+  ) {
+    BCDatabase.queue.async {
+      let result: BCDBResult<[Object]?> = Result {
+        try database.getObjects(
+          on: propertyConvertibleList,
+          fromTable: table.rawName,
+          where: condition,
+          orderBy: orderList,
+          limit: limit,
+          offset: offset
+        )
+      }
+      completionHandler(result)
+    }
+  }
+}
+
+extension BCDataAccessObjects {
   
   class func extractObject(
     queue: DispatchQueue = .main,
@@ -61,35 +154,90 @@ class BCDataAccessObjects {
     with database: Database,
     completionHandler: @escaping (BCDAOResult<BCBook.JSON?>) -> Void) {
     
+    var resultJSON = BCDAOResult<BCBook.JSON?>(value: nil, error: nil)
+    
     database.get(
       of: BCBook.DB.self,
       on: BCBook.DB.Properties.doubanID,
-      fromTable: BCTable.root.rawName) { result in
-    }
-  }
-}
-
-extension SelectInterface where Self: Core {
-
-  func get<Object: TableDecodable>(
-    of type: Object.Type,
-    on propertyConvertibleList: PropertyConvertible,
-    fromTable table: String,
-    where condition: Condition? = nil,
-    orderBy orderList: [OrderBy]? = nil,
-    offset: Offset? = nil,
-    completionHandler: @escaping (BCDBResult<Object?>) -> Void) {
-    
-    BCDatabase.queue.async {
-      let result: BCDBResult<Object?> = Result {
-        try self.getObject(
-          on: propertyConvertibleList,
-          fromTable: table,
-          where: condition,
-          orderBy: orderList,
-          offset: offset)
+      fromTable: BCTable.root.rawName,
+      where: BCBook.DB.Properties.doubanID == doubanID
+    ) { result in
+      
+      var book: BCBook.JSON?
+      
+      guard case let .success(value) = result else {
+        guard case let .failure(error) = result else {
+          resultJSON.result = .failure(V2RXError.DataAccessObjects.unexpected)
+          return
+        }
+        
+        resultJSON.result = .failure(error)
+        return
       }
-      completionHandler(result)
+      
+      book = value?.bookJSON
+      
+      guard let id = value?.id else {
+        resultJSON.result = .failure(V2RXError.DataAccessObjects.invalidForeignKey)
+        return
+      }
+      
+      database.multiGet(
+        of: BCAuthor.DB.self,
+        on: BCAuthor.DB.Properties.bookID,
+        fromTable: BCTable.authors.rawName,
+        where: BCAuthor.DB.Properties.bookID == id
+      ) { authors in
+        guard case let .success(subValue) = authors, subValue != nil else {
+          guard case let .failure(error) = authors else {
+            resultJSON.result = .failure(V2RXError.DataAccessObjects.unexpected)
+            return
+          }
+          resultJSON.result = .failure(error)
+          return
+        }
+        book?.authors = subValue!.map { $0.jsonFormat }
+      }
+      
+      database.multiGet(
+        of: BCTranslator.DB.self,
+        on: BCTranslator.DB.Properties.bookID,
+        fromTable: BCTable.translators.rawName,
+        where: BCTranslator.DB.Properties.bookID == id
+      ) { translators in
+        guard case let .success(subValue) = translators, subValue != nil else {
+          guard case let .failure(error) = translators else {
+            resultJSON.result = .failure(V2RXError.DataAccessObjects.unexpected)
+            return
+          }
+          resultJSON.result = .failure(error)
+          return
+        }
+        book?.translators = subValue!.map { $0.jsonFormat }
+      }
+      
+      database.multiGet(
+        of: BCTag.DB.self,
+        on: BCTag.DB.Properties.bookID,
+        fromTable: BCTable.tags.rawName,
+        where: BCTranslator.DB.Properties.bookID == id
+      ) { tags in
+        guard case let .success(subValue) = tags, subValue != nil else {
+          guard case let .failure(error) = tags else {
+            resultJSON.result = .failure(V2RXError.DataAccessObjects.unexpected)
+            return
+          }
+          resultJSON.result = .failure(error)
+          return
+        }
+        book?.tags = subValue!.map { $0.jsonFormat }
+      }
+      
+      resultJSON.result = .success(book)
+    }
+    
+    queue.async {
+      completionHandler(resultJSON)
     }
   }
 }

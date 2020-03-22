@@ -27,20 +27,39 @@
 /// THE SOFTWARE.
 
 import Foundation
+import WCDBSwift
 
 protocol BCModelFoundation {}
 
-protocol BCModelDB { associatedtype DB: Codable }
+protocol BCAliasDB { associatedtype DB: Codable }
 
-protocol BCModelJSON { associatedtype JSON: Codable }
-
-typealias BCModelORM = BCModelDB & BCModelJSON
+protocol BCAliasJSON { associatedtype JSON: Codable }
 
 protocol BCModelEncodable: Encodable, BCModelFoundation {}
 
 protocol BCModelDecodable: Decodable, BCModelFoundation {}
 
-typealias BCModelCodable = BCModelEncodable & BCModelDecodable
+protocol BCModelDB {
+  
+  associatedtype JSONType: Any
+  
+  var jsonFormat: JSONType { get }
+}
+
+protocol BCModelJSON {
+  
+  associatedtype DBType: Any
+  
+  var dbFormat: DBType { get }
+}
+
+typealias BCORMAlias = BCAliasDB & BCAliasJSON
+
+typealias BCModelCodable = BCModelDecodable & BCModelEncodable
+
+typealias BCJSONModelCodable = BCModel & BCModelCodable & BCModelJSON
+
+typealias BCDBModelCodable = BCModel & TableCodable & BCModelDB
 
 protocol BCBookFoundation {
   

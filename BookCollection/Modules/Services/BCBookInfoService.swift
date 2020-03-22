@@ -41,57 +41,59 @@ class BCBookInfoService {
     
     let bookID: Int64
     
-    do {
-      guard object.bookDB != nil else { return -1 }
-      bookID = try BCDataAccessObjects.insert(
-        object.bookDB!,
-        with: database,
-        into: .book)
-      guard bookID >= 0 else { return -1 }
-
-      if object.authorsDB != nil {
-        try BCDataAccessObjects.insert(
-          object.authorsDB!,
-          with: database,
-          into: .authors)
-      }
-      
-      if object.translatorsDB != nil {
-        try BCDataAccessObjects.insert(
-          object.translatorsDB!,
-          with: database,
-          into: .translators)
-      }
-      
-      if object.tagsDB != nil {
-        try BCDataAccessObjects.insert(
-          object.tagsDB!,
-          with: database,
-          into: .tags)
-      }
-      
-      if object.imagesDB != nil {
-        try BCDataAccessObjects.insert(
-          object.imagesDB!,
-          with: database,
-          into: .images)
-      }
-      
-      if object.seriesDB != nil {
-        try BCDataAccessObjects.insert(
-          object.seriesDB!,
-          with: database,
-          into: .series)
-      }
-      
-      if object.ratingDB != nil {
-        try BCDataAccessObjects.insert(
-          object.ratingDB!,
-          with: database,
-          into: .ratings)
-      }
-      
-    } catch let error as WCDBSwift.Error { throw error }
+    object.dbFormat
+    
+//    do {
+//      guard object.dbFormat.doubanID != nil else { return -1 }
+//      bookID = try BCDataAccessObjects.insert(
+//        object.bookDB!,
+//        with: database,
+//        into: .book)
+//      guard bookID >= 0 else { return -1 }
+//
+//      if object.authorsDB != nil {
+//        try BCDataAccessObjects.insert(
+//          object.authorsDB!,
+//          with: database,
+//          into: .authors)
+//      }
+//
+//      if object.translatorsDB != nil {
+//        try BCDataAccessObjects.insert(
+//          object.translatorsDB!,
+//          with: database,
+//          into: .translators)
+//      }
+//
+//      if object.tagsDB != nil {
+//        try BCDataAccessObjects.insert(
+//          object.tagsDB!,
+//          with: database,
+//          into: .tags)
+//      }
+//
+//      if object.imagesDB != nil {
+//        try BCDataAccessObjects.insert(
+//          object.imagesDB!,
+//          with: database,
+//          into: .images)
+//      }
+//
+//      if object.seriesDB != nil {
+//        try BCDataAccessObjects.insert(
+//          object.seriesDB!,
+//          with: database,
+//          into: .series)
+//      }
+//
+//      if object.ratingDB != nil {
+//        try BCDataAccessObjects.insert(
+//          object.ratingDB!,
+//          with: database,
+//          into: .ratings)
+//      }
+//
+//    } catch let error as WCDBSwift.Error { throw error }
     
     return bookID
   }

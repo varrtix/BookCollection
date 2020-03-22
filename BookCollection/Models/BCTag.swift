@@ -29,14 +29,16 @@
 import Foundation
 import WCDBSwift
 
-struct BCTag: BCModelORM {
+struct BCTag: BCORMAlias {
   
   typealias DB = BCTagDB
   
   typealias JSON = BCTagJSON
 }
 
-class BCTagJSON: BCCodable, BCTagFoundation {
+class BCTagJSON: BCJSONModelCodable, BCTagFoundation {
+  
+  typealias DBType = BCTag.DB
   
   let count: Int?
   
@@ -45,9 +47,18 @@ class BCTagJSON: BCCodable, BCTagFoundation {
   enum CodingKeys: String, CodingKey {
     case count, title
   }
+  
+  init(count: Int?, title: String?) {
+    self.count = count
+    self.title = title
+  }
+  
+  var dbFormat: BCTag.DB { BCTag.DB(count: count, title: title) }
 }
 
-class BCTagDB: BCTableCodable, BCTagFoundation {
+class BCTagDB: BCDBModelCodable, BCTagFoundation {
+  
+  typealias JSONType = BCTag.JSON
   
   var bookID: Int64?
   
@@ -73,4 +84,6 @@ class BCTagDB: BCTableCodable, BCTagFoundation {
     self.count = count
     self.title = title
   }
+  
+  var jsonFormat: BCTag.JSON { BCTag.JSON(count: count, title: title) }
 }
