@@ -37,7 +37,7 @@ struct BCBook: BCORMAlias {
 }
 
 class BCBookJSON: BCJSONModelCodable, BCBookFoundation {
-  
+
   typealias DBType = BCBook.DB
   
   let doubanID: String?
@@ -128,41 +128,8 @@ class BCBookJSON: BCJSONModelCodable, BCBookFoundation {
     self.summary = summary
     self.price = price
   }
-}
-
-extension BCBookJSON {
   
-  var dbFormat: BCBook.DB {
-    BCBookDB(
-      doubanID: doubanID,
-      title: title,
-      subtitle: subtitle,
-      originTitle: originTitle,
-      publishedDate: publishedDate,
-      publisher: publisher,
-      isbn10: isbn10,
-      isbn13: isbn13,
-      image: image,
-      binding: binding,
-      authorIntroduction: authorIntroduction,
-      catalog: catalog,
-      pages: pages,
-      summary: summary,
-      price: price
-    )
-  }
-  
-  var dbTags: [BCTag.DB]? { tags == nil ? nil : tags!.map { $0.dbFormat } }
-  
-  var dbImages: BCImages.DB? { images == nil ? nil : images!.dbFormat }
-
-  var dbSeries: BCSeries.DB? { series == nil ? nil : series!.dbFormat }
-
-  var dbRating: BCRating.DB? { rating == nil ? nil : rating!.dbFormat }
-
-  var dbAuthors: [BCAuthor.DB]? { authors == nil ? nil : authors!.map { BCAuthor.DB(name: $0) } }
-    
-  var dbTranslators: [BCTranslator.DB]? { translators == nil ? nil : translators!.map { BCTranslator.DB(name: $0) } }
+  var dbFormat: BCBook.DB { BCTable(root: self).book }
 }
 
 class BCBookDB: BCDBModelCodable, BCBookFoundation {
@@ -228,7 +195,7 @@ class BCBookDB: BCDBModelCodable, BCBookFoundation {
   }
   
   static var foreginKey: ForeignKey {
-    ForeignKey(withForeignTable: BCTable.root.rawName, and: BCBookDB.CodingKeys.id)
+    ForeignKey(withForeignTable: BCTable.Kind.book.rawName, and: BCBookDB.CodingKeys.id)
   }
   
   init(

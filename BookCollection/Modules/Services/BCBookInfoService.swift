@@ -41,8 +41,6 @@ class BCBookInfoService {
     
     let bookID: Int64
     
-    object.dbFormat
-    
 //    do {
 //      guard object.dbFormat.doubanID != nil else { return -1 }
 //      bookID = try BCDataAccessObjects.insert(

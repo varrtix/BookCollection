@@ -34,7 +34,7 @@ class BCDataAccessObjects {
   class func insert<Object: BCDBModelCodable>(
     _ object: Object,
     with database: Database,
-    into table: BCTable,
+    into table: BCTable.Kind,
     or replace: Bool = false,
     on propertyConvertibleList: [PropertyConvertible]? = nil,
     completionHandler: @escaping (BCDBResult<Int64>) -> Void
@@ -66,7 +66,7 @@ class BCDataAccessObjects {
   class func multiInsert<Object: BCDBModelCodable>(
     _ objects: [Object],
     with database: Database,
-    into table: BCTable,
+    into table: BCTable.Kind,
     or replace: Bool = false,
     on propertyConvertibleList: [PropertyConvertible]? = nil,
     completionHandler: @escaping (BCDBResult<Int64>) -> Void
@@ -98,7 +98,7 @@ class BCDataAccessObjects {
   class func get<Object: BCDBModelCodable>(
     of type: Object.Type,
     on propertyConvertibleList: PropertyConvertible,
-    from table: BCTable,
+    from table: BCTable.Kind,
     with database: Database,
     where condition: Condition? = nil,
     orderBy orderList: [OrderBy]? = nil,
@@ -122,7 +122,7 @@ class BCDataAccessObjects {
   class func multiGet<Object: BCDBModelCodable>(
     of type: Object.Type,
     on propertyConvertibleList: PropertyConvertible,
-    from table: BCTable,
+    from table: BCTable.Kind,
     with database: Database,
     where condition: Condition? = nil,
     orderBy orderList: [OrderBy]? = nil,
@@ -159,7 +159,7 @@ extension BCDataAccessObjects {
     database.get(
       of: BCBook.DB.self,
       on: BCBook.DB.Properties.doubanID,
-      fromTable: BCTable.root.rawName,
+      fromTable: BCTable.Kind.book.rawName,
       where: BCBook.DB.Properties.doubanID == doubanID
     ) { result in
       

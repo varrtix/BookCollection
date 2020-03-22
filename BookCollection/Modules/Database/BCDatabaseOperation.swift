@@ -64,13 +64,13 @@ extension BCDatabaseOperation {
   
   func createTable(with database: Database) throws {
     do {
-      try database.create(table: BCTable.root.rawName, of: BCBook.DB.self)
-      try database.create(table: BCTable.tags.rawName, of: BCTag.DB.self)
-      try database.create(table: BCTable.images.rawName, of: BCImages.DB.self)
-      try database.create(table: BCTable.series.rawName, of: BCSeries.DB.self)
-      try database.create(table: BCTable.ratings.rawName, of: BCRating.DB.self)
-      try database.create(table: BCTable.authors.rawName, of: BCAuthor.DB.self)
-      try database.create(table: BCTable.translators.rawName, of: BCTranslator.DB.self)
+      try database.create(table: BCTable.Kind.book.rawName, of: BCBook.DB.self)
+      try database.create(table: BCTable.Kind.tags.rawName, of: BCTag.DB.self)
+      try database.create(table: BCTable.Kind.images.rawName, of: BCImages.DB.self)
+      try database.create(table: BCTable.Kind.series.rawName, of: BCSeries.DB.self)
+      try database.create(table: BCTable.Kind.ratings.rawName, of: BCRating.DB.self)
+      try database.create(table: BCTable.Kind.authors.rawName, of: BCAuthor.DB.self)
+      try database.create(table: BCTable.Kind.translators.rawName, of: BCTranslator.DB.self)
     } catch let error as WCDBSwift.Error { throw error }
     
   }
