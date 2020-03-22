@@ -63,7 +63,7 @@ class BCDataAccessObjects {
     }
   }
   
-  class func multiInsert<Object: BCDBModelCodable>(
+  class func insert<Object: BCDBModelCodable>(
     _ objects: [Object],
     with database: Database,
     into table: BCTable.Kind,

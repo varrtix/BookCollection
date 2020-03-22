@@ -31,7 +31,11 @@ import WCDBSwift
 
 class BCBookInfoService {
   
-  class func mark(book object: BCBook.JSON) throws -> Int64 {
+  class func mark(
+    book object: BCBook.JSON,
+    at queue: DispatchQueue = .main,
+    completionHandler: @escaping (BCDAOResult<Int64>) -> Void
+    ) {
     let database = Database(withFileURL: BCDatabase.fileURL)
     
     guard database.canOpen else {
