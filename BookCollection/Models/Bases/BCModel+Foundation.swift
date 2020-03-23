@@ -35,9 +35,9 @@ protocol BCAliasDB { associatedtype DB: Codable }
 
 protocol BCAliasJSON { associatedtype JSON: Codable }
 
-protocol BCModelEncodable: Encodable, BCModelFoundation {}
+//protocol BCModelEncodable: Encodable, BCModelFoundation {}
 
-protocol BCModelDecodable: Decodable, BCModelFoundation {}
+//protocol BCModelDecodable: Decodable, BCModelFoundation {}
 
 protocol BCModelDB {
   
@@ -55,11 +55,13 @@ protocol BCModelJSON {
 
 typealias BCORMAlias = BCAliasDB & BCAliasJSON
 
-typealias BCModelCodable = BCModelDecodable & BCModelEncodable
+//typealias BCModelCodable = BCModelDecodable & BCModelEncodable
 
-typealias BCJSONModelCodable = BCModel & BCModelCodable & BCModelJSON
+//typealias BCJSONCodable = BCModelCodable & BCModelJSON
 
-typealias BCDBModelCodable = BCModel & TableCodable & BCModelDB
+typealias BCJSONCodable = Codable & BCModelJSON
+
+typealias BCDBCodable = TableCodable & BCModelDB
 
 protocol BCBookFoundation {
   

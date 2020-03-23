@@ -282,11 +282,16 @@ extension BCInfoViewController {
 // MARK: - Actions
 extension BCInfoViewController {
   @objc func mark(_ sender: UIButton? = nil) {
-    guard book != nil else { return }
-    do {
-      let bookID = try BCBookInfoService.mark(book: book!)
-      if bookID > 0 { sender?.isEnabled = false }
-    } catch { print("mark error: \(error)") }
+    
+    if book == nil { return }
+    
+    BCBookInfoService.mark(book: book!) { result in
+      if let id = result.value, id > 0 {
+        sender?.isEnabled = false
+      } else if let error = result.error {
+        V2RXError.printError(error)
+      }
+    }
   }
 }
 

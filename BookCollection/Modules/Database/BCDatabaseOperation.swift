@@ -68,7 +68,7 @@ extension BCDatabaseOperation {
       try database.create(table: BCTable.Kind.tags.rawName, of: BCTag.DB.self)
       try database.create(table: BCTable.Kind.images.rawName, of: BCImages.DB.self)
       try database.create(table: BCTable.Kind.series.rawName, of: BCSeries.DB.self)
-      try database.create(table: BCTable.Kind.ratings.rawName, of: BCRating.DB.self)
+      try database.create(table: BCTable.Kind.rating.rawName, of: BCRating.DB.self)
       try database.create(table: BCTable.Kind.authors.rawName, of: BCAuthor.DB.self)
       try database.create(table: BCTable.Kind.translators.rawName, of: BCTranslator.DB.self)
     } catch let error as WCDBSwift.Error { throw error }

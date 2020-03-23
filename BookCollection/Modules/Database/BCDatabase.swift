@@ -49,9 +49,9 @@ struct BCDatabase {
 
 struct BCTable {
   
-  enum Kind: String {
+  enum Kind: String, CaseIterable {
     case book, authors, translators
-    case tags, images, series, ratings
+    case tags, images, series, rating
     
     var rawName: String { "TB_BC_\(self.rawValue.uppercased())" }
   }
@@ -89,6 +89,6 @@ struct BCTable {
   var authors: [BCAuthor.DB]? { root.authors == nil ? nil : root.authors!.map { BCAuthor.DB(name: $0) } }
   
   var translators: [BCTranslator.DB]? { root.translators == nil ? nil : root.translators!.map { BCTranslator.DB(name: $0) } }
-
+  
   init(root: BCBook.JSON) { self.root = root }
 }

@@ -45,7 +45,7 @@ struct BCTranslator: BCORMAlias {
 
 typealias BCTranslatorDB = BCAuthorDB
 
-class BCAuthorDB: BCDBModelCodable, BCAuthorFoundation {
+class BCAuthorDB: BCModel, BCDBCodable, BCAuthorFoundation {
 
   typealias JSONType = String
 

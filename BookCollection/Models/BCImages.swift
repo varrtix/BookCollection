@@ -36,7 +36,7 @@ struct BCImages: BCORMAlias {
   typealias JSON = BCImagesJSON
 }
 
-class BCImagesJSON: BCJSONModelCodable, BCImagesFoundation {
+class BCImagesJSON: BCModel, BCJSONCodable, BCImagesFoundation {
   
   typealias DBType = BCImages.DB
   
@@ -59,7 +59,7 @@ class BCImagesJSON: BCJSONModelCodable, BCImagesFoundation {
   var dbFormat: BCImages.DB { BCImages.DB(small: small, medium: medium, large: large) }
 }
 
-class BCImagesDB: BCDBModelCodable, BCImagesFoundation {
+class BCImagesDB: BCModel, BCDBCodable, BCImagesFoundation {
   
   typealias JSONType = BCImages.JSON
   

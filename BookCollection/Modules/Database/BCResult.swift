@@ -36,9 +36,21 @@ struct BCResult<Success, Failure: BCError> {
   
   var result: Result<Success, Failure>
   
-  var value: Success? { result.success }
+  var value: Success? {
+    get { result.success }
+    set {
+      guard newValue != nil else { return }
+      self.result = .success(newValue!)
+    }
+  }
   
-  var error: Failure? { result.failure }
+  var error: Failure? {
+    get { result.failure }
+    set {
+      guard newValue != nil else { return }
+      self.result = .failure(newValue!)
+    }
+  }
   
   init(result: Result<Success, Failure>) { self.result = result }
   

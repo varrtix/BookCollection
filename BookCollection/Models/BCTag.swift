@@ -36,7 +36,7 @@ struct BCTag: BCORMAlias {
   typealias JSON = BCTagJSON
 }
 
-class BCTagJSON: BCJSONModelCodable, BCTagFoundation {
+class BCTagJSON: BCModel, BCJSONCodable, BCTagFoundation {
   
   typealias DBType = BCTag.DB
   
@@ -56,7 +56,7 @@ class BCTagJSON: BCJSONModelCodable, BCTagFoundation {
   var dbFormat: BCTag.DB { BCTag.DB(count: count, title: title) }
 }
 
-class BCTagDB: BCDBModelCodable, BCTagFoundation {
+class BCTagDB: BCModel, BCDBCodable, BCTagFoundation {
   
   typealias JSONType = BCTag.JSON
   

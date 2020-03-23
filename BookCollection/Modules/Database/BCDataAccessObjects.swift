@@ -31,8 +31,8 @@ import WCDBSwift
 
 class BCDataAccessObjects {
   
-  class func insert<Object: BCDBModelCodable>(
-    _ object: Object,
+  class func insert<Object: BCDBCodable>(
+    _ object: Object?,
     with database: Database,
     into table: BCTable.Kind,
     or replace: Bool = false,
@@ -41,30 +41,32 @@ class BCDataAccessObjects {
   ) {
     BCDatabase.queue.async {
       let result: BCDBResult<Int64> = Result {
+        guard object != nil else { throw V2RXError.DataAccessObjects.invalidData }
+        
         do {
           if replace {
             try database.insertOrReplace(
-              objects: object,
+              objects: object!,
               on: propertyConvertibleList,
               intoTable: table.rawName
             )
           } else {
             try database.insert(
-              objects: object,
+              objects: object!,
               on: propertyConvertibleList,
               intoTable: table.rawName
             )
           }
         } catch { throw error }
         
-        return object.lastInsertedRowID
+        return object!.lastInsertedRowID
       }
       completionHandler(result)
     }
   }
   
-  class func insert<Object: BCDBModelCodable>(
-    _ objects: [Object],
+  class func multiInnsert<Object: BCDBCodable>(
+    _ objects: [Object]?,
     with database: Database,
     into table: BCTable.Kind,
     or replace: Bool = false,
@@ -73,29 +75,31 @@ class BCDataAccessObjects {
   ) {
     BCDatabase.queue.async {
       let result: BCDBResult<Int64> = Result {
+        guard objects != nil else { throw V2RXError.DataAccessObjects.invalidData }
+        
         do {
           if replace {
             try database.insertOrReplace(
-              objects: objects,
+              objects: objects!,
               on: propertyConvertibleList,
               intoTable: table.rawName
             )
           } else {
             try database.insert(
-              objects: objects,
+              objects: objects!,
               on: propertyConvertibleList,
               intoTable: table.rawName
             )
           }
         } catch { throw error }
         
-        return objects.last!.lastInsertedRowID
+        return objects!.last!.lastInsertedRowID
       }
       completionHandler(result)
     }
   }
 
-  class func get<Object: BCDBModelCodable>(
+  class func get<Object: BCDBCodable>(
     of type: Object.Type,
     on propertyConvertibleList: PropertyConvertible,
     from table: BCTable.Kind,
@@ -119,7 +123,7 @@ class BCDataAccessObjects {
     }
   }
   
-  class func multiGet<Object: BCDBModelCodable>(
+  class func multiGet<Object: BCDBCodable>(
     of type: Object.Type,
     on propertyConvertibleList: PropertyConvertible,
     from table: BCTable.Kind,

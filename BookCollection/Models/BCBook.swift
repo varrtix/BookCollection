@@ -36,7 +36,7 @@ struct BCBook: BCORMAlias {
   typealias JSON = BCBookJSON
 }
 
-class BCBookJSON: BCJSONModelCodable, BCBookFoundation {
+class BCBookJSON: BCModel, BCJSONCodable, BCBookFoundation {
 
   typealias DBType = BCBook.DB
   
@@ -132,7 +132,7 @@ class BCBookJSON: BCJSONModelCodable, BCBookFoundation {
   var dbFormat: BCBook.DB { BCTable(root: self).book }
 }
 
-class BCBookDB: BCDBModelCodable, BCBookFoundation {
+class BCBookDB: BCModel, BCDBCodable, BCBookFoundation {
   
   var id: Int64?
   

@@ -157,7 +157,14 @@ public enum V2RXError: Error {
   }
 }
 
-extension V2RXError: LocalizedError {}
+extension V2RXError: LocalizedError {
+  static func printError(_ error: Error) {
+    print(
+      "V2RXError:\nDescription: \(error.localizedDescription)\n" +
+      "Function name: \(#function)\nFile: \(#file), Line: \(#line)"
+    )
+  }
+}
 
 public extension V2RXError.Fatal {
   var localizedDescription: String {

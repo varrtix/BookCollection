@@ -36,7 +36,7 @@ struct BCRating: BCORMAlias {
   typealias JSON = BCRatingJSON
 }
 
-class BCRatingJSON: BCJSONModelCodable, BCRatingFoundation {
+class BCRatingJSON: BCModel, BCJSONCodable, BCRatingFoundation {
   
   typealias DBType = BCRating.DB
 
@@ -64,7 +64,7 @@ class BCRatingJSON: BCJSONModelCodable, BCRatingFoundation {
   }
 }
 
-class BCRatingDB: BCDBModelCodable, BCRatingFoundation {
+class BCRatingDB: BCModel, BCDBCodable, BCRatingFoundation {
   
   typealias JSONType = BCRating.JSON
 

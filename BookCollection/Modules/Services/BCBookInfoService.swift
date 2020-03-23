@@ -35,69 +35,88 @@ class BCBookInfoService {
     book object: BCBook.JSON,
     at queue: DispatchQueue = .main,
     completionHandler: @escaping (BCDAOResult<Int64>) -> Void
-    ) {
+  ) {
     let database = Database(withFileURL: BCDatabase.fileURL)
     
-    guard database.canOpen else {
-      print("Database can not open in \(#file): \(#function), \(#line)")
-      return -1
+    var daoResult = BCDAOResult<Int64>(
+      result: BCDBResult(value: -1, error: V2RXError.DataAccessObjects.unexpected)
+    )
+    
+    defer { queue.async { completionHandler(daoResult) } }
+    
+    let root = BCTable(root: object)
+    
+    BCDataAccessObjects.insert(
+      root.book,
+      with: database,
+      into: .book
+    ) {
+      handle($0, success: { value in
+        daoResult.value = value
+      }) { error in
+        daoResult.error = error
+      }
     }
     
-    let bookID: Int64
+    BCDataAccessObjects.multiInnsert(
+      root.authors,
+      with: database,
+      into: .authors
+    ) {
+      handle($0) { error in
+        daoResult.error = error
+      }
+    }
     
-//    do {
-//      guard object.dbFormat.doubanID != nil else { return -1 }
-//      bookID = try BCDataAccessObjects.insert(
-//        object.bookDB!,
-//        with: database,
-//        into: .book)
-//      guard bookID >= 0 else { return -1 }
-//
-//      if object.authorsDB != nil {
-//        try BCDataAccessObjects.insert(
-//          object.authorsDB!,
-//          with: database,
-//          into: .authors)
-//      }
-//
-//      if object.translatorsDB != nil {
-//        try BCDataAccessObjects.insert(
-//          object.translatorsDB!,
-//          with: database,
-//          into: .translators)
-//      }
-//
-//      if object.tagsDB != nil {
-//        try BCDataAccessObjects.insert(
-//          object.tagsDB!,
-//          with: database,
-//          into: .tags)
-//      }
-//
-//      if object.imagesDB != nil {
-//        try BCDataAccessObjects.insert(
-//          object.imagesDB!,
-//          with: database,
-//          into: .images)
-//      }
-//
-//      if object.seriesDB != nil {
-//        try BCDataAccessObjects.insert(
-//          object.seriesDB!,
-//          with: database,
-//          into: .series)
-//      }
-//
-//      if object.ratingDB != nil {
-//        try BCDataAccessObjects.insert(
-//          object.ratingDB!,
-//          with: database,
-//          into: .ratings)
-//      }
-//
-//    } catch let error as WCDBSwift.Error { throw error }
+    BCDataAccessObjects.multiInnsert(
+      root.translators,
+      with: database,
+      into: .translators
+    ) {
+      handle($0) { error in
+        daoResult.error = error
+      }
+    }
+  
+    BCDataAccessObjects.multiInnsert(
+      root.tags,
+      with: database,
+      into: .tags
+    ) {
+      handle($0) { error in
+        daoResult.error = error
+      }
+    }
     
-    return bookID
+    BCDataAccessObjects.insert(
+    root.images,
+    with: database,
+    into: .images
+    ) {
+      handle($0) { error in
+        daoResult.error = error
+      }
+    }
+    
+    BCDataAccessObjects.insert(
+      root.series,
+      with: database,
+      into: .series
+    ) {
+      handle($0) { error in
+        daoResult.error = error
+      }
+    }
+    
+    BCDataAccessObjects.insert(
+      root.rating,
+      with: database,
+      into: .rating
+    ) {
+      handle($0) { error in
+        daoResult.error = error
+      }
+    }
   }
   
   class func findBook(with doubanID: Int) throws -> BCBook.JSON? {
@@ -109,5 +128,22 @@ class BCBookInfoService {
     }
     
     return nil
+  }
+}
+
+extension BCBookInfoService {
+  fileprivate class func handle<T: Any>(
+    _ result: BCDBResult<T>,
+    success handler: ((T) -> ())? = nil,
+    failure elseHandler: ((BCError) -> ())? = nil
+  ) {
+    switch result {
+      case .success(let value):
+        if handler == nil { return }
+        handler!(value)
+      case .failure(let error):
+        if elseHandler == nil { return }
+        elseHandler!(error)
+    }
   }
 }

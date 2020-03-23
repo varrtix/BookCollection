@@ -36,7 +36,7 @@ struct BCSeries: BCORMAlias {
   typealias JSON = BCSeriesJSON
 }
 
-class BCSeriesJSON: BCJSONModelCodable, BCSeriesFoundation {
+class BCSeriesJSON: BCModel, BCJSONCodable, BCSeriesFoundation {
   
   typealias DBType = BCSeries.DB
   
@@ -57,7 +57,7 @@ class BCSeriesJSON: BCJSONModelCodable, BCSeriesFoundation {
   var dbFormat: BCSeries.DB { BCSeries.DB(seriesID: seriesID, title: title) }
 }
 
-class BCSeriesDB: BCDBModelCodable, BCSeriesFoundation {
+class BCSeriesDB: BCModel, BCDBCodable, BCSeriesFoundation {
   
   typealias JSONType = BCSeries.JSON
   
