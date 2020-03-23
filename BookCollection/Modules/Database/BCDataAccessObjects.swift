@@ -107,17 +107,21 @@ class BCDataAccessObjects {
     where condition: Condition? = nil,
     orderBy orderList: [OrderBy]? = nil,
     offsetBy offset: Offset? = nil,
-    completionHandler: @escaping (BCDBResult<Object?>) -> Void
+    completionHandler: @escaping (BCDBResult<Object>) -> Void
   ) {
     BCDatabase.queue.async {
-      let result: BCDBResult<Object?> = Result {
-        try database.getObject(
-          on: propertyConvertibleList,
-          fromTable: table.rawName,
-          where: condition,
-          orderBy: orderList,
-          offset: offset
-        )
+      let result: BCDBResult<Object> = Result {
+        do {
+          let object: Object? = try database.getObject(
+            on: propertyConvertibleList,
+            fromTable: table.rawName,
+            where: condition,
+            orderBy: orderList,
+            offset: offset
+          )
+          guard object != nil else { throw V2RXError.DataAccessObjects.notFound }
+          return object!
+        } catch { throw error }
       }
       completionHandler(result)
     }
@@ -132,116 +136,26 @@ class BCDataAccessObjects {
     orderBy orderList: [OrderBy]? = nil,
     limitBy limit: Limit? = nil,
     offsetBy offset: Offset? = nil,
-    completionHandler: @escaping (BCDBResult<[Object]?>) -> Void
+    completionHandler: @escaping (BCDBResult<[Object]>) -> Void
   ) {
     BCDatabase.queue.async {
-      let result: BCDBResult<[Object]?> = Result {
-        try database.getObjects(
-          on: propertyConvertibleList,
-          fromTable: table.rawName,
-          where: condition,
-          orderBy: orderList,
-          limit: limit,
-          offset: offset
-        )
+      let result: BCDBResult<[Object]> = Result {
+        do {
+          let object: [Object] = try database.getObjects(
+            on: propertyConvertibleList,
+            fromTable: table.rawName,
+            where: condition,
+            orderBy: orderList,
+            limit: limit,
+            offset: offset
+          )
+          if object.isEmpty { throw V2RXError.DataAccessObjects.notFound }
+          return object
+        } catch { throw error }
       }
       completionHandler(result)
     }
   }
 }
 
-extension BCDataAccessObjects {
-  
-  class func extractObject(
-    queue: DispatchQueue = .main,
-    by doubanID: String,
-    with database: Database,
-    completionHandler: @escaping (BCDAOResult<BCBook.JSON?>) -> Void) {
-    
-    var resultJSON = BCDAOResult<BCBook.JSON?>(value: nil, error: nil)
-    
-    database.get(
-      of: BCBook.DB.self,
-      on: BCBook.DB.Properties.doubanID,
-      fromTable: BCTable.Kind.book.rawName,
-      where: BCBook.DB.Properties.doubanID == doubanID
-    ) { result in
-      
-      var book: BCBook.JSON?
-      
-      guard case let .success(value) = result else {
-        guard case let .failure(error) = result else {
-          resultJSON.result = .failure(V2RXError.DataAccessObjects.unexpected)
-          return
-        }
-        
-        resultJSON.result = .failure(error)
-        return
-      }
-      
-      book = value?.bookJSON
-      
-      guard let id = value?.id else {
-        resultJSON.result = .failure(V2RXError.DataAccessObjects.invalidForeignKey)
-        return
-      }
-      
-      database.multiGet(
-        of: BCAuthor.DB.self,
-        on: BCAuthor.DB.Properties.bookID,
-        fromTable: BCTable.authors.rawName,
-        where: BCAuthor.DB.Properties.bookID == id
-      ) { authors in
-        guard case let .success(subValue) = authors, subValue != nil else {
-          guard case let .failure(error) = authors else {
-            resultJSON.result = .failure(V2RXError.DataAccessObjects.unexpected)
-            return
-          }
-          resultJSON.result = .failure(error)
-          return
-        }
-        book?.authors = subValue!.map { $0.jsonFormat }
-      }
-      
-      database.multiGet(
-        of: BCTranslator.DB.self,
-        on: BCTranslator.DB.Properties.bookID,
-        fromTable: BCTable.translators.rawName,
-        where: BCTranslator.DB.Properties.bookID == id
-      ) { translators in
-        guard case let .success(subValue) = translators, subValue != nil else {
-          guard case let .failure(error) = translators else {
-            resultJSON.result = .failure(V2RXError.DataAccessObjects.unexpected)
-            return
-          }
-          resultJSON.result = .failure(error)
-          return
-        }
-        book?.translators = subValue!.map { $0.jsonFormat }
-      }
-      
-      database.multiGet(
-        of: BCTag.DB.self,
-        on: BCTag.DB.Properties.bookID,
-        fromTable: BCTable.tags.rawName,
-        where: BCTranslator.DB.Properties.bookID == id
-      ) { tags in
-        guard case let .success(subValue) = tags, subValue != nil else {
-          guard case let .failure(error) = tags else {
-            resultJSON.result = .failure(V2RXError.DataAccessObjects.unexpected)
-            return
-          }
-          resultJSON.result = .failure(error)
-          return
-        }
-        book?.tags = subValue!.map { $0.jsonFormat }
-      }
-      
-      resultJSON.result = .success(book)
-    }
-    
-    queue.async {
-      completionHandler(resultJSON)
-    }
-  }
-}
+extension BCDataAccessObjects {}
