@@ -27,18 +27,20 @@
 /// THE SOFTWARE.
 
 import Foundation
-import WCDBSwift
+//import WCDBSwift
+import SQLite
 
-struct BCRating: BCORMAlias {
-  
-  typealias DB = BCRatingDB
-  
-  typealias JSON = BCRatingJSON
-}
+//struct BCRating: BCORMAlias {
+//
+//  typealias DB = BCRatingDB
+//
+//  typealias JSON = BCRatingJSON
+//}
 
-class BCRatingJSON: BCModel, BCJSONCodable, BCRatingFoundation {
+//class BCRatingJSON: BCModel, BCJSONCodable, BCRatingFoundation {
   
-  typealias DBType = BCRating.DB
+//  typealias DBType = BCRating.DB
+struct BCRating: BCCodable {
 
   let max: Int?
   
@@ -51,56 +53,61 @@ class BCRatingJSON: BCModel, BCJSONCodable, BCRatingFoundation {
   enum CodingKeys: String, CodingKey {
     case max, numRaters, average, min
   }
-  
-  init(max: Int?, numRaters: Int?, average: String?, min: Int?) {
-    self.max = max
-    self.numRaters = numRaters
-    self.average = average
-    self.min = min
-  }
-  
-  var dbFormat: BCRating.DB {
-    BCRating.DB(max: max, numRaters: numRaters, average: average, min: min)
-  }
 }
+//
+//  init(max: Int?, numRaters: Int?, average: String?, min: Int?) {
+//    self.max = max
+//    self.numRaters = numRaters
+//    self.average = average
+//    self.min = min
+//  }
+//
+//  var dbFormat: BCRating.DB {
+//    BCRating.DB(max: max, numRaters: numRaters, average: average, min: min)
+//  }
+//}
 
-class BCRatingDB: BCModel, BCDBCodable, BCRatingFoundation {
+//class BCRatingDB: BCModel, BCDBCodable, BCRatingFoundation {
   
-  typealias JSONType = BCRating.JSON
+//  typealias JSONType = BCRating.JSON
 
-  var bookID: Int64? 
+struct BCRatingDB: BCDBModel {
+
+//  var bookID: Int64?
+  let bookID = Expression<Int64>("book_id")
   
-  let max: Int?
+  let max = Expression<Int?>(BCRating.CodingKeys.max.rawValue)
   
-  let numRaters: Int?
+  let numRaters = Expression<Int?>(BCRating.CodingKeys.numRaters.rawValue)
   
-  let average: String?
+  let average = Expression<String?>(BCRating.CodingKeys.average.rawValue)
   
-  let min: Int?
-  
-  enum CodingKeys: String, CodingTableKey {
-    typealias Root = BCRatingDB
-    
-    static let objectRelationalMapping = TableBinding(CodingKeys.self)
-    
-    case max, average, min
-    case numRaters = "number_raters"
-    case bookID = "book_id"
-    
-    static var tableConstraintBindings: [String : TableConstraintBinding]? {
-      let foreginBinding = ForeignKeyBinding(bookID, foreignKey: BCBook.DB.foreginKey)
-      return ["ForeignKeyBinding": foreginBinding]
-    }
-  }
-  
-  init(max: Int?, numRaters: Int?, average: String?, min: Int?) {
-    self.max = max
-    self.numRaters = numRaters
-    self.average = average
-    self.min = min
-  }
-  
-  var jsonFormat: BCRating.JSON {
-    BCRating.JSON(max: max, numRaters: numRaters, average: average, min: min)
-  }
+  let min = Expression<Int?>(BCRating.CodingKeys.min.rawValue)
 }
+//
+//  enum CodingKeys: String, CodingTableKey {
+//    typealias Root = BCRatingDB
+//
+//    static let objectRelationalMapping = TableBinding(CodingKeys.self)
+//
+//    case max, average, min
+//    case numRaters = "number_raters"
+//    case bookID = "book_id"
+//
+//    static var tableConstraintBindings: [String : TableConstraintBinding]? {
+//      let foreginBinding = ForeignKeyBinding(bookID, foreignKey: BCBook.DB.foreginKey)
+//      return ["ForeignKeyBinding": foreginBinding]
+//    }
+//  }
+//
+//  init(max: Int?, numRaters: Int?, average: String?, min: Int?) {
+//    self.max = max
+//    self.numRaters = numRaters
+//    self.average = average
+//    self.min = min
+//  }
+//
+//  var jsonFormat: BCRating.JSON {
+//    BCRating.JSON(max: max, numRaters: numRaters, average: average, min: min)
+//  }
+//}

@@ -27,63 +27,66 @@
 /// THE SOFTWARE.
 
 import Foundation
-import WCDBSwift
+//import WCDBSwift
+import SQLite
 
-struct BCTag: BCORMAlias {
-  
-  typealias DB = BCTagDB
-  
-  typealias JSON = BCTagJSON
-}
+//struct BCTag: BCORMAlias {
+//
+//  typealias DB = BCTagDB
+//
+//  typealias JSON = BCTagJSON
+//}
 
-class BCTagJSON: BCModel, BCJSONCodable, BCTagFoundation {
-  
-  typealias DBType = BCTag.DB
-  
+//class BCTagJSON: BCModel, BCJSONCodable, BCTagFoundation {
+//
+//  typealias DBType = BCTag.DB
+//
+
+struct BCTag: BCCodable {
+
   let count: Int?
   
   let title: String?
   
-  enum CodingKeys: String, CodingKey {
-    case count, title
-  }
+  enum CodingKeys: String, CodingKey { case count, title }
   
-  init(count: Int?, title: String?) {
-    self.count = count
-    self.title = title
-  }
-  
-  var dbFormat: BCTag.DB { BCTag.DB(count: count, title: title) }
+//  init(count: Int?, title: String?) {
+//    self.count = count
+//    self.title = title
+//  }
+//
+//  var dbFormat: BCTag.DB { BCTag.DB(count: count, title: title) }
 }
 
-class BCTagDB: BCModel, BCDBCodable, BCTagFoundation {
+//class BCTagDB: BCModel, BCDBCodable, BCTagFoundation {
   
-  typealias JSONType = BCTag.JSON
+//  typealias JSONType = BCTag.JSON
+struct BCTagDB: BCDBModel {
   
-  var bookID: Int64?
+  let bookID = Expression<Int64>("book_id")
   
-  let count: Int?
+  let count = Expression<Int?>(BCTag.CodingKeys.count.rawValue)
   
-  let title: String?
-  
-  enum CodingKeys: String, CodingTableKey {
-    typealias Root = BCTagDB
-    
-    static let objectRelationalMapping = TableBinding(CodingKeys.self)
-    
-    case bookID = "book_id"
-    case count, title
-    
-    static var tableConstraintBindings: [String : TableConstraintBinding]? {
-      let foreginBinding = ForeignKeyBinding(bookID, foreignKey: BCBook.DB.foreginKey)
-      return ["ForeignKeyBinding": foreginBinding]
-    }
-  }
-  
-  init(count: Int?, title: String?) {
-    self.count = count
-    self.title = title
-  }
-  
-  var jsonFormat: BCTag.JSON { BCTag.JSON(count: count, title: title) }
+  let title = Expression<String?>(BCTag.CodingKeys.title.rawValue)
 }
+//  enum CodingKeys: String, CodingTableKey {
+//    typealias Root = BCTagDB
+//
+//    static let objectRelationalMapping = TableBinding(CodingKeys.self)
+//
+//    case bookID = "book_id"
+//    case count, title
+//
+//    static var tableConstraintBindings: [String : TableConstraintBinding]? {
+//      let foreginBinding = ForeignKeyBinding(bookID, foreignKey: BCBook.DB.foreginKey)
+//      return ["ForeignKeyBinding": foreginBinding]
+//    }
+//}
+//
+//  init(count: Int?, title: String?) {
+//    self.count = count
+//    self.title = title
+//  }
+//
+//  var jsonFormat: BCTag.JSON { BCTag.JSON(count: count, title: title) }
+//}

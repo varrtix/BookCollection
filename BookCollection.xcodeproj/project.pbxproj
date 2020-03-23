@@ -8,13 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		3BEED3F04E181CF248F232A1 /* Pods_BookCollection.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DFCA765E26B5A9157283683 /* Pods_BookCollection.framework */; };
-		560175DA242468D5008C9578 /* BCModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175D9242468D5008C9578 /* BCModel.swift */; };
 		560175DC2424742A008C9578 /* BCTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175DB2424742A008C9578 /* BCTag.swift */; };
 		560175DE242477C8008C9578 /* BCImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175DD242477C8008C9578 /* BCImages.swift */; };
 		560175E02424789C008C9578 /* BCSeries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175DF2424789C008C9578 /* BCSeries.swift */; };
 		560175E324247979008C9578 /* BCRating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175E224247979008C9578 /* BCRating.swift */; };
 		560175E524247A00008C9578 /* BCAuthor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175E424247A00008C9578 /* BCAuthor.swift */; };
-		560175E72424A331008C9578 /* BCModel+Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175E62424A331008C9578 /* BCModel+Foundation.swift */; };
+		560175E72424A331008C9578 /* BCObjectPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175E62424A331008C9578 /* BCObjectPattern.swift */; };
 		560175EB24250385008C9578 /* BCBookInfoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175EA24250385008C9578 /* BCBookInfoService.swift */; };
 		563F9C84241B7B85005B8E5E /* BCSupportKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563F9C83241B7B85005B8E5E /* BCSupportKit.swift */; };
 		563F9C86241B7BCE005B8E5E /* CommonKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563F9C85241B7BCE005B8E5E /* CommonKit.swift */; };
@@ -58,13 +57,12 @@
 
 /* Begin PBXFileReference section */
 		3DFCA765E26B5A9157283683 /* Pods_BookCollection.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BookCollection.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		560175D9242468D5008C9578 /* BCModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCModel.swift; sourceTree = "<group>"; };
 		560175DB2424742A008C9578 /* BCTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCTag.swift; sourceTree = "<group>"; };
 		560175DD242477C8008C9578 /* BCImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCImages.swift; sourceTree = "<group>"; };
 		560175DF2424789C008C9578 /* BCSeries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCSeries.swift; sourceTree = "<group>"; };
 		560175E224247979008C9578 /* BCRating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCRating.swift; sourceTree = "<group>"; };
 		560175E424247A00008C9578 /* BCAuthor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCAuthor.swift; sourceTree = "<group>"; };
-		560175E62424A331008C9578 /* BCModel+Foundation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCModel+Foundation.swift"; sourceTree = "<group>"; };
+		560175E62424A331008C9578 /* BCObjectPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCObjectPattern.swift; sourceTree = "<group>"; };
 		560175EA24250385008C9578 /* BCBookInfoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCBookInfoService.swift; sourceTree = "<group>"; };
 		563F9C83241B7B85005B8E5E /* BCSupportKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCSupportKit.swift; sourceTree = "<group>"; };
 		563F9C85241B7BCE005B8E5E /* CommonKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonKit.swift; sourceTree = "<group>"; };
@@ -134,8 +132,7 @@
 		560175E12424794A008C9578 /* Bases */ = {
 			isa = PBXGroup;
 			children = (
-				560175D9242468D5008C9578 /* BCModel.swift */,
-				560175E62424A331008C9578 /* BCModel+Foundation.swift */,
+				560175E62424A331008C9578 /* BCObjectPattern.swift */,
 			);
 			path = Bases;
 			sourceTree = "<group>";
@@ -489,7 +486,7 @@
 				5675CA272417637100437044 /* BCNavigationController.swift in Sources */,
 				56BB95B42426313000555EEA /* BCDatabase.swift in Sources */,
 				567D764D2423B17000F94CD6 /* BCDataAccessObjects.swift in Sources */,
-				560175E72424A331008C9578 /* BCModel+Foundation.swift in Sources */,
+				560175E72424A331008C9578 /* BCObjectPattern.swift in Sources */,
 				560175E524247A00008C9578 /* BCAuthor.swift in Sources */,
 				560175DE242477C8008C9578 /* BCImages.swift in Sources */,
 				560175E324247979008C9578 /* BCRating.swift in Sources */,
@@ -498,7 +495,6 @@
 				566D37DD241A659B00DE970C /* BCViewController.swift in Sources */,
 				567B0A4624167A2D00B595A7 /* AppDelegate.swift in Sources */,
 				563F9C84241B7B85005B8E5E /* BCSupportKit.swift in Sources */,
-				560175DA242468D5008C9578 /* BCModel.swift in Sources */,
 				56BCB9692428F18300B4D7CA /* BCDBTable.swift in Sources */,
 				560175DC2424742A008C9578 /* BCTag.swift in Sources */,
 				5667FB262416833B009F9E65 /* BCScanViewController.swift in Sources */,

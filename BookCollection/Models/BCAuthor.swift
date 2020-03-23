@@ -27,47 +27,57 @@
 /// THE SOFTWARE.
 
 import Foundation
-import WCDBSwift
+//import WCDBSwift
+import SQLite
 
-struct BCAuthor: BCORMAlias {
-  
-  typealias DB = BCAuthorDB
-  
-  typealias JSON = String
-}
+//struct BCAuthor: BCORMAlias {
+//
+//  typealias DB = BCAuthorDB
+//
+//  typealias JSON = String
+//}
+//
+//struct BCTranslator: BCORMAlias {
+//
+//  typealias DB = BCTranslatorDB
+//
+//  typealias JSON = String
+//}
+//
+//typealias BCTranslatorDB = BCAuthorDB
 
-struct BCTranslator: BCORMAlias {
+//class BCAuthorDB: BCModel, BCDBCodable, BCAuthorFoundation {
+
+//  typealias JSONType = String
+
+struct BCAuthorDB: BCDBModel {
+
+//  var bookID: Int64?
+  let bookID = Expression<Int64>("book_id")
   
-  typealias DB = BCTranslatorDB
-  
-  typealias JSON = String
+  let name = Expression<String?>("name")
 }
 
 typealias BCTranslatorDB = BCAuthorDB
 
-class BCAuthorDB: BCModel, BCDBCodable, BCAuthorFoundation {
+typealias BCAuthor = String
 
-  typealias JSONType = String
-
-  var bookID: Int64? 
-  
-  let name: String?
-  
-  enum CodingKeys: String, CodingTableKey {
-    typealias Root = BCAuthorDB
-    
-    static let objectRelationalMapping = TableBinding(CodingKeys.self)
-    
-    case bookID = "book_id"
-    case name
-    
-    static var tableConstraintBindings: [String : TableConstraintBinding]? {
-      let foreginBinding = ForeignKeyBinding(bookID, foreignKey: BCBook.DB.foreginKey)
-      return ["ForeignKeyBinding": foreginBinding]
-    }
-  }
-  
-  init(name: String?) { self.name = name }
-  
-  var jsonFormat: String { name ?? String() }
-}
+typealias BCTranslator = String
+//  enum CodingKeys: String, CodingTableKey {
+//    typealias Root = BCAuthorDB
+//
+//    static let objectRelationalMapping = TableBinding(CodingKeys.self)
+//
+//    case bookID = "book_id"
+//    case name
+//
+//    static var tableConstraintBindings: [String : TableConstraintBinding]? {
+//      let foreginBinding = ForeignKeyBinding(bookID, foreignKey: BCBook.DB.foreginKey)
+//      return ["ForeignKeyBinding": foreginBinding]
+//    }
+//  }
+//
+//  init(name: String?) { self.name = name }
+//
+//  var jsonFormat: String { name ?? String() }
+//}

@@ -27,19 +27,22 @@
 /// THE SOFTWARE.
 
 import Foundation
-import WCDBSwift
+//import WCDBSwift
+import SQLite
 
-struct BCImages: BCORMAlias {
+//struct BCImages: BCORMAlias {
+//
+//  typealias DB = BCImagesDB
+//
+//  typealias JSON = BCImagesJSON
+//}
 
-  typealias DB = BCImagesDB
-  
-  typealias JSON = BCImagesJSON
-}
+//class BCImagesJSON: BCModel, BCJSONCodable, BCImagesFoundation {
+//
+//  typealias DBType = BCImages.DB
+//
+struct BCImages: BCCodable {
 
-class BCImagesJSON: BCModel, BCJSONCodable, BCImagesFoundation {
-  
-  typealias DBType = BCImages.DB
-  
   let small: String?
   
   let medium: String?
@@ -50,46 +53,48 @@ class BCImagesJSON: BCModel, BCJSONCodable, BCImagesFoundation {
     case small, medium, large
   }
   
-  init(small: String?, medium: String?, large: String?) {
-    self.small = small
-    self.medium = medium
-    self.large = large
-  }
-  
-  var dbFormat: BCImages.DB { BCImages.DB(small: small, medium: medium, large: large) }
+//  init(small: String?, medium: String?, large: String?) {
+//    self.small = small
+//    self.medium = medium
+//    self.large = large
+//  }
+//  
+//  var dbFormat: BCImages.DB { BCImages.DB(small: small, medium: medium, large: large) }
 }
 
-class BCImagesDB: BCModel, BCDBCodable, BCImagesFoundation {
+//class BCImagesDB: BCModel, BCDBCodable, BCImagesFoundation {
+//
+//  typealias JSONType = BCImages.JSON
+struct BCImagesDB: BCDBModel {
   
-  typealias JSONType = BCImages.JSON
+//  var bookID: Int64?
+  let bookID = Expression<Int64>("book_id")
   
-  var bookID: Int64?
+  let small = Expression<String?>(BCImages.CodingKeys.small.rawValue)
   
-  let small: String?
+  let medium = Expression<String?>(BCImages.CodingKeys.medium.rawValue)
   
-  let medium: String?
-  
-  let large: String?
-  
-  enum CodingKeys: String, CodingTableKey {
-    typealias Root = BCImagesDB
-    
-    static let objectRelationalMapping = TableBinding(CodingKeys.self)
-    
-    case bookID = "book_id"
-    case small, medium, large
-    
-    static var tableConstraintBindings: [String : TableConstraintBinding]? {
-      let foreginBinding = ForeignKeyBinding(bookID, foreignKey: BCBook.DB.foreginKey)
-      return ["ForeignKeyBinding": foreginBinding]
-    }
-  }
-  
-  init(small: String?, medium: String?, large: String?) {
-    self.small = small
-    self.medium = medium
-    self.large = large
-  }
-  
-  var jsonFormat: BCImages.JSON { BCImages.JSON(small: small, medium: medium, large: large) }
+  let large = Expression<String?>(BCImages.CodingKeys.large.rawValue)
 }
+//  enum CodingKeys: String, CodingTableKey {
+//    typealias Root = BCImagesDB
+//
+//    static let objectRelationalMapping = TableBinding(CodingKeys.self)
+//
+//    case bookID = "book_id"
+//    case small, medium, large
+//
+//    static var tableConstraintBindings: [String : TableConstraintBinding]? {
+//      let foreginBinding = ForeignKeyBinding(bookID, foreignKey: BCBook.DB.foreginKey)
+//      return ["ForeignKeyBinding": foreginBinding]
+//    }
+//  }
+//
+//  init(small: String?, medium: String?, large: String?) {
+//    self.small = small
+//    self.medium = medium
+//    self.large = large
+//  }
+//
+//  var jsonFormat: BCImages.JSON { BCImages.JSON(small: small, medium: medium, large: large) }
+//}
