@@ -312,22 +312,31 @@ extension BCScanViewController {
       case .success(let book):
         alert.title = "Book Information"
         alert.message = "Not found!"
-        //        guard let book = object as? Book else { break }
+        
+        var isMarked = false
+        
+        assert(book.doubanID != nil, "DoubanID must not be nil, because of the book exists.")
+        
+        BCBookInfoService.search(with: book.doubanID!) { isMarked = ($0.value == nil ? false : true) }
+        
         let detailAction = UIAlertAction(title: "Detail", style: .default) { _ in
           let controller = BCInfoViewController(with: book)
+          controller.isMarked = isMarked
           self.present(controller, animated: true)
         }
-        
-        let nextAction = UIAlertAction(title: "Mark and Continue", style: .cancel) { _ in
-          self.launch()
-        }
+        alert.addAction(detailAction)
         alert.message = """
         \(book.title ?? "No title")
         \(book.isbn13 ?? "No ISBN13")
         \(book.authors?.first ?? "No author")
         """
-        
-        alert.addActions([detailAction, nextAction])
+
+        if isMarked { break }
+
+        let nextAction = UIAlertAction(title: "Mark and Continue", style: .cancel) { _ in
+          self.launch()
+        }
+        alert.addAction(nextAction)
       
       case .failure(let error):
         alert.title = "Something wrong"

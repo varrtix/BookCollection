@@ -129,7 +129,7 @@ class BCBookJSON: BCModel, BCJSONCodable, BCBookFoundation {
     self.price = price
   }
   
-  var dbFormat: BCBook.DB { BCTable(root: self).book }
+  var dbFormat: BCBook.DB { BCDBTable(root: self).book }
 }
 
 class BCBookDB: BCModel, BCDBCodable, BCBookFoundation {

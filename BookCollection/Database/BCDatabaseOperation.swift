@@ -27,7 +27,7 @@
 /// THE SOFTWARE.
 
 import Foundation
-import WCDBSwift
+import SQLite
 
 class BCDatabaseOperation: AsyncOperation {
   
@@ -64,13 +64,13 @@ extension BCDatabaseOperation {
   
   func createTable(with database: Database) throws {
     do {
-      try database.create(table: BCTable.Kind.book.rawName, of: BCBook.DB.self)
-      try database.create(table: BCTable.Kind.tags.rawName, of: BCTag.DB.self)
-      try database.create(table: BCTable.Kind.images.rawName, of: BCImages.DB.self)
-      try database.create(table: BCTable.Kind.series.rawName, of: BCSeries.DB.self)
-      try database.create(table: BCTable.Kind.rating.rawName, of: BCRating.DB.self)
-      try database.create(table: BCTable.Kind.authors.rawName, of: BCAuthor.DB.self)
-      try database.create(table: BCTable.Kind.translators.rawName, of: BCTranslator.DB.self)
+      try database.create(table: BCDBTable.Kind.book.rawName, of: BCBook.DB.self)
+      try database.create(table: BCDBTable.Kind.tags.rawName, of: BCTag.DB.self)
+      try database.create(table: BCDBTable.Kind.images.rawName, of: BCImages.DB.self)
+      try database.create(table: BCDBTable.Kind.series.rawName, of: BCSeries.DB.self)
+      try database.create(table: BCDBTable.Kind.rating.rawName, of: BCRating.DB.self)
+      try database.create(table: BCDBTable.Kind.authors.rawName, of: BCAuthor.DB.self)
+      try database.create(table: BCDBTable.Kind.translators.rawName, of: BCTranslator.DB.self)
     } catch let error as WCDBSwift.Error { throw error }
     
   }

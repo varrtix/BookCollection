@@ -5,19 +5,16 @@ PODS:
     - Kingfisher/Core (= 5.13.2)
   - Kingfisher/Core (5.13.2)
   - SnapKit (5.0.1)
-  - SQLiteRepairKit (1.2.2):
-    - WCDBOptimizedSQLCipher (~> 1.2.0)
-  - WCDB.swift (1.0.8.2):
-    - SQLiteRepairKit (~> 1.2.0)
-    - WCDBOptimizedSQLCipher (~> 1.2.0)
-  - WCDBOptimizedSQLCipher (1.2.1)
+  - SQLite.swift (0.12.2):
+    - SQLite.swift/standard (= 0.12.2)
+  - SQLite.swift/standard (0.12.2)
 
 DEPENDENCIES:
   - Alamofire (~> 5.0)
   - ESPullToRefresh
   - Kingfisher
   - SnapKit (~> 5.0.0)
-  - WCDB.swift
+  - SQLite.swift
 
 SPEC REPOS:
   trunk:
@@ -25,19 +22,15 @@ SPEC REPOS:
     - ESPullToRefresh
     - Kingfisher
     - SnapKit
-    - SQLiteRepairKit
-    - WCDB.swift
-    - WCDBOptimizedSQLCipher
+    - SQLite.swift
 
 SPEC CHECKSUMS:
   Alamofire: 0fe5fd24b4298dc377a6550da7d5f1b30e286fcb
   ESPullToRefresh: efed00d52597065e9a84e1e52fa444fdb1a1dee0
   Kingfisher: d342c8354c10c3d85a27d6d4c42c41285924b898
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
-  SQLiteRepairKit: 35aaae5a8838adb85f5b1eb4d796055be6060a4b
-  WCDB.swift: 05d509d7a0e60fb6e11c34eb7e4027c0fab5849f
-  WCDBOptimizedSQLCipher: baf44493b0c7a3d49e97bc5b64a3856f6428ddd1
+  SQLite.swift: d2b4642190917051ce6bd1d49aab565fe794eea3
 
-PODFILE CHECKSUM: 685267c77adb668855cd542dea9cfbfc200915e0
+PODFILE CHECKSUM: 4767f028d50b980b60fb7105b8e4b655343d5602
 
 COCOAPODS: 1.9.1

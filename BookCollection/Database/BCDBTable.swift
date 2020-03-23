@@ -28,26 +28,7 @@
 
 import Foundation
 
-struct BCDatabase {
-  static var directoryURL: URL {
-    URL(
-      fileURLWithPath: "BCDB",
-      relativeTo: FileManager.documentDirectoryURL)
-  }
-  
-  static var fileURL: URL {
-    URL(
-      fileURLWithPath: "Book.sqlite",
-      relativeTo: directoryURL)
-  }
-  
-  static let queue = DispatchQueue(
-    label: "com.varrtix.bcdatabase",
-    qos: .background,
-    attributes: .concurrent)
-}
-
-struct BCTable {
+struct BCDBTable {
   
   enum Kind: String, CaseIterable {
     case book, authors, translators

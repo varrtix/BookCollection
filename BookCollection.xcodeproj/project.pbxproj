@@ -35,6 +35,7 @@
 		567D764D2423B17000F94CD6 /* BCDataAccessObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567D764C2423B17000F94CD6 /* BCDataAccessObjects.swift */; };
 		56B611EB2422296100C7C6A8 /* BCInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B611EA2422296100C7C6A8 /* BCInfoViewController.swift */; };
 		56BB95B42426313000555EEA /* BCDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BB95B32426313000555EEA /* BCDatabase.swift */; };
+		56BCB9692428F18300B4D7CA /* BCDBTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BCB9682428F18300B4D7CA /* BCDBTable.swift */; };
 		56EC7409242711C300C684B6 /* BCResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56EC7408242711C300C684B6 /* BCResult.swift */; };
 /* End PBXBuildFile section */
 
@@ -90,6 +91,7 @@
 		567D764C2423B17000F94CD6 /* BCDataAccessObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCDataAccessObjects.swift; sourceTree = "<group>"; };
 		56B611EA2422296100C7C6A8 /* BCInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCInfoViewController.swift; sourceTree = "<group>"; };
 		56BB95B32426313000555EEA /* BCDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCDatabase.swift; sourceTree = "<group>"; };
+		56BCB9682428F18300B4D7CA /* BCDBTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCDBTable.swift; sourceTree = "<group>"; };
 		56EC7408242711C300C684B6 /* BCResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCResult.swift; sourceTree = "<group>"; };
 		C3AEABD81807DB8C6E651C4D /* Pods-BookCollection.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookCollection.release.xcconfig"; path = "Target Support Files/Pods-BookCollection/Pods-BookCollection.release.xcconfig"; sourceTree = "<group>"; };
 		F4CF3752E322A66A69ADE8E9 /* Pods-BookCollection.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookCollection.debug.xcconfig"; path = "Target Support Files/Pods-BookCollection/Pods-BookCollection.debug.xcconfig"; sourceTree = "<group>"; };
@@ -158,15 +160,12 @@
 		5667FB2224168259009F9E65 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				567D764A24239FA300F94CD6 /* Services */,
-				567D76472423619C00F94CD6 /* Database */,
 				5675CA282417637600437044 /* Bases */,
 				564CC893241790CD00E9D08B /* ScanView */,
 				5667FB23241682D2009F9E65 /* BCListViewController.swift */,
 				5667FB252416833B009F9E65 /* BCScanViewController.swift */,
 				5667FB2724168386009F9E65 /* BCAnalyticViewController.swift */,
 				56B611EA2422296100C7C6A8 /* BCInfoViewController.swift */,
-				563F9C87241B7BDA005B8E5E /* Kits */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -245,9 +244,12 @@
 		567B0A4424167A2D00B595A7 /* BookCollection */ = {
 			isa = PBXGroup;
 			children = (
-				5671DDFE2419FEB900979210 /* Models */,
 				5675CA2A2417644600437044 /* Assets */,
+				5671DDFE2419FEB900979210 /* Models */,
+				567D764A24239FA300F94CD6 /* Services */,
+				567D76472423619C00F94CD6 /* Database */,
 				5667FB2224168259009F9E65 /* Modules */,
+				563F9C87241B7BDA005B8E5E /* Kits */,
 				5675CA2B2417652300437044 /* AppDelegate */,
 				5675CA292417642500437044 /* Storyboards */,
 			);
@@ -277,6 +279,7 @@
 			children = (
 				567D764C2423B17000F94CD6 /* BCDataAccessObjects.swift */,
 				56BB95B32426313000555EEA /* BCDatabase.swift */,
+				56BCB9682428F18300B4D7CA /* BCDBTable.swift */,
 				567D76482423625C00F94CD6 /* BCDatabaseOperation.swift */,
 				56EC7408242711C300C684B6 /* BCResult.swift */,
 			);
@@ -496,6 +499,7 @@
 				567B0A4624167A2D00B595A7 /* AppDelegate.swift in Sources */,
 				563F9C84241B7B85005B8E5E /* BCSupportKit.swift in Sources */,
 				560175DA242468D5008C9578 /* BCModel.swift in Sources */,
+				56BCB9692428F18300B4D7CA /* BCDBTable.swift in Sources */,
 				560175DC2424742A008C9578 /* BCTag.swift in Sources */,
 				5667FB262416833B009F9E65 /* BCScanViewController.swift in Sources */,
 			);

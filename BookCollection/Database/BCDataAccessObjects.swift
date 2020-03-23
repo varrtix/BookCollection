@@ -34,12 +34,13 @@ class BCDataAccessObjects {
   class func insert<Object: BCDBCodable>(
     _ object: Object?,
     with database: Database,
-    into table: BCTable.Kind,
+    into table: BCDBTable.Kind,
     or replace: Bool = false,
     on propertyConvertibleList: [PropertyConvertible]? = nil,
+    at queue: DispatchQueue = BCDatabase.queue,
     completionHandler: @escaping (BCDBResult<Int64>) -> Void
   ) {
-    BCDatabase.queue.async {
+    queue.async {
       let result: BCDBResult<Int64> = Result {
         guard object != nil else { throw V2RXError.DataAccessObjects.invalidData }
         
@@ -68,12 +69,13 @@ class BCDataAccessObjects {
   class func multiInnsert<Object: BCDBCodable>(
     _ objects: [Object]?,
     with database: Database,
-    into table: BCTable.Kind,
+    into table: BCDBTable.Kind,
     or replace: Bool = false,
     on propertyConvertibleList: [PropertyConvertible]? = nil,
+    at queue: DispatchQueue = BCDatabase.queue,
     completionHandler: @escaping (BCDBResult<Int64>) -> Void
   ) {
-    BCDatabase.queue.async {
+    queue.async {
       let result: BCDBResult<Int64> = Result {
         guard objects != nil else { throw V2RXError.DataAccessObjects.invalidData }
         
@@ -98,18 +100,19 @@ class BCDataAccessObjects {
       completionHandler(result)
     }
   }
-
+  
   class func get<Object: BCDBCodable>(
     of type: Object.Type,
     on propertyConvertibleList: PropertyConvertible,
-    from table: BCTable.Kind,
+    from table: BCDBTable.Kind,
     with database: Database,
     where condition: Condition? = nil,
     orderBy orderList: [OrderBy]? = nil,
     offsetBy offset: Offset? = nil,
+    at queue: DispatchQueue = BCDatabase.queue,
     completionHandler: @escaping (BCDBResult<Object>) -> Void
   ) {
-    BCDatabase.queue.async {
+    queue.async {
       let result: BCDBResult<Object> = Result {
         do {
           let object: Object? = try database.getObject(
@@ -130,15 +133,16 @@ class BCDataAccessObjects {
   class func multiGet<Object: BCDBCodable>(
     of type: Object.Type,
     on propertyConvertibleList: PropertyConvertible,
-    from table: BCTable.Kind,
+    from table: BCDBTable.Kind,
     with database: Database,
     where condition: Condition? = nil,
     orderBy orderList: [OrderBy]? = nil,
     limitBy limit: Limit? = nil,
     offsetBy offset: Offset? = nil,
+    at queue: DispatchQueue = BCDatabase.queue,
     completionHandler: @escaping (BCDBResult<[Object]>) -> Void
   ) {
-    BCDatabase.queue.async {
+    queue.async {
       let result: BCDBResult<[Object]> = Result {
         do {
           let object: [Object] = try database.getObjects(

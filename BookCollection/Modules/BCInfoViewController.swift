@@ -50,6 +50,8 @@ class BCInfoViewController: BCViewController {
   
   var book: BCBook.JSON?
   
+  lazy var isMarked = false
+  
   init(with book: BCBook.JSON) {
     super.init(nibName: nil, bundle: nil)
     
@@ -229,6 +231,8 @@ extension BCInfoViewController {
       make.top.equalTo(stackView.snp.bottom).offset(6)
       make.bottom.equalToSuperview().inset(4)
     }
+    
+    markButton.isEnabled = !isMarked
     
     // ImageView layout
     backgroundImageView.snp.makeConstraints { make in
