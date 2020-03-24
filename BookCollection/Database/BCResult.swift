@@ -28,57 +28,76 @@
 
 import Foundation
 
-typealias BCDBResult<Success> = Result<Success, BCError>
+typealias BCResult<Success> = Result<Success, Error>
 
-typealias BCDAOResult<Success> = BCResult<Success, BCError>
-
-struct BCResult<Success, Failure: BCError> {
-  
-  var result: Result<Success, Failure>
-  
-  var value: Success? {
-    get { result.success }
-    set {
-      guard newValue != nil else { return }
-      self.result = .success(newValue!)
-    }
-  }
-  
-  var error: Failure? {
-    get { result.failure }
-    set {
-      guard newValue != nil else { return }
-      self.result = .failure(newValue!)
-    }
-  }
-  
-  init(result: Result<Success, Failure>) { self.result = result }
-  
-  init(value: Success, error: Failure?) {
-    if let error = error {
-      self.result = .failure(error)
-    } else {
-      self.result = .success(value)
+struct BCDBResult {
+  static func handle<T: Any>(
+    _ result: BCResult<T>,
+    success handler: ((T) -> ())? = nil,
+    failure elseHandler: ((Error) -> ())? = nil
+  ) {
+    switch result {
+      case .success(let value):
+        if handler == nil { return }
+        handler!(value)
+      case .failure(let error):
+        if elseHandler == nil { return }
+        elseHandler!(error)
     }
   }
 }
 
-extension Result {
-  var success: Success? {
-    guard case let .success(value) = self else { return nil }
-    return value
-  }
-  
-  var failure: Failure? {
-    guard case let .failure(error) = self else { return nil }
-    return error
-  }
-  
-  init(value: Success, error: Failure?) {
-    if let error = error {
-      self = .failure(error)
-    } else {
-      self = .success(value)
-    }
-  }
-}
+//typealias BCDBResult<Success> = Result<Success, BCError>
+//
+//typealias BCDAOResult<Success> = BCResult<Success, BCError>
+//
+//struct BCResult<Success, Failure: BCError> {
+//
+//  var result: Result<Success, Failure>
+//
+//  var value: Success? {
+//    get { result.success }
+//    set {
+//      guard newValue != nil else { return }
+//      self.result = .success(newValue!)
+//    }
+//  }
+//
+//  var error: Failure? {
+//    get { result.failure }
+//    set {
+//      guard newValue != nil else { return }
+//      self.result = .failure(newValue!)
+//    }
+//  }
+//
+//  init(result: Result<Success, Failure>) { self.result = result }
+//
+//  init(value: Success, error: Failure?) {
+//    if let error = error {
+//      self.result = .failure(error)
+//    } else {
+//      self.result = .success(value)
+//    }
+//  }
+//}
+//
+//extension Result {
+//  var success: Success? {
+//    guard case let .success(value) = self else { return nil }
+//    return value
+//  }
+//
+//  var failure: Failure? {
+//    guard case let .failure(error) = self else { return nil }
+//    return error
+//  }
+//
+//  init(value: Success, error: Failure?) {
+//    if let error = error {
+//      self = .failure(error)
+//    } else {
+//      self = .success(value)
+//    }
+//  }
+//}

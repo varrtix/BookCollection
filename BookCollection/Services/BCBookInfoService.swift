@@ -27,7 +27,7 @@
 /// THE SOFTWARE.
 
 import Foundation
-import WCDBSwift
+//import WCDBSwift
 
 class BCBookInfoService {
   
@@ -238,18 +238,18 @@ class BCBookInfoService {
 }
 
 extension BCBookInfoService {
-  class func handle<T: Any>(
-    _ result: BCDBResult<T>,
-    success handler: ((T) -> ())? = nil,
-    failure elseHandler: ((BCError) -> ())? = nil
-  ) {
-    switch result {
-      case .success(let value):
-        if handler == nil { return }
-        handler!(value)
-      case .failure(let error):
-        if elseHandler == nil { return }
-        elseHandler!(error)
-    }
-  }
+//  class func handle<T: Any>(
+//    _ result: BCDBResult<T>,
+//    success handler: ((T) -> ())? = nil,
+//    failure elseHandler: ((BCError) -> ())? = nil
+//  ) {
+//    switch result {
+//      case .success(let value):
+//        if handler == nil { return }
+//        handler!(value)
+//      case .failure(let error):
+//        if elseHandler == nil { return }
+//        elseHandler!(error)
+//    }
+//  }
 }

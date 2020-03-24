@@ -30,8 +30,6 @@ import UIKit
 
 typealias ViewTuple = (title: String, item: BCViewController)
 
-typealias BCError = Error
-
 struct BCColor {
   enum BarTint {
     static let green = UIColor(HEX: 0x009D82)

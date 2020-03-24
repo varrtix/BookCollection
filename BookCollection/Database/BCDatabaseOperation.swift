@@ -32,46 +32,123 @@ import SQLite
 class BCDatabaseOperation: AsyncOperation {
   
   override func main() {
-    if !FileManager.default.fileExists(
-      atPath: BCDatabase
-        .directoryURL
-        .absoluteString) {
-      do {
-        try FileManager.default.createDirectory(
-          at: BCDatabase.directoryURL,
-          withIntermediateDirectories: true)
-      } catch {
-        print("Create DB Directory error: \(error)")
-      }
-    }
-    
-    let database = Database(withFileURL: BCDatabase.fileURL)
-    
-    guard database.canOpen else {
-      print("Database can not open in \(#file): \(#function), \(#line)")
-      return
-    }
-    
-    do {
-      try createTable(with: database)
-    } catch {
-      print("create DB error: \(error)")
+    connect(BCDatabase.fileURL) {
+      BCDBResult.handle($0, success: { connection in
+        self.createTables(with: connection)
+      }) { V2RXError.printError($0) }
     }
   }
 }
 
 extension BCDatabaseOperation {
   
-  func createTable(with database: Database) throws {
+  /// Create tables in connected database.
+  /// - Parameter database: The location of tables.
+  fileprivate func createTables(with database: Connection) {
     do {
-      try database.create(table: BCDBTable.Kind.book.rawName, of: BCBook.DB.self)
-      try database.create(table: BCDBTable.Kind.tags.rawName, of: BCTag.DB.self)
-      try database.create(table: BCDBTable.Kind.images.rawName, of: BCImages.DB.self)
-      try database.create(table: BCDBTable.Kind.series.rawName, of: BCSeries.DB.self)
-      try database.create(table: BCDBTable.Kind.rating.rawName, of: BCRating.DB.self)
-      try database.create(table: BCDBTable.Kind.authors.rawName, of: BCAuthor.DB.self)
-      try database.create(table: BCDBTable.Kind.translators.rawName, of: BCTranslator.DB.self)
-    } catch let error as WCDBSwift.Error { throw error }
+      // MARK: Table book
+      let book = BCBookDB()
+      try database
+        .run(BCDBTable.list[BCDBTable.Kind.book]!
+          .create(ifNotExists: true) {
+            $0.column(book.id, primaryKey: .autoincrement)
+            $0.column(book.doubanID, unique: true)
+            $0.column(book.title)
+            $0.column(book.subtitle)
+            $0.column(book.originTitle)
+            $0.column(book.publishedDate)
+            $0.column(book.publisher)
+            $0.column(book.isbn10)
+            $0.column(book.isbn13)
+            $0.column(book.image)
+            $0.column(book.binding)
+            $0.column(book.authorIntroduction)
+            $0.column(book.catalog)
+            $0.column(book.pages)
+            $0.column(book.summary)
+            $0.column(book.price)
+        })
+      // MARK: Table tags
+      let tag = BCTagDB()
+      try database
+        .run(BCDBTable.list[BCDBTable.Kind.tags]!
+          .create(ifNotExists: true) {
+            $0.column(tag.bookID)
+            $0.column(tag.count)
+            $0.column(tag.title)
+        })
+      // MARK: Table images
+      let images = BCImagesDB()
+      try database
+        .run(BCDBTable.list[BCDBTable.Kind.images]!
+          .create(ifNotExists: true) {
+            $0.column(images.bookID)
+            $0.column(images.small)
+            $0.column(images.medium)
+            $0.column(images.large)
+        })
+      // MARK: Table series
+      let series = BCSeriesDB()
+      try database
+        .run(BCDBTable.list[BCDBTable.Kind.series]!
+          .create(ifNotExists: true) {
+            $0.column(series.bookID)
+            $0.column(series.seriesID)
+            $0.column(series.title)
+        })
+      // MARK: Table rating
+      let rating = BCRatingDB()
+      try database
+        .run(BCDBTable.list[BCDBTable.Kind.rating]!
+          .create(ifNotExists: true) {
+            $0.column(rating.bookID)
+            $0.column(rating.max)
+            $0.column(rating.numRaters)
+            $0.column(rating.min)
+            $0.column(rating.average)
+        })
+      // MARK: Table authors
+      let authors = BCAuthorDB()
+      try database
+        .run(BCDBTable.list[BCDBTable.Kind.authors]!
+          .create(ifNotExists: true) {
+            $0.column(authors.bookID)
+            $0.column(authors.name)
+        })
+      // MARK: Table translators
+      let translators = BCTranslatorDB()
+      try database
+        .run(BCDBTable.list[BCDBTable.Kind.translators]!
+          .create(ifNotExists: true) {
+            $0.column(translators.bookID)
+            $0.column(translators.name)
+        })
+    } catch { V2RXError.printError(error) }
+  }
+  
+  /// Connect SQLite to the database file if it does not already exist, include its parent directories.
+  /// - Parameters:
+  ///   - url: The location of the database.
+  ///   - completionHandler: A closure to be excuted once the connection has finished.
+  fileprivate func connect(
+    _ url: URL, completionHandler: @escaping (BCResult<Connection>
+    ) -> Void) {
     
+    let result = BCResult<Connection> {
+      if !FileManager.default.fileExists(
+        atPath: BCDatabase
+          .directoryURL
+          .absoluteString) {
+        do {
+          try FileManager.default.createDirectory(
+            at: BCDatabase.directoryURL,
+            withIntermediateDirectories: true)
+        } catch { throw error }
+      }
+      do {
+        return try Connection(url.absoluteString)
+      } catch { throw error }
+    }
+    completionHandler(result)
   }
 }
