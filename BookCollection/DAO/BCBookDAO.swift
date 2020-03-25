@@ -32,6 +32,7 @@ import SQLite
 struct BCBookDAO: BCDAO {
   typealias Model = BCBook
 
+  @discardableResult
   static func insert(
     or conflict: SQLite.OnConflict,
     _ model: BCBook,
@@ -39,26 +40,26 @@ struct BCBookDAO: BCDAO {
   ) throws -> Int64 {
     let table = BCDBTable.list[BCDBTable.Kind.book]!
     let book = BCBookDB()
-    do {
-      let rowID = try connection.run(table.insert(
-        or: conflict,
-        book.doubanID <- model.doubanID,
-        book.title <- model.title,
-        book.subtitle <- model.subtitle,
-        book.originTitle <- model.originTitle,
-        book.publishedDate <- model.publishedDate,
-        book.publisher <- model.publisher,
-        book.isbn10 <- model.isbn10,
-        book.isbn13 <- model.isbn13,
-        book.image <- model.image,
-        book.binding <- model.binding,
-        book.authorIntroduction <- model.authorIntroduction,
-        book.catalog <- model.catalog,
-        book.pages <- model.pages,
-        book.summary <- model.summary,
-        book.price <- model.price
-      ))
-      return rowID
-    } catch { throw error }
+    //    do {
+    let rowID = try connection.run(table.insert(
+      or: conflict,
+      book.doubanID <- model.doubanID,
+      book.title <- model.title,
+      book.subtitle <- model.subtitle,
+      book.originTitle <- model.originTitle,
+      book.publishedDate <- model.publishedDate,
+      book.publisher <- model.publisher,
+      book.isbn10 <- model.isbn10,
+      book.isbn13 <- model.isbn13,
+      book.image <- model.image,
+      book.binding <- model.binding,
+      book.authorIntroduction <- model.authorIntroduction,
+      book.catalog <- model.catalog,
+      book.pages <- model.pages,
+      book.summary <- model.summary,
+      book.price <- model.price
+    ))
+    return rowID
+//    } catch { throw error }
   }
 }

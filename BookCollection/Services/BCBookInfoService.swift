@@ -27,215 +27,201 @@
 /// THE SOFTWARE.
 
 import Foundation
-//import WCDBSwift
-//import SQLite
+import SQLite
 
 class BCBookInfoService {
   
   class func mark(
-    book object: BCBook,
+    _ book: BCBook,
     at queue: DispatchQueue = .main,
     completionHandler: @escaping (BCResult<Int64>) -> Void
   ) {
-    let database = Database(withFileURL: BCDatabase.fileURL)
-    
-    var daoResult = BCDAOResult<Int64>(result: BCDBResult(value: -1, error: nil))
-    
-    let root = BCDBTable(root: object)
-    
-//    defer { queue.async { completionHandler(daoResult) } }
-    let group = DispatchGroup()
-    
-    group.enter()
-    BCDataAccessObjects.insert(
-      root.book,
-      with: database,
-      into: .book
-    ) {
-      handle($0, success: { value in
-        daoResult.value = value
-      }) { error in
-        daoResult.error = error
+    do {
+      
+      let connection = try Connection(BCDatabase.fileURL)
+      
+      BCDatabase.daoQueue.async {
+        
+        let result = BCResult<Int64> {
+          try BCBookDAO.insert(or: .ignore, book, with: connection)
+        }
+        
+        let subResult = BCResult<Int64> {
+          let tagError = BCErrorResult<Int64>().catching {
+            guard book.tags != nil
+              else { throw V2RXError.DataAccessObjects.invalidData }
+            try book.tags!.forEach {
+              try BCTagDAO.insert(or: .ignore, $0, with: connection)
+            }
+            return 0
+          }
+          if tagError != nil { throw tagError! }
+          
+          let imageError = BCErrorResult<Int64>().catching {
+            guard book.images != nil
+              else { throw V2RXError.DataAccessObjects.invalidData }
+            return try BCImagesDAO.insert(or: .ignore, book.images!, with: connection)
+          }
+          if imageError != nil { throw imageError! }
+          
+          let seriesError = BCErrorResult<Int64>().catching {
+            guard book.series != nil
+              else { throw V2RXError.DataAccessObjects.invalidData }
+            return try BCSeriesDAO.insert(or: .ignore, book.series!, with: connection)
+          }
+          if seriesError != nil { throw seriesError! }
+          
+          let ratingError = BCErrorResult<Int64>().catching {
+            guard book.rating != nil
+              else { throw V2RXError.DataAccessObjects.invalidData }
+            return try BCRatingDAO.insert(or: .ignore, book.rating!, with: connection)
+          }
+          if ratingError != nil { throw ratingError! }
+          
+          let authorError = BCErrorResult<Int64>().catching {
+            guard book.authors != nil
+              else { throw V2RXError.DataAccessObjects.invalidData }
+            try book.authors!.forEach {
+              try BCAuthorDAO.insert(or: .ignore, $0, with: connection)
+            }
+            return 0
+          }
+          if authorError != nil { throw authorError! }
+          
+          let translatorError = BCErrorResult<Int64>().catching {
+            guard book.translators != nil
+              else { throw V2RXError.DataAccessObjects.invalidData }
+            try book.translators!.forEach {
+              try BCTranslatorDAO.insert(or: .ignore, $0, with: connection)
+            }
+            return 0
+          }
+          if translatorError != nil { throw translatorError! }
+          
+          return 0
+        }
+        
+        guard case .failure(_) = subResult else {
+          queue.async { completionHandler(result) }
+          return
+        }
+        queue.async { completionHandler(subResult) }
       }
-      group.leave()
-    }
-    
-    BCDataAccessObjects.multiInnsert(
-      root.authors,
-      with: database,
-      into: .authors
-    ) {
-      handle($0) { error in
-        daoResult.error = error
-      }
-    }
-    
-    BCDataAccessObjects.multiInnsert(
-      root.translators,
-      with: database,
-      into: .translators
-    ) {
-      handle($0) { error in
-        daoResult.error = error
-      }
-    }
-    
-    BCDataAccessObjects.multiInnsert(
-      root.tags,
-      with: database,
-      into: .tags
-    ) {
-      handle($0) { error in
-        daoResult.error = error
-      }
-    }
-    
-    BCDataAccessObjects.insert(
-      root.images,
-      with: database,
-      into: .images
-    ) {
-      handle($0) { error in
-        daoResult.error = error
-      }
-    }
-    
-    BCDataAccessObjects.insert(
-      root.series,
-      with: database,
-      into: .series
-    ) {
-      handle($0) { error in
-        daoResult.error = error
-      }
-    }
-    
-    BCDataAccessObjects.insert(
-      root.rating,
-      with: database,
-      into: .rating
-    ) {
-      handle($0) { error in
-        daoResult.error = error
-      }
-    }
-    
-    group.notify(queue: queue) {
-      completionHandler(daoResult)
-    }
+    } catch { V2RXError.printError(error) }
   }
   
   class func search(
     with doubanID: String,
     at queue: DispatchQueue = .main,
-    completionHandler: @escaping (BCDAOResult<BCBook.JSON?>) -> Void
+    completionHandler: @escaping (BCResult<Int64>) -> Void
   ) {
-    let database = Database(withFileURL: BCDatabase.fileURL)
-    
-    var daoResult = BCDAOResult<BCBook.JSON?>(value: nil, error: nil)
-    
-    let group = DispatchGroup()
-    
-    group.enter()
-    BCDataAccessObjects.get(
-      of: BCBook.DB.self,
-      on: BCBook.DB.Properties.doubanID,
-      from: .book,
-      with: database,
-      where: BCBook.DB.Properties.doubanID == doubanID
-    ) {
-      handle($0, success: { value in
-        daoResult.value = value.jsonFormat
-      }) { error in
-        daoResult.error = error
-      }
-      group.leave()
-    }
-    
-    defer { queue.async { completionHandler(daoResult) } }
-    
-    let dispatchItem = DispatchWorkItem(qos: .background) {
-      
-      guard let id = daoResult.value??.doubanID else {
-        daoResult.error = V2RXError.DataAccessObjects.invalidForeignKey
-        return
-      }
-      
-      BCDataAccessObjects.get(
-        of: BCImages.DB.self,
-        on: BCImages.DB.Properties.bookID,
-        from: .images,
-        with: database,
-        where: BCImages.DB.Properties.bookID == id
-      ) {
-        handle($0, success: { value in
-          daoResult.value??.images = value.jsonFormat
-        })
-      }
-      
-      BCDataAccessObjects.get(
-        of: BCSeries.DB.self,
-        on: BCSeries.DB.Properties.bookID,
-        from: .series,
-        with: database,
-        where: BCSeries.DB.Properties.bookID == id
-      ) {
-        handle($0, success: { value in
-          daoResult.value??.series = value.jsonFormat
-        })
-      }
-      
-      BCDataAccessObjects.get(
-        of: BCRating.DB.self,
-        on: BCRating.DB.Properties.bookID,
-        from: .rating,
-        with: database,
-        where:  BCRating.DB.Properties.bookID == id
-      ) {
-        handle($0, success: { value in
-          daoResult.value??.rating = value.jsonFormat
-        })
-      }
-      
-      BCDataAccessObjects.multiGet(
-        of: BCTag.DB.self,
-        on: BCTag.DB.Properties.bookID,
-        from: .tags,
-        with: database,
-        where: BCTag.DB.Properties.bookID == id
-      ) {
-        handle($0, success: { value in
-          daoResult.value??.tags = value.map { $0.jsonFormat }
-        })
-      }
-      
-      BCDataAccessObjects.multiGet(
-        of: BCAuthor.DB.self,
-        on: BCAuthor.DB.Properties.bookID,
-        from: .authors,
-        with: database,
-        where: BCAuthor.DB.Properties.bookID == id
-      ) {
-        handle($0, success: { value in
-          daoResult.value??.authors = value.map { $0.jsonFormat }
-        })
-      }
-      
-      BCDataAccessObjects.multiGet(
-        of: BCTranslator.DB.self,
-        on: BCTranslator.DB.Properties.bookID,
-        from: .translators,
-        with: database,
-        where: BCTranslator.DB.Properties.bookID == id
-      ) {
-        handle($0, success: { value in
-          daoResult.value??.translators = value.map { $0.jsonFormat }
-        })
-      }
-    }
-    
-    group.notify(queue: BCDatabase.queue, work: dispatchItem)
   }
+//    let database = Database(withFileURL: BCDatabase.fileURL)
+//
+//    var daoResult = BCDAOResult<BCBook.JSON?>(value: nil, error: nil)
+//
+//    let group = DispatchGroup()
+//
+//    group.enter()
+//    BCDataAccessObjects.get(
+//      of: BCBook.DB.self,
+//      on: BCBook.DB.Properties.doubanID,
+//      from: .book,
+//      with: database,
+//      where: BCBook.DB.Properties.doubanID == doubanID
+//    ) {
+//      handle($0, success: { value in
+//        daoResult.value = value.jsonFormat
+//      }) { error in
+//        daoResult.error = error
+//      }
+//      group.leave()
+//    }
+//
+//    defer { queue.async { completionHandler(daoResult) } }
+//
+//    let dispatchItem = DispatchWorkItem(qos: .background) {
+//
+//      guard let id = daoResult.value??.doubanID else {
+//        daoResult.error = V2RXError.DataAccessObjects.invalidForeignKey
+//        return
+//      }
+//
+//      BCDataAccessObjects.get(
+//        of: BCImages.DB.self,
+//        on: BCImages.DB.Properties.bookID,
+//        from: .images,
+//        with: database,
+//        where: BCImages.DB.Properties.bookID == id
+//      ) {
+//        handle($0, success: { value in
+//          daoResult.value??.images = value.jsonFormat
+//        })
+//      }
+//
+//      BCDataAccessObjects.get(
+//        of: BCSeries.DB.self,
+//        on: BCSeries.DB.Properties.bookID,
+//        from: .series,
+//        with: database,
+//        where: BCSeries.DB.Properties.bookID == id
+//      ) {
+//        handle($0, success: { value in
+//          daoResult.value??.series = value.jsonFormat
+//        })
+//      }
+//
+//      BCDataAccessObjects.get(
+//        of: BCRating.DB.self,
+//        on: BCRating.DB.Properties.bookID,
+//        from: .rating,
+//        with: database,
+//        where:  BCRating.DB.Properties.bookID == id
+//      ) {
+//        handle($0, success: { value in
+//          daoResult.value??.rating = value.jsonFormat
+//        })
+//      }
+//
+//      BCDataAccessObjects.multiGet(
+//        of: BCTag.DB.self,
+//        on: BCTag.DB.Properties.bookID,
+//        from: .tags,
+//        with: database,
+//        where: BCTag.DB.Properties.bookID == id
+//      ) {
+//        handle($0, success: { value in
+//          daoResult.value??.tags = value.map { $0.jsonFormat }
+//        })
+//      }
+//
+//      BCDataAccessObjects.multiGet(
+//        of: BCAuthor.DB.self,
+//        on: BCAuthor.DB.Properties.bookID,
+//        from: .authors,
+//        with: database,
+//        where: BCAuthor.DB.Properties.bookID == id
+//      ) {
+//        handle($0, success: { value in
+//          daoResult.value??.authors = value.map { $0.jsonFormat }
+//        })
+//      }
+//
+//      BCDataAccessObjects.multiGet(
+//        of: BCTranslator.DB.self,
+//        on: BCTranslator.DB.Properties.bookID,
+//        from: .translators,
+//        with: database,
+//        where: BCTranslator.DB.Properties.bookID == id
+//      ) {
+//        handle($0, success: { value in
+//          daoResult.value??.translators = value.map { $0.jsonFormat }
+//        })
+//      }
+//    }
+//
+//    group.notify(queue: BCDatabase.queue, work: dispatchItem)
+//  }
 }
 
 extension BCBookInfoService {

@@ -32,6 +32,7 @@ import SQLite
 struct BCTranslatorDAO: BCDAO {
   typealias Model = BCTranslator
   
+  @discardableResult
   static func insert(
     or conflict: SQLite.OnConflict,
     _ model: BCTranslator,
@@ -39,12 +40,12 @@ struct BCTranslatorDAO: BCDAO {
   ) throws -> Int64 {
     let table = BCDBTable.list[BCDBTable.Kind.translators]!
     let translator = BCTranslatorDB()
-    do {
-      let rowID = try connection.run(table.insert(
-        or: conflict,
-        translator.name <- model
-      ))
-      return rowID
-    } catch { throw error }
+    //    do {
+    let rowID = try connection.run(table.insert(
+      or: conflict,
+      translator.name <- model
+    ))
+    return rowID
+    //    } catch { throw error }
   }
 }

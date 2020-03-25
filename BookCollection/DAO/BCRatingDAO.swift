@@ -32,6 +32,7 @@ import SQLite
 struct BCRatingDAO: BCDAO {
   typealias Model = BCRating
   
+  @discardableResult
   static func insert(
     or conflict: SQLite.OnConflict,
     _ model: BCRating,
@@ -39,15 +40,15 @@ struct BCRatingDAO: BCDAO {
   ) throws -> Int64 {
     let table = BCDBTable.list[BCDBTable.Kind.rating]!
     let rating = BCRatingDB()
-    do {
-      let rowID = try connection.run(table.insert(
-        or: conflict,
-        rating.max <- model.max,
-        rating.min <- model.min,
-        rating.average <- model.average,
-        rating.numRaters <- model.numRaters
-      ))
-      return rowID
-    } catch { throw error }
+    //    do {
+    let rowID = try connection.run(table.insert(
+      or: conflict,
+      rating.max <- model.max,
+      rating.min <- model.min,
+      rating.average <- model.average,
+      rating.numRaters <- model.numRaters
+    ))
+    return rowID
+    //    } catch { throw error }
   }
 }

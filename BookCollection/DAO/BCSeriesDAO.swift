@@ -32,6 +32,7 @@ import SQLite
 struct BCSeriesDAO: BCDAO {
   typealias Model = BCSeries
   
+  @discardableResult
   static func insert(
     or conflict: SQLite.OnConflict,
     _ model: BCSeries,
@@ -39,13 +40,13 @@ struct BCSeriesDAO: BCDAO {
   ) throws -> Int64 {
     let table = BCDBTable.list[BCDBTable.Kind.series]!
     let series = BCSeriesDB()
-    do {
-      let rowID = try connection.run(table.insert(
-        or: conflict,
-        series.seriesID <- model.seriesID,
-        series.title <- model.title
-      ))
-      return rowID
-    } catch { throw error }
+    //    do {
+    let rowID = try connection.run(table.insert(
+      or: conflict,
+      series.seriesID <- model.seriesID,
+      series.title <- model.title
+    ))
+    return rowID
+    //    } catch { throw error }
   }
 }

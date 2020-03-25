@@ -44,8 +44,6 @@ struct BCDBTable {
       Kind.allCases.map { Table($0.raw) })
   )
 }
-
-
 //  fileprivate var root: BCBook.JSON
 //
 //  var book: BCBook.DB {

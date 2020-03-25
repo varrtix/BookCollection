@@ -32,6 +32,7 @@ import SQLite
 struct BCImagesDAO: BCDAO {
   typealias Model = BCImages
   
+  @discardableResult
   static func insert(
     or conflict: SQLite.OnConflict,
     _ model: BCImages,
@@ -39,14 +40,14 @@ struct BCImagesDAO: BCDAO {
   ) throws -> Int64 {
     let table = BCDBTable.list[BCDBTable.Kind.images]!
     let images = BCImagesDB()
-    do {
-      let rowID = try connection.run(table.insert(
-        or: conflict,
-        images.small <- model.small,
-        images.medium <- model.medium,
-        images.large <- model.large
-      ))
-      return rowID
-    } catch { throw error }
+    //    do {
+    let rowID = try connection.run(table.insert(
+      or: conflict,
+      images.small <- model.small,
+      images.medium <- model.medium,
+      images.large <- model.large
+    ))
+    return rowID
+    //    } catch { throw error }
   }
 }

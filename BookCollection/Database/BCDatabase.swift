@@ -41,8 +41,13 @@ struct BCDatabase {
       relativeTo: directoryURL)
   }
   
-  static let queue = DispatchQueue(
-    label: "com.varrtix.bcdatabase",
+  static let daoQueue = DispatchQueue(
+    label: "com.varrtix.bcdao",
+    qos: .background,
+    attributes: .concurrent)
+  
+  static let daoSubQueue = DispatchQueue(
+    label: "com.varrtix.bcsubdao",
     qos: .background,
     attributes: .concurrent)
 }

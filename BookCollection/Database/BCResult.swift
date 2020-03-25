@@ -47,6 +47,13 @@ struct BCDBResult {
   }
 }
 
+struct BCErrorResult<Success>: Error {
+  func catching(_ body: () throws -> Success) -> Error? {
+    let result = BCResult<Success>(catching: body)
+    guard case let .failure(error) = result else { return nil }
+    return error
+  }
+}
 //typealias BCDBResult<Success> = Result<Success, BCError>
 //
 //typealias BCDAOResult<Success> = BCResult<Success, BCError>

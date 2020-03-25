@@ -44,11 +44,11 @@ extension BCDatabaseOperation {
   
   /// Create tables in connected database.
   /// - Parameter database: The location of tables.
-  fileprivate func createTables(with database: Connection) {
+  fileprivate func createTables(with connection: Connection) {
     do {
       // MARK: Table book
       let book = BCBookDB()
-      try database
+      try connection
         .run(BCDBTable.list[BCDBTable.Kind.book]!
           .create(ifNotExists: true) {
             $0.column(book.id, primaryKey: .autoincrement)
@@ -70,7 +70,7 @@ extension BCDatabaseOperation {
         })
       // MARK: Table tags
       let tag = BCTagDB()
-      try database
+      try connection
         .run(BCDBTable.list[BCDBTable.Kind.tags]!
           .create(ifNotExists: true) {
             $0.column(tag.bookID)
@@ -80,7 +80,7 @@ extension BCDatabaseOperation {
         })
       // MARK: Table images
       let images = BCImagesDB()
-      try database
+      try connection
         .run(BCDBTable.list[BCDBTable.Kind.images]!
           .create(ifNotExists: true) {
             $0.column(images.bookID)
@@ -91,7 +91,7 @@ extension BCDatabaseOperation {
         })
       // MARK: Table series
       let series = BCSeriesDB()
-      try database
+      try connection
         .run(BCDBTable.list[BCDBTable.Kind.series]!
           .create(ifNotExists: true) {
             $0.column(series.bookID)
@@ -101,7 +101,7 @@ extension BCDatabaseOperation {
         })
       // MARK: Table rating
       let rating = BCRatingDB()
-      try database
+      try connection
         .run(BCDBTable.list[BCDBTable.Kind.rating]!
           .create(ifNotExists: true) {
             $0.column(rating.bookID)
@@ -113,7 +113,7 @@ extension BCDatabaseOperation {
         })
       // MARK: Table authors
       let authors = BCAuthorDB()
-      try database
+      try connection
         .run(BCDBTable.list[BCDBTable.Kind.authors]!
           .create(ifNotExists: true) {
             $0.column(authors.bookID)
@@ -122,7 +122,7 @@ extension BCDatabaseOperation {
         })
       // MARK: Table translators
       let translators = BCTranslatorDB()
-      try database
+      try connection
         .run(BCDBTable.list[BCDBTable.Kind.translators]!
           .create(ifNotExists: true) {
             $0.column(translators.bookID)
@@ -145,16 +145,22 @@ extension BCDatabaseOperation {
         atPath: BCDatabase
           .directoryURL
           .absoluteString) {
-        do {
-          try FileManager.default.createDirectory(
-            at: BCDatabase.directoryURL,
-            withIntermediateDirectories: true)
-        } catch { throw error }
+        //        do {
+        try FileManager.default.createDirectory(
+          at: BCDatabase.directoryURL,
+          withIntermediateDirectories: true)
+        //        } catch { throw error }
       }
-      do {
-        return try Connection(url.absoluteString)
-      } catch { throw error }
+      //      do {
+      return try Connection(url)
+      //      } catch { throw error }
     }
     completionHandler(result)
+  }
+}
+
+extension Connection {
+  convenience init(_ url: URL, readonly: Bool = false) throws {
+    try self.init(url.absoluteString, readonly: readonly)
   }
 }
