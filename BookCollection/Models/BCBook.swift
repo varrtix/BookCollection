@@ -28,17 +28,9 @@
 
 import Foundation
 import SQLite
-//import WCDBSwift
 
-//struct BCBook: BCORMAlias {
-//
-//  typealias DB = BCBookDB
-//
-//  typealias JSON = BCBookJSON
-//}
-//class BCBookJSON: BCModel, BCJSONCodable, BCBookFoundation {
 struct BCBook: BCCodable {
-//  typealias DBType = BCBook.DB
+  
   let doubanID: String
   
   let title: String?

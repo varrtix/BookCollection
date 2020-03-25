@@ -29,55 +29,24 @@
 import Foundation
 import SQLite
 
-struct BCDBTable {
+struct BCImagesDAO: BCDAO {
+  typealias Model = BCImages
   
-  enum Kind: String, CaseIterable {
-    case book, authors, translators
-    case tags, images, series, rating
-    
-    var raw: String { "TB_BC_\(self.rawValue.uppercased())" }
+  static func insert(
+    or conflict: SQLite.OnConflict,
+    _ model: BCImages,
+    with connection: Connection
+  ) throws -> Int64 {
+    let table = BCDBTable.list[BCDBTable.Kind.images]!
+    let images = BCImagesDB()
+    do {
+      let rowID = try connection.run(table.insert(
+        or: conflict,
+        images.small <- model.small,
+        images.medium <- model.medium,
+        images.large <- model.large
+      ))
+      return rowID
+    } catch { throw error }
   }
-  
-  static let list = Dictionary(
-    uniqueKeysWithValues: zip(
-      Kind.allCases,
-      Kind.allCases.map { Table($0.raw) })
-  )
 }
-
-
-//  fileprivate var root: BCBook.JSON
-//
-//  var book: BCBook.DB {
-//    return BCBookDB(
-//      doubanID: root.doubanID,
-//      title: root.title,
-//      subtitle: root.subtitle,
-//      originTitle: root.originTitle,
-//      publishedDate: root.publishedDate,
-//      publisher: root.publisher,
-//      isbn10: root.isbn10,
-//      isbn13: root.isbn13,
-//      image: root.image,
-//      binding: root.binding,
-//      authorIntroduction: root.authorIntroduction,
-//      catalog: root.catalog,
-//      pages: root.pages,
-//      summary: root.summary,
-//      price: root.price
-//    )
-//  }
-//
-//  var tags: [BCTag.DB]? { root.tags == nil ? nil : root.tags!.map { $0.dbFormat } }
-//
-//  var images: BCImages.DB? { root.images == nil ? nil : root.images!.dbFormat }
-//
-//  var series: BCSeries.DB? { root.series == nil ? nil : root.series!.dbFormat }
-//
-//  var rating: BCRating.DB? { return root.rating == nil ? nil : root.rating!.dbFormat }
-//
-//  var authors: [BCAuthor.DB]? { root.authors == nil ? nil : root.authors!.map { BCAuthor.DB(name: $0) } }
-//
-//  var translators: [BCTranslator.DB]? { root.translators == nil ? nil : root.translators!.map { BCTranslator.DB(name: $0) } }
-//
-//  init(root: BCBook.JSON) { self.root = root }

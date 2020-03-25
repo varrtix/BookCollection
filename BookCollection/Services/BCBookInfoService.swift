@@ -28,13 +28,14 @@
 
 import Foundation
 //import WCDBSwift
+//import SQLite
 
 class BCBookInfoService {
   
   class func mark(
-    book object: BCBook.JSON,
+    book object: BCBook,
     at queue: DispatchQueue = .main,
-    completionHandler: @escaping (BCDAOResult<Int64>) -> Void
+    completionHandler: @escaping (BCResult<Int64>) -> Void
   ) {
     let database = Database(withFileURL: BCDatabase.fileURL)
     

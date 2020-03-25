@@ -267,7 +267,7 @@ extension BCScanViewController {
   fileprivate enum Alert {
     case authorize
     case waiting(URL)
-    case success(BCBook.JSON)
+    case success(BCBook)
     case failure(AFError)
   }
   
@@ -313,11 +313,10 @@ extension BCScanViewController {
         alert.title = "Book Information"
         alert.message = "Not found!"
         
+        // MARK: TODO change mark boolean to class variable and rewrite here.
         var isMarked = false
         
-        assert(book.doubanID != nil, "DoubanID must not be nil, because of the book exists.")
-        
-        BCBookInfoService.search(with: book.doubanID!) { isMarked = ($0.value == nil ? false : true) }
+        BCBookInfoService.search(with: book.doubanID) { isMarked = ($0.value == nil ? false : true) }
         
         let detailAction = UIAlertAction(title: "Detail", style: .default) { _ in
           let controller = BCInfoViewController(with: book)
@@ -350,12 +349,6 @@ extension BCScanViewController {
     return alert
   }
   
-  //  fileprivate func present<T: UIAlertController>(alert controller: T) {
-  //    if navigationController?.presentedViewController is T { return }
-  //    self.navigationController?.animatingPresent(controller)
-  //    navigationController?.present(controller, animated: true)
-  //  }
-  
   fileprivate func dismiss(completion: (() -> Void)? = nil) {
     guard navigationController?.presentedViewController
       is UIAlertController else { return }
@@ -369,7 +362,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
   fileprivate enum State {
     case ready(String)
     case loading(URL)
-    case success(BCBook.JSON)
+    case success(BCBook)
     case failure(AFError)
     case stop
   }
@@ -395,7 +388,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
     
     AF.request(url)
       .validate()
-      .responseDecodable(of: BCBook.JSON.self) { response in
+      .responseDecodable(of: BCBook.self) { response in
         // TODO: Throws detail
         guard case let .failure(error) = response.result else {
           guard case let .success(book) = response.result else {

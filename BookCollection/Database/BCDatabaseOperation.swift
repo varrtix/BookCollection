@@ -76,6 +76,7 @@ extension BCDatabaseOperation {
             $0.column(tag.bookID)
             $0.column(tag.count)
             $0.column(tag.title)
+            $0.foreignKey(tag.bookID, references: BCDBTable.list[BCDBTable.Kind.book]!, book.id, delete: .cascade)
         })
       // MARK: Table images
       let images = BCImagesDB()
@@ -86,6 +87,7 @@ extension BCDatabaseOperation {
             $0.column(images.small)
             $0.column(images.medium)
             $0.column(images.large)
+            $0.foreignKey(tag.bookID, references: BCDBTable.list[BCDBTable.Kind.book]!, book.id, delete: .cascade)
         })
       // MARK: Table series
       let series = BCSeriesDB()
@@ -95,6 +97,7 @@ extension BCDatabaseOperation {
             $0.column(series.bookID)
             $0.column(series.seriesID)
             $0.column(series.title)
+            $0.foreignKey(tag.bookID, references: BCDBTable.list[BCDBTable.Kind.book]!, book.id, delete: .cascade)
         })
       // MARK: Table rating
       let rating = BCRatingDB()
@@ -106,6 +109,7 @@ extension BCDatabaseOperation {
             $0.column(rating.numRaters)
             $0.column(rating.min)
             $0.column(rating.average)
+            $0.foreignKey(tag.bookID, references: BCDBTable.list[BCDBTable.Kind.book]!, book.id, delete: .cascade)
         })
       // MARK: Table authors
       let authors = BCAuthorDB()
@@ -114,6 +118,7 @@ extension BCDatabaseOperation {
           .create(ifNotExists: true) {
             $0.column(authors.bookID)
             $0.column(authors.name)
+            $0.foreignKey(tag.bookID, references: BCDBTable.list[BCDBTable.Kind.book]!, book.id, delete: .cascade)
         })
       // MARK: Table translators
       let translators = BCTranslatorDB()
@@ -122,6 +127,7 @@ extension BCDatabaseOperation {
           .create(ifNotExists: true) {
             $0.column(translators.bookID)
             $0.column(translators.name)
+            $0.foreignKey(tag.bookID, references: BCDBTable.list[BCDBTable.Kind.book]!, book.id, delete: .cascade)
         })
     } catch { V2RXError.printError(error) }
   }

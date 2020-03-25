@@ -48,11 +48,11 @@ class BCInfoViewController: BCViewController {
   
   fileprivate var backgroundImageView = UIImageView(image: UIImage(named: "Info/NavigationBar"))
   
-  var book: BCBook.JSON?
+  var book: BCBook?
   
   lazy var isMarked = false
   
-  init(with book: BCBook.JSON) {
+  init(with book: BCBook) {
     super.init(nibName: nil, bundle: nil)
     
     self.book = book
@@ -98,15 +98,6 @@ extension BCInfoViewController {
   }
   
   fileprivate func configureBackgroundView() {
-//    backgroundImageView.frame = CGRect(
-//      x: 0,
-//      y: 0,
-//      width: self.view.frame.width,
-//      height: backgroundHeight
-//    )
-//
-//    backgroundImageView.autoresizingMask = .flexibleWidth
-//
     view.addSubview(backgroundImageView)
   }
   

@@ -29,55 +29,36 @@
 import Foundation
 import SQLite
 
-struct BCDBTable {
-  
-  enum Kind: String, CaseIterable {
-    case book, authors, translators
-    case tags, images, series, rating
-    
-    var raw: String { "TB_BC_\(self.rawValue.uppercased())" }
+struct BCBookDAO: BCDAO {
+  typealias Model = BCBook
+
+  static func insert(
+    or conflict: SQLite.OnConflict,
+    _ model: BCBook,
+    with connection: Connection
+  ) throws -> Int64 {
+    let table = BCDBTable.list[BCDBTable.Kind.book]!
+    let book = BCBookDB()
+    do {
+      let rowID = try connection.run(table.insert(
+        or: conflict,
+        book.doubanID <- model.doubanID,
+        book.title <- model.title,
+        book.subtitle <- model.subtitle,
+        book.originTitle <- model.originTitle,
+        book.publishedDate <- model.publishedDate,
+        book.publisher <- model.publisher,
+        book.isbn10 <- model.isbn10,
+        book.isbn13 <- model.isbn13,
+        book.image <- model.image,
+        book.binding <- model.binding,
+        book.authorIntroduction <- model.authorIntroduction,
+        book.catalog <- model.catalog,
+        book.pages <- model.pages,
+        book.summary <- model.summary,
+        book.price <- model.price
+      ))
+      return rowID
+    } catch { throw error }
   }
-  
-  static let list = Dictionary(
-    uniqueKeysWithValues: zip(
-      Kind.allCases,
-      Kind.allCases.map { Table($0.raw) })
-  )
 }
-
-
-//  fileprivate var root: BCBook.JSON
-//
-//  var book: BCBook.DB {
-//    return BCBookDB(
-//      doubanID: root.doubanID,
-//      title: root.title,
-//      subtitle: root.subtitle,
-//      originTitle: root.originTitle,
-//      publishedDate: root.publishedDate,
-//      publisher: root.publisher,
-//      isbn10: root.isbn10,
-//      isbn13: root.isbn13,
-//      image: root.image,
-//      binding: root.binding,
-//      authorIntroduction: root.authorIntroduction,
-//      catalog: root.catalog,
-//      pages: root.pages,
-//      summary: root.summary,
-//      price: root.price
-//    )
-//  }
-//
-//  var tags: [BCTag.DB]? { root.tags == nil ? nil : root.tags!.map { $0.dbFormat } }
-//
-//  var images: BCImages.DB? { root.images == nil ? nil : root.images!.dbFormat }
-//
-//  var series: BCSeries.DB? { root.series == nil ? nil : root.series!.dbFormat }
-//
-//  var rating: BCRating.DB? { return root.rating == nil ? nil : root.rating!.dbFormat }
-//
-//  var authors: [BCAuthor.DB]? { root.authors == nil ? nil : root.authors!.map { BCAuthor.DB(name: $0) } }
-//
-//  var translators: [BCTranslator.DB]? { root.translators == nil ? nil : root.translators!.map { BCTranslator.DB(name: $0) } }
-//
-//  init(root: BCBook.JSON) { self.root = root }
