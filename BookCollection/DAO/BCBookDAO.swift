@@ -38,7 +38,7 @@ struct BCBookDAO: BCDAO {
     _ model: BCBook,
     with connection: Connection
   ) throws -> Int64 {
-    return try connection.run(BCBookTable.insert(
+    let id = try connection.run(BCBookTable.insert(
       or: conflict,
       BCBookDBD.doubanID <- model.doubanID,
       BCBookDBD.title <- model.title,
@@ -56,6 +56,38 @@ struct BCBookDAO: BCDAO {
       BCBookDBD.summary <- model.summary,
       BCBookDBD.price <- model.price
     ))
+    
+    if model.tags != nil {
+      try model.tags!.forEach {
+        try BCTagDAO.insert(or: .ignore, $0, with: connection)
+      }
+    } else { throw V2RXError.DataAccessObjects.invalidData }
+
+    if model.images != nil {
+      try BCImagesDAO.insert(or: .ignore, model.images!, with: connection)
+    } else { throw V2RXError.DataAccessObjects.invalidData }
+
+    if model.series != nil {
+      try BCSeriesDAO.insert(or: .ignore, model.series!, with: connection)
+    } else { throw V2RXError.DataAccessObjects.invalidData }
+
+    if model.rating != nil {
+      try BCRatingDAO.insert(or: .ignore, model.rating!, with: connection)
+    } else { throw V2RXError.DataAccessObjects.invalidData }
+
+    if model.authors != nil {
+      try model.authors!.forEach {
+        try BCAuthorDAO.insert(or: .ignore, $0, with: connection)
+      }
+    } else { throw V2RXError.DataAccessObjects.invalidData }
+
+    if model.translators != nil {
+      try model.translators!.forEach {
+        try BCTranslatorDAO.insert(or: .ignore, $0, with: connection)
+      }
+    } else { throw V2RXError.DataAccessObjects.invalidData }
+
+    return id
   }
   
   static func query(

@@ -27,8 +27,14 @@
 /// THE SOFTWARE.
 
 import Foundation
+import SQLite
+
+let BCDB = BCDatabase.default
 
 struct BCDatabase {
+  
+  static let `default` = BCDatabase()
+  
   static var directoryURL: URL {
     URL(
       fileURLWithPath: "BCDB",
@@ -50,4 +56,17 @@ struct BCDatabase {
     label: "com.varrtix.bcsubdao",
     qos: .background,
     attributes: .concurrent)
+  
+  @discardableResult
+  func connect(
+    at queue: DispatchQueue = BCDatabase.daoQueue,
+    _ handler: @escaping (Connection) -> Void
+  ) -> Self {
+    do {
+      let connection = try Connection(BCDatabase.fileURL)
+      queue.async { handler(connection) }
+    } catch { V2RXError.printError(error) }
+    
+    return self
+  }
 }

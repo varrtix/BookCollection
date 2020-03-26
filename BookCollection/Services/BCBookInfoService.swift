@@ -41,78 +41,12 @@ class BCBookInfoService {
     at queue: DispatchQueue = .main,
     completionHandler: @escaping (BCResult<Int64>) -> Void
   ) {
-    do {
-      
-      let connection = try Connection(BCDatabase.fileURL)
-      
-      BCDatabase.daoQueue.async {
-        
-        let result = BCResult<Int64> {
-          try BCBookDAO.insert(or: .ignore, book, with: connection)
-        }
-        
-        let subResult = BCResult<Int64> {
-          let tagError = BCErrorResult<Int64>().catching {
-            guard book.tags != nil
-              else { throw V2RXError.DataAccessObjects.invalidData }
-            try book.tags!.forEach {
-              try BCTagDAO.insert(or: .ignore, $0, with: connection)
-            }
-            return 0
-          }
-          if tagError != nil { throw tagError! }
-          
-          let imageError = BCErrorResult<Int64>().catching {
-            guard book.images != nil
-              else { throw V2RXError.DataAccessObjects.invalidData }
-            return try BCImagesDAO.insert(or: .ignore, book.images!, with: connection)
-          }
-          if imageError != nil { throw imageError! }
-          
-          let seriesError = BCErrorResult<Int64>().catching {
-            guard book.series != nil
-              else { throw V2RXError.DataAccessObjects.invalidData }
-            return try BCSeriesDAO.insert(or: .ignore, book.series!, with: connection)
-          }
-          if seriesError != nil { throw seriesError! }
-          
-          let ratingError = BCErrorResult<Int64>().catching {
-            guard book.rating != nil
-              else { throw V2RXError.DataAccessObjects.invalidData }
-            return try BCRatingDAO.insert(or: .ignore, book.rating!, with: connection)
-          }
-          if ratingError != nil { throw ratingError! }
-          
-          let authorError = BCErrorResult<Int64>().catching {
-            guard book.authors != nil
-              else { throw V2RXError.DataAccessObjects.invalidData }
-            try book.authors!.forEach {
-              try BCAuthorDAO.insert(or: .ignore, $0, with: connection)
-            }
-            return 0
-          }
-          if authorError != nil { throw authorError! }
-          
-          let translatorError = BCErrorResult<Int64>().catching {
-            guard book.translators != nil
-              else { throw V2RXError.DataAccessObjects.invalidData }
-            try book.translators!.forEach {
-              try BCTranslatorDAO.insert(or: .ignore, $0, with: connection)
-            }
-            return 0
-          }
-          if translatorError != nil { throw translatorError! }
-          
-          return 0
-        }
-        
-        guard case .failure(_) = subResult else {
-          queue.async { completionHandler(result) }
-          return
-        }
-        queue.async { completionHandler(subResult) }
+    BCDB.connect { conn in
+      let result = BCResult<Int64> {
+        try BCBookDAO.insert(or: .ignore, book, with: conn)
       }
-    } catch { V2RXError.printError(error) }
+      queue.async { completionHandler(result) }
+    }
   }
   
   class func search(
@@ -120,19 +54,11 @@ class BCBookInfoService {
     at queue: DispatchQueue = .main,
     completionHandler: @escaping (BCResult<BCBook?>) -> Void
   ) {
-    do {
-      
-      let connection = try Connection(BCDatabase.fileURL)
-      
-      BCDatabase.daoQueue.async {
-        let result = BCResult<BCBook?> {
-          try BCBookDAO.query(by: doubanID, with: connection)
-        }
-        
-        queue.async { completionHandler(result) }
+    BCDB.connect { conn in
+      let result = BCResult<BCBook?> {
+        try BCBookDAO.query(by: doubanID, with: conn)
       }
-    } catch {
-      V2RXError.printError(error)
+      queue.async { completionHandler(result) }
     }
   }
 }
