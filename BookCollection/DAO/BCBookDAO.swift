@@ -61,31 +61,37 @@ struct BCBookDAO: BCDAO {
       try model.tags!.forEach {
         try BCTagDAO.insert(or: .ignore, $0, with: connection)
       }
-    } else { throw V2RXError.DataAccessObjects.invalidData }
+    }
+//    } else { throw V2RXError.DataAccessObjects.invalidData }
 
     if model.images != nil {
       try BCImagesDAO.insert(or: .ignore, model.images!, with: connection)
-    } else { throw V2RXError.DataAccessObjects.invalidData }
+    }
+//    } else { throw V2RXError.DataAccessObjects.invalidData }
 
     if model.series != nil {
       try BCSeriesDAO.insert(or: .ignore, model.series!, with: connection)
-    } else { throw V2RXError.DataAccessObjects.invalidData }
+    }
+//    else { throw V2RXError.DataAccessObjects.invalidData }
 
     if model.rating != nil {
       try BCRatingDAO.insert(or: .ignore, model.rating!, with: connection)
-    } else { throw V2RXError.DataAccessObjects.invalidData }
+    }
+//    else { throw V2RXError.DataAccessObjects.invalidData }
 
     if model.authors != nil {
       try model.authors!.forEach {
         try BCAuthorDAO.insert(or: .ignore, $0, with: connection)
       }
-    } else { throw V2RXError.DataAccessObjects.invalidData }
+    }
+//    else { throw V2RXError.DataAccessObjects.invalidData }
 
     if model.translators != nil {
       try model.translators!.forEach {
         try BCTranslatorDAO.insert(or: .ignore, $0, with: connection)
       }
-    } else { throw V2RXError.DataAccessObjects.invalidData }
+    }
+//    else { throw V2RXError.DataAccessObjects.invalidData }
 
     return id
   }

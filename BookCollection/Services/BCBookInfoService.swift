@@ -41,11 +41,16 @@ class BCBookInfoService {
     at queue: DispatchQueue = .main,
     completionHandler: @escaping (BCResult<Int64>) -> Void
   ) {
+    let group = DispatchGroup()
+    group.enter()
     BCDB.connect { conn in
       let result = BCResult<Int64> {
         try BCBookDAO.insert(or: .ignore, book, with: conn)
       }
-      queue.async { completionHandler(result) }
+      group.leave()
+      group.notify(queue: queue) {
+        completionHandler(result)
+      }
     }
   }
   

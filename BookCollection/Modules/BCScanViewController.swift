@@ -40,6 +40,8 @@ class BCScanViewController: BCViewController {
     vertical: BCScanView.Constraint.verticalOffset
   )
   
+  lazy fileprivate var _isMarked = false
+  
   // controller variables
   lazy fileprivate var sessionIsCommitted = false
   
@@ -50,21 +52,33 @@ class BCScanViewController: BCViewController {
       switch newValue {
         case .ready(let isbn):
           cleanup()
-          fetchBook(with: isbn)
-        
+          BCBookInfoService.search(with: isbn) {
+            BCDBResult.handle($0, success: { value in
+              if value == nil {
+                self._isMarked = false
+                self.fetchBook(with: isbn)
+              } else {
+                self._isMarked = true
+                self.state = .success(value!)
+              }
+            }) { V2RXError.printError($0) }
+          }
         case .loading(let url):
-          present(alertController(.waiting(url)), animated: true)
-        
+          DispatchQueue.main.async {
+            self.present(self.alertController(.waiting(url)), animated: true)
+        }
         case .success(let book):
-          dismiss {
-            self.present(self.alertController(.success(book)), animated: true)
+          DispatchQueue.main.async {
+            self.dismiss {
+              self.present(self.alertController(.success(book)), animated: true)
+            }
         }
-        
         case .failure(let error):
-          dismiss {
-            self.present(self.alertController(.failure(error)), animated: true)
+          DispatchQueue.main.async {
+            self.dismiss {
+              self.present(self.alertController(.failure(error)), animated: true)
+            }
         }
-        
         case .stop: break
       }
     }
@@ -313,14 +327,9 @@ extension BCScanViewController {
         alert.title = "Book Information"
         alert.message = "Not found!"
         
-        // MARK: TODO change mark boolean to class variable and rewrite here.
-        var isMarked = false
-        
-        BCBookInfoService.search(with: book.doubanID) { isMarked = ($0.value == nil ? false : true) }
-        
         let detailAction = UIAlertAction(title: "Detail", style: .default) { _ in
           let controller = BCInfoViewController(with: book)
-          controller.isMarked = isMarked
+          controller.isMarked = self._isMarked
           self.present(controller, animated: true)
         }
         alert.addAction(detailAction)
@@ -330,7 +339,7 @@ extension BCScanViewController {
         \(book.authors?.first ?? "No author")
         """
 
-        if isMarked { break }
+        if _isMarked { break }
 
         let nextAction = UIAlertAction(title: "Mark and Continue", style: .cancel) { _ in
           self.launch()
