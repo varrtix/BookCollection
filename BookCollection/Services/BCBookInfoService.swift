@@ -31,6 +31,11 @@ import SQLite
 
 class BCBookInfoService {
   
+  /// A handler to be called when marked book has been written into the database.
+  /// - Parameters:
+  ///   - book: Model entity.
+  ///   - queue: The queue on which the completion handler is dispatched. `.main` by default.
+  ///   - completionHandler: A closure to be excuted once the marking has finished.
   class func mark(
     _ book: BCBook,
     at queue: DispatchQueue = .main,
@@ -113,130 +118,21 @@ class BCBookInfoService {
   class func search(
     with doubanID: String,
     at queue: DispatchQueue = .main,
-    completionHandler: @escaping (BCResult<Int64>) -> Void
+    completionHandler: @escaping (BCResult<BCBook?>) -> Void
   ) {
+    do {
+      
+      let connection = try Connection(BCDatabase.fileURL)
+      
+      BCDatabase.daoQueue.async {
+        let result = BCResult<BCBook?> {
+          try BCBookDAO.query(by: doubanID, with: connection)
+        }
+        
+        queue.async { completionHandler(result) }
+      }
+    } catch {
+      V2RXError.printError(error)
+    }
   }
-//    let database = Database(withFileURL: BCDatabase.fileURL)
-//
-//    var daoResult = BCDAOResult<BCBook.JSON?>(value: nil, error: nil)
-//
-//    let group = DispatchGroup()
-//
-//    group.enter()
-//    BCDataAccessObjects.get(
-//      of: BCBook.DB.self,
-//      on: BCBook.DB.Properties.doubanID,
-//      from: .book,
-//      with: database,
-//      where: BCBook.DB.Properties.doubanID == doubanID
-//    ) {
-//      handle($0, success: { value in
-//        daoResult.value = value.jsonFormat
-//      }) { error in
-//        daoResult.error = error
-//      }
-//      group.leave()
-//    }
-//
-//    defer { queue.async { completionHandler(daoResult) } }
-//
-//    let dispatchItem = DispatchWorkItem(qos: .background) {
-//
-//      guard let id = daoResult.value??.doubanID else {
-//        daoResult.error = V2RXError.DataAccessObjects.invalidForeignKey
-//        return
-//      }
-//
-//      BCDataAccessObjects.get(
-//        of: BCImages.DB.self,
-//        on: BCImages.DB.Properties.bookID,
-//        from: .images,
-//        with: database,
-//        where: BCImages.DB.Properties.bookID == id
-//      ) {
-//        handle($0, success: { value in
-//          daoResult.value??.images = value.jsonFormat
-//        })
-//      }
-//
-//      BCDataAccessObjects.get(
-//        of: BCSeries.DB.self,
-//        on: BCSeries.DB.Properties.bookID,
-//        from: .series,
-//        with: database,
-//        where: BCSeries.DB.Properties.bookID == id
-//      ) {
-//        handle($0, success: { value in
-//          daoResult.value??.series = value.jsonFormat
-//        })
-//      }
-//
-//      BCDataAccessObjects.get(
-//        of: BCRating.DB.self,
-//        on: BCRating.DB.Properties.bookID,
-//        from: .rating,
-//        with: database,
-//        where:  BCRating.DB.Properties.bookID == id
-//      ) {
-//        handle($0, success: { value in
-//          daoResult.value??.rating = value.jsonFormat
-//        })
-//      }
-//
-//      BCDataAccessObjects.multiGet(
-//        of: BCTag.DB.self,
-//        on: BCTag.DB.Properties.bookID,
-//        from: .tags,
-//        with: database,
-//        where: BCTag.DB.Properties.bookID == id
-//      ) {
-//        handle($0, success: { value in
-//          daoResult.value??.tags = value.map { $0.jsonFormat }
-//        })
-//      }
-//
-//      BCDataAccessObjects.multiGet(
-//        of: BCAuthor.DB.self,
-//        on: BCAuthor.DB.Properties.bookID,
-//        from: .authors,
-//        with: database,
-//        where: BCAuthor.DB.Properties.bookID == id
-//      ) {
-//        handle($0, success: { value in
-//          daoResult.value??.authors = value.map { $0.jsonFormat }
-//        })
-//      }
-//
-//      BCDataAccessObjects.multiGet(
-//        of: BCTranslator.DB.self,
-//        on: BCTranslator.DB.Properties.bookID,
-//        from: .translators,
-//        with: database,
-//        where: BCTranslator.DB.Properties.bookID == id
-//      ) {
-//        handle($0, success: { value in
-//          daoResult.value??.translators = value.map { $0.jsonFormat }
-//        })
-//      }
-//    }
-//
-//    group.notify(queue: BCDatabase.queue, work: dispatchItem)
-//  }
-}
-
-extension BCBookInfoService {
-//  class func handle<T: Any>(
-//    _ result: BCDBResult<T>,
-//    success handler: ((T) -> ())? = nil,
-//    failure elseHandler: ((BCError) -> ())? = nil
-//  ) {
-//    switch result {
-//      case .success(let value):
-//        if handler == nil { return }
-//        handler!(value)
-//      case .failure(let error):
-//        if elseHandler == nil { return }
-//        elseHandler!(error)
-//    }
-//  }
 }

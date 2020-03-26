@@ -47,26 +47,23 @@ extension BCDatabaseOperation {
   fileprivate func createTables(with connection: Connection) {
     do {
       // MARK: Table book
-      let book = BCBookDB()
-      try connection
-        .run(BCDBTable.list[BCDBTable.Kind.book]!
-          .create(ifNotExists: true) {
-            $0.column(book.id, primaryKey: .autoincrement)
-            $0.column(book.doubanID, unique: true)
-            $0.column(book.title)
-            $0.column(book.subtitle)
-            $0.column(book.originTitle)
-            $0.column(book.publishedDate)
-            $0.column(book.publisher)
-            $0.column(book.isbn10)
-            $0.column(book.isbn13)
-            $0.column(book.image)
-            $0.column(book.binding)
-            $0.column(book.authorIntroduction)
-            $0.column(book.catalog)
-            $0.column(book.pages)
-            $0.column(book.summary)
-            $0.column(book.price)
+      try connection.run(BCBookTable.create(ifNotExists: true) {
+            $0.column(BCBookDBD.id, primaryKey: .autoincrement)
+            $0.column(BCBookDBD.doubanID, unique: true)
+            $0.column(BCBookDBD.title)
+            $0.column(BCBookDBD.subtitle)
+            $0.column(BCBookDBD.originTitle)
+            $0.column(BCBookDBD.publishedDate)
+            $0.column(BCBookDBD.publisher)
+            $0.column(BCBookDBD.isbn10)
+            $0.column(BCBookDBD.isbn13)
+            $0.column(BCBookDBD.image)
+            $0.column(BCBookDBD.binding)
+            $0.column(BCBookDBD.authorIntroduction)
+            $0.column(BCBookDBD.catalog)
+            $0.column(BCBookDBD.pages)
+            $0.column(BCBookDBD.summary)
+            $0.column(BCBookDBD.price)
         })
       // MARK: Table tags
       let tag = BCTagDB()
@@ -76,7 +73,11 @@ extension BCDatabaseOperation {
             $0.column(tag.bookID)
             $0.column(tag.count)
             $0.column(tag.title)
-            $0.foreignKey(tag.bookID, references: BCDBTable.list[BCDBTable.Kind.book]!, book.id, delete: .cascade)
+            $0.foreignKey(
+              tag.bookID,
+              references: BCBookTable, BCBookDBD.id,
+              delete: .cascade
+            )
         })
       // MARK: Table images
       let images = BCImagesDB()
@@ -87,7 +88,11 @@ extension BCDatabaseOperation {
             $0.column(images.small)
             $0.column(images.medium)
             $0.column(images.large)
-            $0.foreignKey(tag.bookID, references: BCDBTable.list[BCDBTable.Kind.book]!, book.id, delete: .cascade)
+            $0.foreignKey(
+              tag.bookID,
+              references: BCBookTable, BCBookDBD.id,
+              delete: .cascade
+            )
         })
       // MARK: Table series
       let series = BCSeriesDB()
@@ -97,7 +102,11 @@ extension BCDatabaseOperation {
             $0.column(series.bookID)
             $0.column(series.seriesID)
             $0.column(series.title)
-            $0.foreignKey(tag.bookID, references: BCDBTable.list[BCDBTable.Kind.book]!, book.id, delete: .cascade)
+            $0.foreignKey(
+              tag.bookID,
+              references: BCBookTable, BCBookDBD.id,
+              delete: .cascade
+            )
         })
       // MARK: Table rating
       let rating = BCRatingDB()
@@ -109,7 +118,11 @@ extension BCDatabaseOperation {
             $0.column(rating.numRaters)
             $0.column(rating.min)
             $0.column(rating.average)
-            $0.foreignKey(tag.bookID, references: BCDBTable.list[BCDBTable.Kind.book]!, book.id, delete: .cascade)
+            $0.foreignKey(
+              tag.bookID,
+              references: BCBookTable, BCBookDBD.id,
+              delete: .cascade
+            )
         })
       // MARK: Table authors
       let authors = BCAuthorDB()
@@ -118,7 +131,11 @@ extension BCDatabaseOperation {
           .create(ifNotExists: true) {
             $0.column(authors.bookID)
             $0.column(authors.name)
-            $0.foreignKey(tag.bookID, references: BCDBTable.list[BCDBTable.Kind.book]!, book.id, delete: .cascade)
+            $0.foreignKey(
+              tag.bookID,
+              references: BCBookTable, BCBookDBD.id,
+              delete: .cascade
+            )
         })
       // MARK: Table translators
       let translators = BCTranslatorDB()
@@ -127,7 +144,11 @@ extension BCDatabaseOperation {
           .create(ifNotExists: true) {
             $0.column(translators.bookID)
             $0.column(translators.name)
-            $0.foreignKey(tag.bookID, references: BCDBTable.list[BCDBTable.Kind.book]!, book.id, delete: .cascade)
+            $0.foreignKey(
+              tag.bookID,
+              references: BCBookTable, BCBookDBD.id,
+              delete: .cascade
+            )
         })
     } catch { V2RXError.printError(error) }
   }

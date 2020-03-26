@@ -47,7 +47,6 @@ protocol BCDAO {
 //    at queue: DispatchQueue = BCDatabase.queue,
 //    completionHandler: @escaping (BCDBResult<Int64>) -> Void
 //  ) {
-//    let book = BCDBTable.list[BCDBTable.Kind.book]!
 //    database.run(book.insert(<#T##value: Setter##Setter#>, <#T##more: Setter...##Setter#>))
 //    queue.async {
 //      let result: BCDBResult<Int64> = Result {

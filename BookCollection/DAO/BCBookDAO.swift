@@ -38,28 +38,35 @@ struct BCBookDAO: BCDAO {
     _ model: BCBook,
     with connection: Connection
   ) throws -> Int64 {
-    let table = BCDBTable.list[BCDBTable.Kind.book]!
-    let book = BCBookDB()
-    //    do {
-    let rowID = try connection.run(table.insert(
+    let rowID = try connection.run(BCBookTable.insert(
       or: conflict,
-      book.doubanID <- model.doubanID,
-      book.title <- model.title,
-      book.subtitle <- model.subtitle,
-      book.originTitle <- model.originTitle,
-      book.publishedDate <- model.publishedDate,
-      book.publisher <- model.publisher,
-      book.isbn10 <- model.isbn10,
-      book.isbn13 <- model.isbn13,
-      book.image <- model.image,
-      book.binding <- model.binding,
-      book.authorIntroduction <- model.authorIntroduction,
-      book.catalog <- model.catalog,
-      book.pages <- model.pages,
-      book.summary <- model.summary,
-      book.price <- model.price
+      BCBookDBD.doubanID <- model.doubanID,
+      BCBookDBD.title <- model.title,
+      BCBookDBD.subtitle <- model.subtitle,
+      BCBookDBD.originTitle <- model.originTitle,
+      BCBookDBD.publishedDate <- model.publishedDate,
+      BCBookDBD.publisher <- model.publisher,
+      BCBookDBD.isbn10 <- model.isbn10,
+      BCBookDBD.isbn13 <- model.isbn13,
+      BCBookDBD.image <- model.image,
+      BCBookDBD.binding <- model.binding,
+      BCBookDBD.authorIntroduction <- model.authorIntroduction,
+      BCBookDBD.catalog <- model.catalog,
+      BCBookDBD.pages <- model.pages,
+      BCBookDBD.summary <- model.summary,
+      BCBookDBD.price <- model.price
     ))
     return rowID
-//    } catch { throw error }
+  }
+  
+  static func query(
+    by doubanID: String,
+    with connection: Connection
+  ) throws -> BCBook? {
+    guard let result = try connection
+      .pluck(BCBookTable.filter(doubanID == BCBookDBD.doubanID))
+      else { return nil }
+    
+    return BCBook(result: result)
   }
 }

@@ -29,6 +29,8 @@
 import Foundation
 import SQLite
 
+let BCBookDBD = BCBookDB.default
+
 struct BCBook: BCCodable {
   
   let doubanID: String
@@ -85,48 +87,67 @@ struct BCBook: BCCodable {
     case translators = "translator"
     case tags, images, series, rating
   }
-//  init(
-//    doubanID: String?,
-//    title: String?,
-//    subtitle: String?,
-//    originTitle: String?,
-//    publishedDate: String?,
-//    publisher: String?,
-//    isbn10: String?,
-//    isbn13: String?,
-//    image: String?,
-//    binding: String?,
-//    authorIntroduction: String?,
-//    catalog: String?,
-//    pages: String?,
-//    summary: String?,
-//    price: String?
-//  ) {
-//    self.doubanID = doubanID
-//    self.title = title
-//    self.subtitle = subtitle
-//    self.originTitle = originTitle
-//    self.publishedDate = publishedDate
-//    self.publisher = publisher
-//    self.isbn10 = isbn10
-//    self.isbn13 = isbn13
-//    self.image = image
-//    self.binding = binding
-//    self.authorIntroduction = authorIntroduction
-//    self.catalog = catalog
-//    self.pages = pages
-//    self.summary = summary
-//    self.price = price
-//  }
-//  var dbFormat: BCBook.DB { BCDBTable(root: self).book }
+  //  init(
+  //    doubanID: String?,
+  //    title: String?,
+  //    subtitle: String?,
+  //    originTitle: String?,
+  //    publishedDate: String?,
+  //    publisher: String?,
+  //    isbn10: String?,
+  //    isbn13: String?,
+  //    image: String?,
+  //    binding: String?,
+  //    authorIntroduction: String?,
+  //    catalog: String?,
+  //    pages: String?,
+  //    summary: String?,
+  //    price: String?
+  //  ) {
+  //    self.doubanID = doubanID
+  //    self.title = title
+  //    self.subtitle = subtitle
+  //    self.originTitle = originTitle
+  //    self.publishedDate = publishedDate
+  //    self.publisher = publisher
+  //    self.isbn10 = isbn10
+  //    self.isbn13 = isbn13
+  //    self.image = image
+  //    self.binding = binding
+  //    self.authorIntroduction = authorIntroduction
+  //    self.catalog = catalog
+  //    self.pages = pages
+  //    self.summary = summary
+  //    self.price = price
+  //  }
+  //  var dbFormat: BCBook.DB { BCDBTable(root: self).book }
+  init(result: Row) {
+    self.doubanID = result[BCBookDBD.doubanID]
+    self.title = result[BCBookDBD.title]
+    self.subtitle = result[BCBookDBD.subtitle]
+    self.originTitle = result[BCBookDBD.originTitle]
+    self.publishedDate = result[BCBookDBD.publishedDate]
+    self.publisher = result[BCBookDBD.publisher]
+    self.isbn10 = result[BCBookDBD.isbn10]
+    self.isbn13 = result[BCBookDBD.isbn13]
+    self.image = result[BCBookDBD.image]
+    self.binding = result[BCBookDBD.binding]
+    self.authorIntroduction = result[BCBookDBD.authorIntroduction]
+    self.catalog = result[BCBookDBD.catalog]
+    self.pages = result[BCBookDBD.pages]
+    self.summary = result[BCBookDBD.summary]
+    self.price = result[BCBookDBD.price]
+  }
 }
 
 struct BCBookDB: BCDBModel {
   
+  static let `default` = BCBookDB()
+  
   let id = Expression<Int64>("local_id")
   
   let doubanID = Expression<String>(BCBook.CodingKeys.doubanID.rawValue)
-
+  
   let title = Expression<String?>(BCBook.CodingKeys.title.rawValue)
   
   let subtitle = Expression<String?>(BCBook.CodingKeys.subtitle.rawValue)
@@ -155,95 +176,3 @@ struct BCBookDB: BCDBModel {
   
   let price = Expression<String?>(BCBook.CodingKeys.price.rawValue)
 }
-//  enum CodingKeys: String, CodingTableKey {
-//    typealias Root = BCBookDB
-//
-//    static let objectRelationalMapping = TableBinding(CodingKeys.self)
-//
-//    case id
-//    case doubanID = "douban_id"
-//    case title, subtitle
-//    case originTitle = "origin_title"
-//    case publishedDate = "pubdate"
-//    case publisher, isbn10, isbn13, image, binding
-//    case authorIntroduction = "author_intro"
-//    case catalog, pages, summary, price
-//
-//    static var columnConstraintBindings:
-//      [BCBookDB.CodingKeys : ColumnConstraintBinding]? {
-//      [
-//        id: ColumnConstraintBinding(
-//          isPrimary: true,
-//          isAutoIncrement: true,
-//          isNotNull: true,
-//          isUnique: true
-//        ),
-//        doubanID: ColumnConstraintBinding(isUnique: true),
-//      ]
-//    }
-//  }
-//
-//  static var foreginKey: ForeignKey {
-//    ForeignKey(withForeignTable: BCTable.Kind.book.rawName, and: BCBookDB.CodingKeys.id)
-//  }
-//
-//  init(
-//    doubanID: String?,
-//    title: String?,
-//    subtitle: String?,
-//    originTitle: String?,
-//    publishedDate: String?,
-//    publisher: String?,
-//    isbn10: String?,
-//    isbn13: String?,
-//    image: String?,
-//    binding: String?,
-//    authorIntroduction: String?,
-//    catalog: String?,
-//    pages: String?,
-//    summary: String?,
-//    price: String?
-//  ) {
-//    self.doubanID = doubanID
-//    self.title = title
-//    self.subtitle = subtitle
-//    self.originTitle = originTitle
-//    self.publishedDate = publishedDate
-//    self.publisher = publisher
-//    self.isbn10 = isbn10
-//    self.isbn13 = isbn13
-//    self.image = image
-//    self.binding = binding
-//    self.authorIntroduction = authorIntroduction
-//    self.catalog = catalog
-//    self.pages = pages
-//    self.summary = summary
-//    self.price = price
-//  }
-//
-//  var isAutoIncrement: Bool = true
-//
-//  var lastInsertedRowID: Int64 = 0
-//}
-
-//extension BCBookDB {
-//  var jsonFormat: BCBook.JSON {
-//    BCBookJSON(
-//      doubanID: doubanID,
-//      title: title,
-//      subtitle: subtitle,
-//      originTitle: originTitle,
-//      publishedDate: publishedDate,
-//      publisher: publisher,
-//      isbn10: isbn10,
-//      isbn13: isbn13,
-//      image: image,
-//      binding: binding,
-//      authorIntroduction: authorIntroduction,
-//      catalog: catalog,
-//      pages: pages,
-//      summary: summary,
-//      price: price
-//    )
-//  }
-//}
