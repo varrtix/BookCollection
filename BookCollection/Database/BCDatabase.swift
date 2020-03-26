@@ -58,6 +58,22 @@ struct BCDatabase {
     attributes: .concurrent)
   
   @discardableResult
+  func check() -> Self {
+    do {
+      if !FileManager.default.fileExists(
+        atPath: BCDatabase
+          .directoryURL
+          .absoluteString) {
+        try FileManager.default.createDirectory(
+          at: BCDatabase.directoryURL,
+          withIntermediateDirectories: true)
+      }
+    } catch { V2RXError.printError(error) }
+
+    return self
+  }
+  
+  @discardableResult
   func connect(
     at queue: DispatchQueue = BCDatabase.daoQueue,
     _ handler: @escaping (Connection) -> Void

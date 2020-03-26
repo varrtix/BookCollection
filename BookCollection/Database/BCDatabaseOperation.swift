@@ -32,11 +32,13 @@ import SQLite
 class BCDatabaseOperation: AsyncOperation {
   
   override func main() {
-    connect(BCDatabase.fileURL) {
-      BCDBResult.handle($0, success: { connection in
-        self.createTables(with: connection)
-      }) { V2RXError.printError($0) }
-    }
+//    connect(BCDatabase.fileURL) {
+//      BCDBResult.handle($0, success: { connection in
+//        self.createTables(with: connection)
+//      }) { V2RXError.printError($0) }
+//    }
+//    BCDB.connect { self.createTables(with: $0) }
+    BCDB.check().connect { self.createTables(with: $0) }
   }
 }
 
@@ -145,6 +147,7 @@ extension BCDatabaseOperation {
   /// - Parameters:
   ///   - url: The location of the database.
   ///   - completionHandler: A closure to be excuted once the connection has finished.
+  @available(*, deprecated, message: "Up to BCDatabase")
   fileprivate func connect(
     _ url: URL, completionHandler: @escaping (BCResult<Connection>
     ) -> Void) {
