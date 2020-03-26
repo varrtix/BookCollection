@@ -27,32 +27,16 @@
 /// THE SOFTWARE.
 
 import Foundation
-//import WCDBSwift
 import SQLite
 
-//struct BCAuthor: BCORMAlias {
-//
-//  typealias DB = BCAuthorDB
-//
-//  typealias JSON = String
-//}
-//
-//struct BCTranslator: BCORMAlias {
-//
-//  typealias DB = BCTranslatorDB
-//
-//  typealias JSON = String
-//}
-//
-//typealias BCTranslatorDB = BCAuthorDB
+let BCAuthorDBD = BCAuthorDB.default
 
-//class BCAuthorDB: BCModel, BCDBCodable, BCAuthorFoundation {
-
-//  typealias JSONType = String
+let BCTranslatorDBD = BCTranslatorDB.default
 
 struct BCAuthorDB: BCDBModel {
+  
+  static let `default` = BCAuthorDB()
 
-//  var bookID: Int64?
   let bookID = Expression<Int64>("book_id")
   
   let name = Expression<String?>("name")
@@ -63,21 +47,3 @@ typealias BCTranslatorDB = BCAuthorDB
 typealias BCAuthor = String
 
 typealias BCTranslator = String
-//  enum CodingKeys: String, CodingTableKey {
-//    typealias Root = BCAuthorDB
-//
-//    static let objectRelationalMapping = TableBinding(CodingKeys.self)
-//
-//    case bookID = "book_id"
-//    case name
-//
-//    static var tableConstraintBindings: [String : TableConstraintBinding]? {
-//      let foreginBinding = ForeignKeyBinding(bookID, foreignKey: BCBook.DB.foreginKey)
-//      return ["ForeignKeyBinding": foreginBinding]
-//    }
-//  }
-//
-//  init(name: String?) { self.name = name }
-//
-//  var jsonFormat: String { name ?? String() }
-//}

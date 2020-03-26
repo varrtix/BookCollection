@@ -48,107 +48,95 @@ extension BCDatabaseOperation {
     do {
       // MARK: Table book
       try connection.run(BCBookTable.create(ifNotExists: true) {
-            $0.column(BCBookDBD.id, primaryKey: .autoincrement)
-            $0.column(BCBookDBD.doubanID, unique: true)
-            $0.column(BCBookDBD.title)
-            $0.column(BCBookDBD.subtitle)
-            $0.column(BCBookDBD.originTitle)
-            $0.column(BCBookDBD.publishedDate)
-            $0.column(BCBookDBD.publisher)
-            $0.column(BCBookDBD.isbn10)
-            $0.column(BCBookDBD.isbn13)
-            $0.column(BCBookDBD.image)
-            $0.column(BCBookDBD.binding)
-            $0.column(BCBookDBD.authorIntroduction)
-            $0.column(BCBookDBD.catalog)
-            $0.column(BCBookDBD.pages)
-            $0.column(BCBookDBD.summary)
-            $0.column(BCBookDBD.price)
-        })
+        $0.column(BCBookDBD.id, primaryKey: .autoincrement)
+        $0.column(BCBookDBD.doubanID, unique: true)
+        $0.column(BCBookDBD.title)
+        $0.column(BCBookDBD.subtitle)
+        $0.column(BCBookDBD.originTitle)
+        $0.column(BCBookDBD.publishedDate)
+        $0.column(BCBookDBD.publisher)
+        $0.column(BCBookDBD.isbn10)
+        $0.column(BCBookDBD.isbn13)
+        $0.column(BCBookDBD.image)
+        $0.column(BCBookDBD.binding)
+        $0.column(BCBookDBD.authorIntroduction)
+        $0.column(BCBookDBD.catalog)
+        $0.column(BCBookDBD.pages)
+        $0.column(BCBookDBD.summary)
+        $0.column(BCBookDBD.price)
+      })
       // MARK: Table tags
-      let tag = BCTagDB()
       try connection
-        .run(BCDBTable.list[BCDBTable.Kind.tags]!
-          .create(ifNotExists: true) {
-            $0.column(tag.bookID)
-            $0.column(tag.count)
-            $0.column(tag.title)
-            $0.foreignKey(
-              tag.bookID,
-              references: BCBookTable, BCBookDBD.id,
-              delete: .cascade
-            )
+        .run(BCTagsTable.create(ifNotExists: true) {
+          $0.column(BCTagDBD.bookID)
+          $0.column(BCTagDBD.count)
+          $0.column(BCTagDBD.title)
+          $0.foreignKey(
+            BCTagDBD.bookID,
+            references: BCBookTable, BCBookDBD.id,
+            delete: .cascade
+          )
         })
       // MARK: Table images
-      let images = BCImagesDB()
       try connection
-        .run(BCDBTable.list[BCDBTable.Kind.images]!
-          .create(ifNotExists: true) {
-            $0.column(images.bookID)
-            $0.column(images.small)
-            $0.column(images.medium)
-            $0.column(images.large)
-            $0.foreignKey(
-              tag.bookID,
-              references: BCBookTable, BCBookDBD.id,
-              delete: .cascade
-            )
+        .run(BCImagesTable.create(ifNotExists: true) {
+          $0.column(BCImagesDBD.bookID)
+          $0.column(BCImagesDBD.small)
+          $0.column(BCImagesDBD.medium)
+          $0.column(BCImagesDBD.large)
+          $0.foreignKey(
+            BCImagesDBD.bookID,
+            references: BCBookTable, BCBookDBD.id,
+            delete: .cascade
+          )
         })
       // MARK: Table series
-      let series = BCSeriesDB()
       try connection
-        .run(BCDBTable.list[BCDBTable.Kind.series]!
-          .create(ifNotExists: true) {
-            $0.column(series.bookID)
-            $0.column(series.seriesID)
-            $0.column(series.title)
-            $0.foreignKey(
-              tag.bookID,
-              references: BCBookTable, BCBookDBD.id,
-              delete: .cascade
-            )
+        .run(BCSeriesTable.create(ifNotExists: true) {
+          $0.column(BCSeriesDBD.bookID)
+          $0.column(BCSeriesDBD.seriesID)
+          $0.column(BCSeriesDBD.title)
+          $0.foreignKey(
+            BCSeriesDBD.bookID,
+            references: BCBookTable, BCBookDBD.id,
+            delete: .cascade
+          )
         })
       // MARK: Table rating
-      let rating = BCRatingDB()
       try connection
-        .run(BCDBTable.list[BCDBTable.Kind.rating]!
-          .create(ifNotExists: true) {
-            $0.column(rating.bookID)
-            $0.column(rating.max)
-            $0.column(rating.numRaters)
-            $0.column(rating.min)
-            $0.column(rating.average)
-            $0.foreignKey(
-              tag.bookID,
-              references: BCBookTable, BCBookDBD.id,
-              delete: .cascade
-            )
+        .run(BCRatingTable.create(ifNotExists: true) {
+          $0.column(BCRatingDBD.bookID)
+          $0.column(BCRatingDBD.max)
+          $0.column(BCRatingDBD.numRaters)
+          $0.column(BCRatingDBD.min)
+          $0.column(BCRatingDBD.average)
+          $0.foreignKey(
+            BCRatingDBD.bookID,
+            references: BCBookTable, BCBookDBD.id,
+            delete: .cascade
+          )
         })
       // MARK: Table authors
-      let authors = BCAuthorDB()
       try connection
-        .run(BCDBTable.list[BCDBTable.Kind.authors]!
-          .create(ifNotExists: true) {
-            $0.column(authors.bookID)
-            $0.column(authors.name)
-            $0.foreignKey(
-              tag.bookID,
-              references: BCBookTable, BCBookDBD.id,
-              delete: .cascade
-            )
+        .run(BCAuthorsTable.create(ifNotExists: true) {
+          $0.column(BCAuthorDBD.bookID)
+          $0.column(BCAuthorDBD.name)
+          $0.foreignKey(
+            BCAuthorDBD.bookID,
+            references: BCBookTable, BCBookDBD.id,
+            delete: .cascade
+          )
         })
       // MARK: Table translators
-      let translators = BCTranslatorDB()
       try connection
-        .run(BCDBTable.list[BCDBTable.Kind.translators]!
-          .create(ifNotExists: true) {
-            $0.column(translators.bookID)
-            $0.column(translators.name)
-            $0.foreignKey(
-              tag.bookID,
-              references: BCBookTable, BCBookDBD.id,
-              delete: .cascade
-            )
+        .run(BCTranslatorsTable.create(ifNotExists: true) {
+          $0.column(BCTranslatorDBD.bookID)
+          $0.column(BCTranslatorDBD.name)
+          $0.foreignKey(
+            BCTranslatorDBD.bookID,
+            references: BCBookTable, BCBookDBD.id,
+            delete: .cascade
+          )
         })
     } catch { V2RXError.printError(error) }
   }
@@ -166,15 +154,11 @@ extension BCDatabaseOperation {
         atPath: BCDatabase
           .directoryURL
           .absoluteString) {
-        //        do {
         try FileManager.default.createDirectory(
           at: BCDatabase.directoryURL,
           withIntermediateDirectories: true)
-        //        } catch { throw error }
       }
-      //      do {
       return try Connection(url)
-      //      } catch { throw error }
     }
     completionHandler(result)
   }

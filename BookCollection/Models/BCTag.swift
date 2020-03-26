@@ -27,20 +27,9 @@
 /// THE SOFTWARE.
 
 import Foundation
-//import WCDBSwift
 import SQLite
 
-//struct BCTag: BCORMAlias {
-//
-//  typealias DB = BCTagDB
-//
-//  typealias JSON = BCTagJSON
-//}
-
-//class BCTagJSON: BCModel, BCJSONCodable, BCTagFoundation {
-//
-//  typealias DBType = BCTag.DB
-//
+let BCTagDBD = BCTagDB.default
 
 struct BCTag: BCCodable {
 
@@ -50,18 +39,11 @@ struct BCTag: BCCodable {
   
   enum CodingKeys: String, CodingKey { case count, title }
   
-//  init(count: Int?, title: String?) {
-//    self.count = count
-//    self.title = title
-//  }
-//
-//  var dbFormat: BCTag.DB { BCTag.DB(count: count, title: title) }
 }
-
-//class BCTagDB: BCModel, BCDBCodable, BCTagFoundation {
   
-//  typealias JSONType = BCTag.JSON
 struct BCTagDB: BCDBModel {
+  
+  static let `default` = BCTagDB()
   
   let bookID = Expression<Int64>("book_id")
   
@@ -69,24 +51,3 @@ struct BCTagDB: BCDBModel {
   
   let title = Expression<String?>(BCTag.CodingKeys.title.rawValue)
 }
-//  enum CodingKeys: String, CodingTableKey {
-//    typealias Root = BCTagDB
-//
-//    static let objectRelationalMapping = TableBinding(CodingKeys.self)
-//
-//    case bookID = "book_id"
-//    case count, title
-//
-//    static var tableConstraintBindings: [String : TableConstraintBinding]? {
-//      let foreginBinding = ForeignKeyBinding(bookID, foreignKey: BCBook.DB.foreginKey)
-//      return ["ForeignKeyBinding": foreginBinding]
-//    }
-//}
-//
-//  init(count: Int?, title: String?) {
-//    self.count = count
-//    self.title = title
-//  }
-//
-//  var jsonFormat: BCTag.JSON { BCTag.JSON(count: count, title: title) }
-//}

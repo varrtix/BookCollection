@@ -27,20 +27,10 @@
 /// THE SOFTWARE.
 
 import Foundation
-//import WCDBSwift
 import SQLite
 
-//struct BCImages: BCORMAlias {
-//
-//  typealias DB = BCImagesDB
-//
-//  typealias JSON = BCImagesJSON
-//}
+let BCImagesDBD = BCImagesDB.default
 
-//class BCImagesJSON: BCModel, BCJSONCodable, BCImagesFoundation {
-//
-//  typealias DBType = BCImages.DB
-//
 struct BCImages: BCCodable {
 
   let small: String?
@@ -52,22 +42,12 @@ struct BCImages: BCCodable {
   enum CodingKeys: String, CodingKey {
     case small, medium, large
   }
-  
-//  init(small: String?, medium: String?, large: String?) {
-//    self.small = small
-//    self.medium = medium
-//    self.large = large
-//  }
-//  
-//  var dbFormat: BCImages.DB { BCImages.DB(small: small, medium: medium, large: large) }
 }
 
-//class BCImagesDB: BCModel, BCDBCodable, BCImagesFoundation {
-//
-//  typealias JSONType = BCImages.JSON
 struct BCImagesDB: BCDBModel {
   
-//  var bookID: Int64?
+  static let `default` = BCImagesDB()
+  
   let bookID = Expression<Int64>("book_id")
   
   let small = Expression<String?>(BCImages.CodingKeys.small.rawValue)
@@ -76,25 +56,3 @@ struct BCImagesDB: BCDBModel {
   
   let large = Expression<String?>(BCImages.CodingKeys.large.rawValue)
 }
-//  enum CodingKeys: String, CodingTableKey {
-//    typealias Root = BCImagesDB
-//
-//    static let objectRelationalMapping = TableBinding(CodingKeys.self)
-//
-//    case bookID = "book_id"
-//    case small, medium, large
-//
-//    static var tableConstraintBindings: [String : TableConstraintBinding]? {
-//      let foreginBinding = ForeignKeyBinding(bookID, foreignKey: BCBook.DB.foreginKey)
-//      return ["ForeignKeyBinding": foreginBinding]
-//    }
-//  }
-//
-//  init(small: String?, medium: String?, large: String?) {
-//    self.small = small
-//    self.medium = medium
-//    self.large = large
-//  }
-//
-//  var jsonFormat: BCImages.JSON { BCImages.JSON(small: small, medium: medium, large: large) }
-//}

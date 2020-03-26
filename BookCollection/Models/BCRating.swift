@@ -27,19 +27,10 @@
 /// THE SOFTWARE.
 
 import Foundation
-//import WCDBSwift
 import SQLite
 
-//struct BCRating: BCORMAlias {
-//
-//  typealias DB = BCRatingDB
-//
-//  typealias JSON = BCRatingJSON
-//}
+let BCRatingDBD = BCRatingDB.default
 
-//class BCRatingJSON: BCModel, BCJSONCodable, BCRatingFoundation {
-  
-//  typealias DBType = BCRating.DB
 struct BCRating: BCCodable {
 
   let max: Int?
@@ -54,26 +45,11 @@ struct BCRating: BCCodable {
     case max, numRaters, average, min
   }
 }
-//
-//  init(max: Int?, numRaters: Int?, average: String?, min: Int?) {
-//    self.max = max
-//    self.numRaters = numRaters
-//    self.average = average
-//    self.min = min
-//  }
-//
-//  var dbFormat: BCRating.DB {
-//    BCRating.DB(max: max, numRaters: numRaters, average: average, min: min)
-//  }
-//}
-
-//class BCRatingDB: BCModel, BCDBCodable, BCRatingFoundation {
-  
-//  typealias JSONType = BCRating.JSON
 
 struct BCRatingDB: BCDBModel {
 
-//  var bookID: Int64?
+  static let `default` = BCRatingDB()
+  
   let bookID = Expression<Int64>("book_id")
   
   let max = Expression<Int?>(BCRating.CodingKeys.max.rawValue)
@@ -84,30 +60,3 @@ struct BCRatingDB: BCDBModel {
   
   let min = Expression<Int?>(BCRating.CodingKeys.min.rawValue)
 }
-//
-//  enum CodingKeys: String, CodingTableKey {
-//    typealias Root = BCRatingDB
-//
-//    static let objectRelationalMapping = TableBinding(CodingKeys.self)
-//
-//    case max, average, min
-//    case numRaters = "number_raters"
-//    case bookID = "book_id"
-//
-//    static var tableConstraintBindings: [String : TableConstraintBinding]? {
-//      let foreginBinding = ForeignKeyBinding(bookID, foreignKey: BCBook.DB.foreginKey)
-//      return ["ForeignKeyBinding": foreginBinding]
-//    }
-//  }
-//
-//  init(max: Int?, numRaters: Int?, average: String?, min: Int?) {
-//    self.max = max
-//    self.numRaters = numRaters
-//    self.average = average
-//    self.min = min
-//  }
-//
-//  var jsonFormat: BCRating.JSON {
-//    BCRating.JSON(max: max, numRaters: numRaters, average: average, min: min)
-//  }
-//}

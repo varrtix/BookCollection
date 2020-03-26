@@ -27,19 +27,10 @@
 /// THE SOFTWARE.
 
 import Foundation
-//import WCDBSwift
 import SQLite
 
-//struct BCSeries: BCORMAlias {
-//
-//  typealias DB = BCSeriesDB
-//
-//  typealias JSON = BCSeriesJSON
-//}
+let BCSeriesDBD = BCSeriesDB.default
 
-//class BCSeriesJSON: BCModel, BCJSONCodable, BCSeriesFoundation {
-//
-//  typealias DBType = BCSeries.DB
 struct BCSeries: BCCodable {
   
   let seriesID: String?
@@ -50,47 +41,15 @@ struct BCSeries: BCCodable {
     case seriesID = "id"
     case title
   }
-  
-//  init(seriesID: String?, title: String?) {
-//    self.seriesID = seriesID
-//    self.title = title
-//  }
-//
-//  var dbFormat: BCSeries.DB { BCSeries.DB(seriesID: seriesID, title: title) }
 }
 
-//class BCSeriesDB: BCModel, BCDBCodable, BCSeriesFoundation {
-  
-//  typealias JSONType = BCSeries.JSON
 struct BCSeriesDB: BCDBModel {
   
-//  var bookID: Int64?
+  static let `default` = BCSeriesDB()
+  
   let bookID = Expression<Int64>("book_id")
   
   let seriesID = Expression<String?>(BCSeries.CodingKeys.seriesID.rawValue)
   
   let title = Expression<String?>(BCSeries.CodingKeys.title.rawValue)
 }
-//
-//  enum CodingKeys: String, CodingTableKey {
-//    typealias Root = BCSeriesDB
-//
-//    static let objectRelationalMapping = TableBinding(CodingKeys.self)
-//
-//    case bookID = "book_id"
-//    case seriesID = "series_id"
-//    case title
-//
-//    static var tableConstraintBindings: [String : TableConstraintBinding]? {
-//      let foreginBinding = ForeignKeyBinding(bookID, foreignKey: BCBook.DB.foreginKey)
-//      return ["ForeignKeyBinding": foreginBinding]
-//    }
-//  }
-//
-//  init(seriesID: String?, title: String?) {
-//    self.seriesID = seriesID
-//    self.title = title
-//  }
-//
-//  var jsonFormat: BCSeries.JSON { BCSeries.JSON(seriesID: seriesID, title: title) }
-//}
