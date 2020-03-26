@@ -31,14 +31,14 @@ import SQLite
 
 struct BCBookDAO: BCDAO {
   typealias Model = BCBook
-
+  
   @discardableResult
   static func insert(
     or conflict: SQLite.OnConflict,
     _ model: BCBook,
     with connection: Connection
   ) throws -> Int64 {
-    let rowID = try connection.run(BCBookTable.insert(
+    return try connection.run(BCBookTable.insert(
       or: conflict,
       BCBookDBD.doubanID <- model.doubanID,
       BCBookDBD.title <- model.title,
@@ -56,17 +56,25 @@ struct BCBookDAO: BCDAO {
       BCBookDBD.summary <- model.summary,
       BCBookDBD.price <- model.price
     ))
-    return rowID
   }
   
   static func query(
     by doubanID: String,
     with connection: Connection
   ) throws -> BCBook? {
-    guard let result = try connection
+    guard let book = try connection
       .pluck(BCBookTable.filter(doubanID == BCBookDBD.doubanID))
       else { return nil }
     
-    return BCBook(result: result)
+    let id = book[BCBookDBD.id]
+    
+    return BCBook(
+      book: book,
+      images: try BCImagesDAO.query(by: id, with: connection),
+      series: try BCSeriesDAO.query(by: id, with: connection),
+      rating: try BCRatingDAO.query(by: id, with: connection),
+      authors: try BCAuthorDAO.query(by: id, with: connection),
+      translators: try BCTranslatorDAO.query(by: id, with: connection)
+    )
   }
 }

@@ -88,22 +88,35 @@ struct BCBook: BCCodable {
     case tags, images, series, rating
   }
   
-  init(result: Row) {
-    self.doubanID = result[BCBookDBD.doubanID]
-    self.title = result[BCBookDBD.title]
-    self.subtitle = result[BCBookDBD.subtitle]
-    self.originTitle = result[BCBookDBD.originTitle]
-    self.publishedDate = result[BCBookDBD.publishedDate]
-    self.publisher = result[BCBookDBD.publisher]
-    self.isbn10 = result[BCBookDBD.isbn10]
-    self.isbn13 = result[BCBookDBD.isbn13]
-    self.image = result[BCBookDBD.image]
-    self.binding = result[BCBookDBD.binding]
-    self.authorIntroduction = result[BCBookDBD.authorIntroduction]
-    self.catalog = result[BCBookDBD.catalog]
-    self.pages = result[BCBookDBD.pages]
-    self.summary = result[BCBookDBD.summary]
-    self.price = result[BCBookDBD.price]
+  init(
+    book: Row,
+    images: BCImages?,
+    series: BCSeries?,
+    rating: BCRating?,
+    authors: [BCAuthor]?,
+    translators: [BCTranslator]?
+  ) {
+    self.doubanID = book[BCBookDBD.doubanID]
+    self.title = book [BCBookDBD.title]
+    self.subtitle = book[BCBookDBD.subtitle]
+    self.originTitle = book[BCBookDBD.originTitle]
+    self.publishedDate = book[BCBookDBD.publishedDate]
+    self.publisher = book[BCBookDBD.publisher]
+    self.isbn10 = book[BCBookDBD.isbn10]
+    self.isbn13 = book[BCBookDBD.isbn13]
+    self.image = book[BCBookDBD.image]
+    self.binding = book[BCBookDBD.binding]
+    self.authorIntroduction = book[BCBookDBD.authorIntroduction]
+    self.catalog = book[BCBookDBD.catalog]
+    self.pages = book[BCBookDBD.pages]
+    self.summary = book[BCBookDBD.summary]
+    self.price = book[BCBookDBD.price]
+    
+    self.authors = authors
+    self.translators = translators
+    self.images = images
+    self.series = series
+    self.rating = rating
   }
 }
 

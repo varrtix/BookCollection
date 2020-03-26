@@ -41,6 +41,11 @@ struct BCSeries: BCCodable {
     case seriesID = "id"
     case title
   }
+  
+  init(result: Row) {
+    self.seriesID = result[BCSeriesDBD.seriesID]
+    self.title = result[BCSeriesDBD.title]
+  }
 }
 
 struct BCSeriesDB: BCDBModel {

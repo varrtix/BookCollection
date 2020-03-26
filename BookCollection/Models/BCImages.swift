@@ -42,6 +42,12 @@ struct BCImages: BCCodable {
   enum CodingKeys: String, CodingKey {
     case small, medium, large
   }
+  
+  init(result: Row) {
+    self.small = result[BCImagesDBD.small]
+    self.medium = result[BCImagesDBD.medium]
+    self.large = result[BCImagesDBD.large]
+  }
 }
 
 struct BCImagesDB: BCDBModel {

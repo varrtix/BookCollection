@@ -40,13 +40,19 @@ struct BCSeriesDAO: BCDAO {
   ) throws -> Int64 {
     let table = BCDBTable.list[BCDBTable.Kind.series]!
     let series = BCSeriesDB()
-    //    do {
     let rowID = try connection.run(table.insert(
       or: conflict,
       series.seriesID <- model.seriesID,
       series.title <- model.title
     ))
     return rowID
-    //    } catch { throw error }
+  }
+  
+  static func query(
+    by id: Int64,
+    with connection: Connection
+  ) throws -> BCSeries? {
+    let series = try connection.pluck(BCSeriesTable.filter(id == BCSeriesDBD.bookID))
+    return series == nil ? nil : BCSeries(result: series!)
   }
 }

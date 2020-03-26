@@ -305,8 +305,8 @@
 			isa = PBXGroup;
 			children = (
 				56BB95B32426313000555EEA /* BCDatabase.swift */,
-				56BCB9682428F18300B4D7CA /* BCDBTable.swift */,
 				567D76482423625C00F94CD6 /* BCDatabaseOperation.swift */,
+				56BCB9682428F18300B4D7CA /* BCDBTable.swift */,
 				56EC7408242711C300C684B6 /* BCResult.swift */,
 			);
 			path = Database;

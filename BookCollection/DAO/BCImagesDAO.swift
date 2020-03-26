@@ -40,7 +40,6 @@ struct BCImagesDAO: BCDAO {
   ) throws -> Int64 {
     let table = BCDBTable.list[BCDBTable.Kind.images]!
     let images = BCImagesDB()
-    //    do {
     let rowID = try connection.run(table.insert(
       or: conflict,
       images.small <- model.small,
@@ -48,6 +47,13 @@ struct BCImagesDAO: BCDAO {
       images.large <- model.large
     ))
     return rowID
-    //    } catch { throw error }
+  }
+  
+  static func query(
+    by id: Int64,
+    with connection: Connection
+  ) throws -> BCImages? {
+    let images = try connection.pluck(BCImagesTable.filter(id == BCImagesDBD.bookID))
+    return images == nil ? nil : BCImages(result: images!)
   }
 }

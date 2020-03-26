@@ -38,14 +38,20 @@ struct BCTranslatorDAO: BCDAO {
     _ model: BCTranslator,
     with connection: Connection
   ) throws -> Int64 {
-    let table = BCDBTable.list[BCDBTable.Kind.translators]!
-    let translator = BCTranslatorDB()
-    //    do {
-    let rowID = try connection.run(table.insert(
+    return try connection.run(BCTranslatorsTable.insert(
       or: conflict,
-      translator.name <- model
+      BCTranslatorDBD.name <- model
     ))
-    return rowID
-    //    } catch { throw error }
+  }
+  
+  static func query(
+    by id: Int64,
+    with connection: Connection
+  ) throws -> [BCTranslator]? {
+    let translators: [BCTranslator] = try connection
+      .prepare(BCTranslatorsTable.filter(id == BCTranslatorDBD.bookID))
+      .map { $0[BCTranslatorDBD.name] ?? String() }
+    
+    return translators[0].isEmpty ? nil : translators
   }
 }

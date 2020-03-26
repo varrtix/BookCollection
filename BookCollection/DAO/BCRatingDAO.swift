@@ -40,7 +40,6 @@ struct BCRatingDAO: BCDAO {
   ) throws -> Int64 {
     let table = BCDBTable.list[BCDBTable.Kind.rating]!
     let rating = BCRatingDB()
-    //    do {
     let rowID = try connection.run(table.insert(
       or: conflict,
       rating.max <- model.max,
@@ -49,6 +48,13 @@ struct BCRatingDAO: BCDAO {
       rating.numRaters <- model.numRaters
     ))
     return rowID
-    //    } catch { throw error }
+  }
+  
+  static func query(
+    by id: Int64,
+    with connection: Connection
+  ) throws -> BCRating? {
+    let rating = try connection.pluck(BCRatingTable.filter(id == BCRatingDBD.bookID))
+    return rating == nil ? nil : BCRating(result: rating!)
   }
 }

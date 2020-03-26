@@ -39,6 +39,10 @@ struct BCTag: BCCodable {
   
   enum CodingKeys: String, CodingKey { case count, title }
   
+  init(result: Row) {
+    self.count = result[BCTagDBD.count]
+    self.title = result[BCTagDBD.title]
+  }
 }
   
 struct BCTagDB: BCDBModel {

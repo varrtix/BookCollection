@@ -44,6 +44,13 @@ struct BCRating: BCCodable {
   enum CodingKeys: String, CodingKey {
     case max, numRaters, average, min
   }
+  
+  init(result: Row) {
+    self.max = result[BCRatingDBD.max]
+    self.numRaters = result[BCRatingDBD.numRaters]
+    self.min = result[BCRatingDBD.min]
+    self.average = result[BCRatingDBD.average]
+  }
 }
 
 struct BCRatingDB: BCDBModel {

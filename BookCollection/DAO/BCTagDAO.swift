@@ -38,15 +38,20 @@ struct BCTagDAO: BCDAO {
     _ model: BCTag,
     with connection: Connection
   ) throws -> Int64 {
-    let table = BCDBTable.list[BCDBTable.Kind.tags]!
-    let tag = BCTagDB()
-    //    do {
-    let rowID = try connection.run(table.insert(
+    return try connection.run(BCTagsTable.insert(
       or: conflict,
-      tag.count <- model.count,
-      tag.title <- model.title
+      BCTagDBD.count <- model.count,
+      BCTagDBD.title <- model.title
     ))
-    return rowID
-    //    } catch { throw error }
+  }
+  
+  static func query(
+    by id: Int64,
+    with connection: Connection
+  ) throws -> [BCTag]? {
+    let tags = try connection
+      .prepare(BCTagsTable.filter(id == BCTagDBD.bookID))
+      .map { BCTag(result: $0) }
+    return tags.isEmpty ? nil : tags
   }
 }

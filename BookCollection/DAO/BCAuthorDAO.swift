@@ -38,14 +38,20 @@ struct BCAuthorDAO: BCDAO {
     _ model: BCAuthor,
     with connection: Connection
   ) throws -> Int64 {
-    let table = BCDBTable.list[BCDBTable.Kind.authors]!
-    let author = BCAuthorDB()
-    //    do {
-    let rowID = try connection.run(table.insert(
+    return try connection.run(BCAuthorsTable.insert(
       or: conflict,
-      author.name <- model
+      BCAuthorDBD.name <- model
     ))
-    return rowID
-    //    } catch { throw error }
+  }
+  
+  static func query(
+    by id: Int64,
+    with connection: Connection
+  ) throws -> [BCAuthor]? {
+    let authors: [BCAuthor] = try connection
+      .prepare(BCAuthorsTable.filter(id == BCAuthorDBD.bookID))
+      .map { $0[BCAuthorDBD.name] ?? String() }
+
+    return authors[0].isEmpty ? nil : authors
   }
 }
