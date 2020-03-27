@@ -30,8 +30,37 @@ import UIKit
 
 class BCListViewController: BCViewController {
   
+  fileprivate enum Mode: String {
+    case table, collection
+    
+    mutating func toggle() {
+      switch self {
+        case .table: self = .collection
+        case .collection: self = .table
+      }
+    }
+  }
+  
   lazy fileprivate var scan: ViewTuple = ("Scan", BCScanViewController())
   
+  fileprivate var _mode = Mode.table {
+    willSet {
+      DispatchQueue.main.async {
+        guard self.navigationItem.leftBarButtonItem != nil else { return }
+        self.navigationItem
+          .leftBarButtonItem?
+          .image = UIImage(named: "Main/List/Mode-\(newValue.rawValue)")
+        switch newValue {
+          case .table: break
+          case .collection: break
+        }
+      }
+    }
+  }
+}
+
+// MARK: - View Life-cycle
+extension BCListViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -51,18 +80,25 @@ extension BCListViewController {
       target: self,
       action: #selector(scan(_:)))
     
-    navigationItem.rightBarButtonItem = scanButtonItem
+    let modeButtonItem = UIBarButtonItem(
+      image: UIImage(named: "Main/List/Mode-\(_mode.rawValue)"),
+      style: .plain,
+      target: self,
+      action: #selector(switchMode(_:)))
     
-//    navigationController?.navigationBar.titleTextAttributes = [
-//      NSAttributedString.Key.foregroundColor: BCColor.BarTint.white
-//    ]
-//    navigationController?.navigationBar.barTintColor = BCColor.BarTint.green
-//    navigationController?.navigationBar.tintColor = BCColor.BarTint.white
+    navigationItem.rightBarButtonItem = scanButtonItem
+    navigationItem.leftBarButtonItem = modeButtonItem
+    
   }
   
-  @objc func scan(_ sender: UIBarButtonItem) {
+  // MARK: Button Actions
+  @objc
+  func scan(_ sender: UIBarButtonItem) {
     let navigation = BCNavigationController(rootViewController: scan.item)
     
     present(navigation, animated: true)
   }
+  
+  @objc
+  func switchMode(_ sender: UIBarButtonItem) { _mode.toggle() }
 }

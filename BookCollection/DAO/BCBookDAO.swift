@@ -29,9 +29,6 @@
 import Foundation
 import SQLite
 
-//struct BCBookDAO: BCDAO {
-//  typealias Model = BCBook
-
 struct BCBookDAO {
   
   @discardableResult
@@ -106,16 +103,13 @@ struct BCBookDAO {
       .pluck(BCBookTable.filter(isbn == (isbn.count == 10 ? BCBookDBD.isbn10 : BCBookDBD.isbn13)))
       else { return nil }
     
-    let id = book[BCBookDBD.id]
+    return try BCBook(book: book, with: connection)
+  }
+  
+  static func queryAll(with connection: Connection) throws -> [BCBook] {
+    let books = try connection.prepare(BCBookTable)
     
-    return BCBook(
-      book: book,
-      images: try BCImagesDAO.query(by: id, with: connection),
-      series: try BCSeriesDAO.query(by: id, with: connection),
-      rating: try BCRatingDAO.query(by: id, with: connection),
-      authors: try BCAuthorDAO.query(by: id, with: connection),
-      translators: try BCTranslatorDAO.query(by: id, with: connection)
-    )
+    return try books.map { try BCBook(book: $0, with: connection) }
   }
   
   static func delete(
@@ -123,5 +117,20 @@ struct BCBookDAO {
     with connection: Connection
   ) throws -> Int {
     return try connection.run(BCBookTable.filter(doubanID == BCBookDBD.doubanID).delete())
+  }
+}
+
+
+fileprivate extension BCBook {
+  init(book: Row, with connection: Connection) throws {
+    let id = book[BCBookDBD.id]
+    self.init(
+      book: book,
+      images: try BCImagesDAO.query(by: id, with: connection),
+      series: try BCSeriesDAO.query(by: id, with: connection),
+      rating: try BCRatingDAO.query(by: id, with: connection),
+      authors: try BCAuthorDAO.query(by: id, with: connection),
+      translators: try BCTranslatorDAO.query(by: id, with: connection)
+    )
   }
 }
