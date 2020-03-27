@@ -29,19 +29,23 @@
 import Foundation
 import SQLite
 
-struct BCTagDAO: BCDAO {
-  typealias Model = BCTag
+//struct BCTagDAO: BCDAO {
+//  typealias Model = BCTag
+
+struct BCTagDAO {
   
   @discardableResult
   static func insert(
     or conflict: SQLite.OnConflict,
-    _ model: BCTag,
+    _ tag: BCTag,
+    by id: Int64,
     with connection: Connection
   ) throws -> Int64 {
     return try connection.run(BCTagsTable.insert(
       or: conflict,
-      BCTagDBD.count <- model.count,
-      BCTagDBD.title <- model.title
+      BCTagDBD.bookID <- id,
+      BCTagDBD.count <- tag.count,
+      BCTagDBD.title <- tag.title
     ))
   }
   

@@ -27,11 +27,11 @@
 /// THE SOFTWARE.
 
 import Foundation
-import SQLite
+//import SQLite
 
-protocol BCDAO {
-  associatedtype Model
+//protocol BCDAO {
+//  associatedtype Model
   
-  static func insert(or conflict: SQLite.OnConflict, _ model: Model, with connection: Connection) throws -> Int64
+//  static func insert(or conflict: SQLite.OnConflict, _ model: Model, with connection: Connection) throws -> Int64
                                                   
-}
+//}

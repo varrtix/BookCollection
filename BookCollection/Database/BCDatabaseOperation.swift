@@ -32,13 +32,7 @@ import SQLite
 class BCDatabaseOperation: AsyncOperation {
   
   override func main() {
-//    connect(BCDatabase.fileURL) {
-//      BCDBResult.handle($0, success: { connection in
-//        self.createTables(with: connection)
-//      }) { V2RXError.printError($0) }
-//    }
-//    BCDB.connect { self.createTables(with: $0) }
-    BCDB.check().connect { self.createTables(with: $0) }
+    BCDB.check().AsyncConnect { self.createTables(with: $0) }
   }
 }
 

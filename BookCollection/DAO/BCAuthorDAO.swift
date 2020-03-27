@@ -29,18 +29,22 @@
 import Foundation
 import SQLite
 
-struct BCAuthorDAO: BCDAO {
-  typealias Model = BCAuthor
+//struct BCAuthorDAO: BCDAO {
+//  typealias Model = BCAuthor
+  
+struct BCAuthorDAO {
   
   @discardableResult
   static func insert(
     or conflict: SQLite.OnConflict,
-    _ model: BCAuthor,
+    _ author: BCAuthor,
+    by id: Int64,
     with connection: Connection
   ) throws -> Int64 {
     return try connection.run(BCAuthorsTable.insert(
       or: conflict,
-      BCAuthorDBD.name <- model
+      BCAuthorDBD.bookID <- id,
+      BCAuthorDBD.name <- author
     ))
   }
   

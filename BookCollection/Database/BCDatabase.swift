@@ -74,7 +74,7 @@ struct BCDatabase {
   }
   
   @discardableResult
-  func connect(
+  func AsyncConnect(
     at queue: DispatchQueue = BCDatabase.daoQueue,
     _ handler: @escaping (Connection) -> Void
   ) -> Self {

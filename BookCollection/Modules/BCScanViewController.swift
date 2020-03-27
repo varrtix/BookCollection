@@ -49,37 +49,33 @@ class BCScanViewController: BCViewController {
   
   fileprivate var state = State.stop {
     willSet {
-      switch newValue {
-        case .ready(let isbn):
-          cleanup()
-          BCBookInfoService.search(with: isbn) {
-            BCDBResult.handle($0, success: { value in
-              if value == nil {
-                self._isMarked = false
-                self.fetchBook(with: isbn)
-              } else {
-                self._isMarked = true
-                self.state = .success(value!)
-              }
-            }) { V2RXError.printError($0) }
+      DispatchQueue.main.async {
+        switch newValue {
+          case .ready(let isbn):
+            self.cleanup()
+            BCBookInfoService.search(with: isbn) {
+              BCDBResult.handle($0, success: { value in
+                if value == nil {
+                  self._isMarked = false
+                  self.fetchBook(with: isbn)
+                } else {
+                  self._isMarked = true
+                  self.state = .success(value!)
+                }
+              }) { V2RXError.printError($0) }
           }
-        case .loading(let url):
-          DispatchQueue.main.async {
+          case .loading(let url):
             self.present(self.alertController(.waiting(url)), animated: true)
-        }
-        case .success(let book):
-          DispatchQueue.main.async {
+          case .success(let book):
             self.dismiss {
               self.present(self.alertController(.success(book)), animated: true)
-            }
-        }
-        case .failure(let error):
-          DispatchQueue.main.async {
+          }
+          case .failure(let error):
             self.dismiss {
               self.present(self.alertController(.failure(error)), animated: true)
-            }
+          }
+          case .stop: break
         }
-        case .stop: break
       }
     }
   }
@@ -359,8 +355,10 @@ extension BCScanViewController {
   }
   
   fileprivate func dismiss(completion: (() -> Void)? = nil) {
-    guard navigationController?.presentedViewController
-      is UIAlertController else { return }
+    guard navigationController?.presentedViewController is UIAlertController else {
+      if completion != nil { completion!() }
+      return
+    }
     navigationController?.presentedViewController?.view.layer.removeAllAnimations()
     navigationController?.dismiss(animated: true, completion: completion)
   }

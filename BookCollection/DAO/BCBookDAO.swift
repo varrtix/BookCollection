@@ -29,66 +29,68 @@
 import Foundation
 import SQLite
 
-struct BCBookDAO: BCDAO {
-  typealias Model = BCBook
+//struct BCBookDAO: BCDAO {
+//  typealias Model = BCBook
+
+struct BCBookDAO {
   
   @discardableResult
   static func insert(
     or conflict: SQLite.OnConflict,
-    _ model: BCBook,
+    _ book: BCBook,
     with connection: Connection
   ) throws -> Int64 {
     let id = try connection.run(BCBookTable.insert(
       or: conflict,
-      BCBookDBD.doubanID <- model.doubanID,
-      BCBookDBD.title <- model.title,
-      BCBookDBD.subtitle <- model.subtitle,
-      BCBookDBD.originTitle <- model.originTitle,
-      BCBookDBD.publishedDate <- model.publishedDate,
-      BCBookDBD.publisher <- model.publisher,
-      BCBookDBD.isbn10 <- model.isbn10,
-      BCBookDBD.isbn13 <- model.isbn13,
-      BCBookDBD.image <- model.image,
-      BCBookDBD.binding <- model.binding,
-      BCBookDBD.authorIntroduction <- model.authorIntroduction,
-      BCBookDBD.catalog <- model.catalog,
-      BCBookDBD.pages <- model.pages,
-      BCBookDBD.summary <- model.summary,
-      BCBookDBD.price <- model.price
+      BCBookDBD.doubanID <- book.doubanID,
+      BCBookDBD.title <- book.title,
+      BCBookDBD.subtitle <- book.subtitle,
+      BCBookDBD.originTitle <- book.originTitle,
+      BCBookDBD.publishedDate <- book.publishedDate,
+      BCBookDBD.publisher <- book.publisher,
+      BCBookDBD.isbn10 <- book.isbn10,
+      BCBookDBD.isbn13 <- book.isbn13,
+      BCBookDBD.image <- book.image,
+      BCBookDBD.binding <- book.binding,
+      BCBookDBD.authorIntroduction <- book.authorIntroduction,
+      BCBookDBD.catalog <- book.catalog,
+      BCBookDBD.pages <- book.pages,
+      BCBookDBD.summary <- book.summary,
+      BCBookDBD.price <- book.price
     ))
     
-    if model.tags != nil {
-      try model.tags!.forEach {
-        try BCTagDAO.insert(or: .ignore, $0, with: connection)
+    if book.tags != nil {
+      try book.tags!.forEach {
+        try BCTagDAO.insert(or: .ignore, $0, by: id, with: connection)
       }
     }
 //    } else { throw V2RXError.DataAccessObjects.invalidData }
 
-    if model.images != nil {
-      try BCImagesDAO.insert(or: .ignore, model.images!, with: connection)
+    if book.images != nil {
+      try BCImagesDAO.insert(or: .ignore, book.images!, by: id, with: connection)
     }
 //    } else { throw V2RXError.DataAccessObjects.invalidData }
 
-    if model.series != nil {
-      try BCSeriesDAO.insert(or: .ignore, model.series!, with: connection)
+    if book.series != nil {
+      try BCSeriesDAO.insert(or: .ignore, book.series!, by: id, with: connection)
     }
 //    else { throw V2RXError.DataAccessObjects.invalidData }
 
-    if model.rating != nil {
-      try BCRatingDAO.insert(or: .ignore, model.rating!, with: connection)
+    if book.rating != nil {
+      try BCRatingDAO.insert(or: .ignore, book.rating!, by: id, with: connection)
     }
 //    else { throw V2RXError.DataAccessObjects.invalidData }
 
-    if model.authors != nil {
-      try model.authors!.forEach {
-        try BCAuthorDAO.insert(or: .ignore, $0, with: connection)
+    if book.authors != nil {
+      try book.authors!.forEach {
+        try BCAuthorDAO.insert(or: .ignore, $0, by: id, with: connection)
       }
     }
 //    else { throw V2RXError.DataAccessObjects.invalidData }
 
-    if model.translators != nil {
-      try model.translators!.forEach {
-        try BCTranslatorDAO.insert(or: .ignore, $0, with: connection)
+    if book.translators != nil {
+      try book.translators!.forEach {
+        try BCTranslatorDAO.insert(or: .ignore, $0, by: id, with: connection)
       }
     }
 //    else { throw V2RXError.DataAccessObjects.invalidData }
@@ -97,11 +99,11 @@ struct BCBookDAO: BCDAO {
   }
   
   static func query(
-    by doubanID: String,
+    by isbn: String,
     with connection: Connection
   ) throws -> BCBook? {
     guard let book = try connection
-      .pluck(BCBookTable.filter(doubanID == BCBookDBD.doubanID))
+      .pluck(BCBookTable.filter(isbn == (isbn.count == 10 ? BCBookDBD.isbn10 : BCBookDBD.isbn13)))
       else { return nil }
     
     let id = book[BCBookDBD.id]

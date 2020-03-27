@@ -29,23 +29,28 @@
 import Foundation
 import SQLite
 
-struct BCSeriesDAO: BCDAO {
-  typealias Model = BCSeries
+//struct BCSeriesDAO: BCDAO {
+//  typealias Model = BCSeries
+
+struct BCSeriesDAO {
   
   @discardableResult
   static func insert(
     or conflict: SQLite.OnConflict,
-    _ model: BCSeries,
+    _ series: BCSeries,
+    by id: Int64,
     with connection: Connection
   ) throws -> Int64 {
-    let table = BCDBTable.list[BCDBTable.Kind.series]!
-    let series = BCSeriesDB()
-    let rowID = try connection.run(table.insert(
+//    let table = BCDBTable.list[BCDBTable.Kind.series]!
+//    let series = BCSeriesDB()
+//    let rowID = try connection.run(BCSeriesTable.insert(
+    return try connection.run(BCSeriesTable.insert(
       or: conflict,
-      series.seriesID <- model.seriesID,
-      series.title <- model.title
+      BCSeriesDBD.bookID <- id,
+      BCSeriesDBD.seriesID <- series.seriesID,
+      BCSeriesDBD.title <- series.title
     ))
-    return rowID
+//    return rowID
   }
   
   static func query(

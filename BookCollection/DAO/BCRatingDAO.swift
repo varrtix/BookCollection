@@ -29,25 +29,29 @@
 import Foundation
 import SQLite
 
-struct BCRatingDAO: BCDAO {
-  typealias Model = BCRating
+//struct BCRatingDAO: BCDAO {
+//  typealias Model = BCRating
+struct BCRatingDAO {
   
   @discardableResult
   static func insert(
     or conflict: SQLite.OnConflict,
-    _ model: BCRating,
+    _ rating: BCRating,
+    by id: Int64,
     with connection: Connection
   ) throws -> Int64 {
-    let table = BCDBTable.list[BCDBTable.Kind.rating]!
-    let rating = BCRatingDB()
-    let rowID = try connection.run(table.insert(
+//    let table = BCDBTable.list[BCDBTable.Kind.rating]!
+//    let rating = BCRatingDB()
+//    let rowID = try connection.run(table.insert(
+    return try connection.run(BCRatingTable.insert(
       or: conflict,
-      rating.max <- model.max,
-      rating.min <- model.min,
-      rating.average <- model.average,
-      rating.numRaters <- model.numRaters
+      BCRatingDBD.bookID <- id,
+      BCRatingDBD.max <- rating.max,
+      BCRatingDBD.min <- rating.min,
+      BCRatingDBD.average <- rating.average,
+      BCRatingDBD.numRaters <- rating.numRaters
     ))
-    return rowID
+//    return rowID
   }
   
   static func query(

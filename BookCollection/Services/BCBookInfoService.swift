@@ -43,27 +43,30 @@ class BCBookInfoService {
   ) {
     let group = DispatchGroup()
     group.enter()
-    BCDB.connect { conn in
+    BCDB.AsyncConnect { conn in
       let result = BCResult<Int64> {
         try BCBookDAO.insert(or: .ignore, book, with: conn)
       }
       group.leave()
-      group.notify(queue: queue) {
-        completionHandler(result)
-      }
+      
+      group.notify(queue: queue) { completionHandler(result) }
     }
   }
   
   class func search(
-    with doubanID: String,
+    with isbn: String,
     at queue: DispatchQueue = .main,
     completionHandler: @escaping (BCResult<BCBook?>) -> Void
   ) {
-    BCDB.connect { conn in
+    let group = DispatchGroup()
+    group.enter()
+    BCDB.AsyncConnect { conn in
       let result = BCResult<BCBook?> {
-        try BCBookDAO.query(by: doubanID, with: conn)
+        try BCBookDAO.query(by: isbn, with: conn)
       }
-      queue.async { completionHandler(result) }
+      group.leave()
+      
+      group.notify(queue: queue) { completionHandler(result) }
     }
   }
 }
