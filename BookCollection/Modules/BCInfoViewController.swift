@@ -207,9 +207,9 @@ extension BCInfoViewController {
     markButton.backgroundColor = BCColor.BarTint.white
     
     markButton.setTitle("Mark", for: .normal)
-    markButton.setTitle("Unmark", for: .disabled)
+    markButton.setTitle("Unmark", for: .selected)
     markButton.setTitleColor(UIColor(HEX: 0x00A25B), for: .normal)
-    markButton.setTitleColor(UIColor(HEX: 0xB8B8B8), for: .disabled)
+    markButton.setTitleColor(UIColor(HEX: 0xB8B8B8), for: .selected)
     markButton.layer.cornerRadius = 2.0
     
     markButton.addTarget(self, action: #selector(mark(_:)), for: .touchUpInside)
@@ -223,7 +223,7 @@ extension BCInfoViewController {
       make.bottom.equalToSuperview().inset(4)
     }
     
-    markButton.isEnabled = !isMarked
+    markButton.isSelected = isMarked
     
     // ImageView layout
     backgroundImageView.snp.makeConstraints { make in
@@ -279,14 +279,19 @@ extension BCInfoViewController {
   
   @objc
   func mark(_ sender: UIButton? = nil) {
-    
     if book == nil { return }
     
-    BCBookInfoService.mark(book!) { result in
-      if case let .success(id) = result, id > 0 {
-        sender?.isEnabled = false
-      } else if case let .failure(error) = result {
-        V2RXError.printError(error)
+    if sender?.isSelected ?? false {
+      BCBookInfoService.unmark(by: book!.doubanID) {
+        BCDBResult.handle($0, success: { id in
+          if id > 0 { sender?.isSelected.toggle() }
+        }) { V2RXError.printError($0) }
+      }
+    } else {
+      BCBookInfoService.mark(book!) {
+        BCDBResult.handle($0, success: { id in
+          if id > 0 { sender?.isSelected.toggle() }
+        }) { V2RXError.printError($0) }
       }
     }
   }

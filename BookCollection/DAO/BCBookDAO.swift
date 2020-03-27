@@ -64,37 +64,37 @@ struct BCBookDAO {
         try BCTagDAO.insert(or: .ignore, $0, by: id, with: connection)
       }
     }
-//    } else { throw V2RXError.DataAccessObjects.invalidData }
-
+    //    } else { throw V2RXError.DataAccessObjects.invalidData }
+    
     if book.images != nil {
       try BCImagesDAO.insert(or: .ignore, book.images!, by: id, with: connection)
     }
-//    } else { throw V2RXError.DataAccessObjects.invalidData }
-
+    //    } else { throw V2RXError.DataAccessObjects.invalidData }
+    
     if book.series != nil {
       try BCSeriesDAO.insert(or: .ignore, book.series!, by: id, with: connection)
     }
-//    else { throw V2RXError.DataAccessObjects.invalidData }
-
+    //    else { throw V2RXError.DataAccessObjects.invalidData }
+    
     if book.rating != nil {
       try BCRatingDAO.insert(or: .ignore, book.rating!, by: id, with: connection)
     }
-//    else { throw V2RXError.DataAccessObjects.invalidData }
-
+    //    else { throw V2RXError.DataAccessObjects.invalidData }
+    
     if book.authors != nil {
       try book.authors!.forEach {
         try BCAuthorDAO.insert(or: .ignore, $0, by: id, with: connection)
       }
     }
-//    else { throw V2RXError.DataAccessObjects.invalidData }
-
+    //    else { throw V2RXError.DataAccessObjects.invalidData }
+    
     if book.translators != nil {
       try book.translators!.forEach {
         try BCTranslatorDAO.insert(or: .ignore, $0, by: id, with: connection)
       }
     }
-//    else { throw V2RXError.DataAccessObjects.invalidData }
-
+    //    else { throw V2RXError.DataAccessObjects.invalidData }
+    
     return id
   }
   
@@ -116,5 +116,12 @@ struct BCBookDAO {
       authors: try BCAuthorDAO.query(by: id, with: connection),
       translators: try BCTranslatorDAO.query(by: id, with: connection)
     )
+  }
+  
+  static func delete(
+    by doubanID: String,
+    with connection: Connection
+  ) throws -> Int {
+    return try connection.run(BCBookTable.filter(doubanID == BCBookDBD.doubanID).delete())
   }
 }

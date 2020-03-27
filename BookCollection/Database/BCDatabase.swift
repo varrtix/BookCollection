@@ -69,7 +69,7 @@ struct BCDatabase {
           withIntermediateDirectories: true)
       }
     } catch { V2RXError.printError(error) }
-
+    
     return self
   }
   
@@ -80,6 +80,7 @@ struct BCDatabase {
   ) -> Self {
     do {
       let connection = try Connection(BCDatabase.fileURL)
+      _ = try connection.prepare("PRAGMA FOREIGN_KEYS=ON")
       queue.async { handler(connection) }
     } catch { V2RXError.printError(error) }
     

@@ -53,6 +53,33 @@ class BCBookInfoService {
     }
   }
   
+  /// A handler to be called when unmarked book has been excuted in the database.
+  /// - Parameters:
+  ///   - doubanID: The key for delete condition.
+  ///   - queue: The queue on which the completion handler is dispatched. `.main` by default.
+  ///   - completionHandler: A closure to be excuted once the unmarking has finished.
+  class func unmark(
+    by doubanID: String,
+    at queue: DispatchQueue = .main,
+    completionHandler: @escaping (BCResult<Int>) -> Void
+  ) {
+    let group = DispatchGroup()
+    group.enter()
+    BCDB.AsyncConnect { conn in
+      let result = BCResult<Int> {
+        try BCBookDAO.delete(by: doubanID, with: conn)
+      }
+      group.leave()
+      
+      group.notify(queue: queue) { completionHandler(result) }
+    }
+  }
+  
+  /// A handler to be called when search book with isbn has finished.
+  /// - Parameters:
+  ///   - isbn: The key for search book.
+  ///   - queue: The queue on which the completion handler is dispatched. `.main` by default.
+  ///   - completionHandler: A closure to be excuted once the search has finished.
   class func search(
     with isbn: String,
     at queue: DispatchQueue = .main,
