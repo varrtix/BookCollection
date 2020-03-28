@@ -31,7 +31,7 @@ import UIKit
 class BCListTableViewController: BCViewController {
   
   fileprivate enum State {
-    case ready, start, editing, wait, stop
+    case ready, start, wait, stop
   }
   
   fileprivate var state = State.stop {
@@ -41,7 +41,6 @@ class BCListTableViewController: BCViewController {
           launch()
         case .start:
           wakeup()
-        case .editing: break
         case .wait: break
         case .stop: break
       }
@@ -87,7 +86,6 @@ extension BCListTableViewController {
 extension BCListTableViewController {
   fileprivate func launch() {
     loadData()
-    //    tableView.reloadData()
   }
   
   fileprivate func wakeup() {
@@ -141,5 +139,22 @@ extension BCListTableViewController: UITableViewDataSource {
     cell!.inject(book: books[indexPath.row])
     
     return cell!
+  }
+  
+  func tableView(
+    _ tableView: UITableView,
+    commit editingStyle: UITableViewCell.EditingStyle,
+    forRowAt indexPath: IndexPath
+  ) {
+    switch editingStyle {
+      case .delete:
+        BCBookInfoService.unmark(by: books[indexPath.row].doubanID) {
+          BCDBResult.handle($0, success: { _ in
+            self.books.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+          }) { V2RXError.printError($0) }
+      }
+      default: break
+    }
   }
 }
