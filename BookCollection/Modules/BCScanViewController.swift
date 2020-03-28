@@ -134,7 +134,9 @@ extension BCScanViewController {
 
 // MARK: - Launch actions
 extension BCScanViewController {
-  @objc func launch() {
+  
+  @objc
+  fileprivate func launch() {
     state = .stop
     // STEP 1: camera authorization
     // STEP 2: if allow camera session, else cleanup and dismiss
@@ -205,11 +207,13 @@ extension BCScanViewController {
   }
   
   // BarButton Actions
-  @objc fileprivate func dismiss(_ sender: UIButton? = nil) {
+  @objc
+  fileprivate func dismiss(_ sender: UIButton? = nil) {
     navigationController?.dismiss(animated: true)
   }
   
-  @objc fileprivate func light(_ sender: UIButton) {
+  @objc
+  fileprivate func light(_ sender: UIButton) {
     sender.isSelected.toggle()
     // TODO: Turn on and off the light.
   }
@@ -387,7 +391,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
     state = .ready(ISBN)
   }
   
-  func fetchBook(with ISBN: String) {
+  fileprivate func fetchBook(with ISBN: String) {
     guard let url = URL(string: "https://douban.uieee.com/v2/book/isbn/\(ISBN)")
       else { return }
     
@@ -424,7 +428,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
 
 // MARK: - Device authorization
 extension BCScanViewController {
-  func cameraAuthorization() -> Bool {
+  fileprivate func cameraAuthorization() -> Bool {
     switch AVCaptureDevice.authorizationStatus(for: .video) {
       case .restricted: fallthrough
       case .denied: return false

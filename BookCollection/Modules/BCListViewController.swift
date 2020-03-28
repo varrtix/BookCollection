@@ -50,10 +50,11 @@ class BCListViewController: BCViewController {
         self.navigationItem
           .leftBarButtonItem?
           .image = UIImage(named: "Main/List/Mode-\(newValue.rawValue)")
-        switch newValue {
-          case .table: break
-          case .collection: break
-        }
+//        switch newValue {
+//          case .table: break
+//          case .collection: break
+//        }
+        self.switchListController(mode: newValue)
       }
     }
   }
@@ -64,8 +65,9 @@ extension BCListViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    view.backgroundColor = .systemTeal
+//    view.backgroundColor = .systemTeal
     configureNavigationBar()
+    launch()
   }
 }
 
@@ -80,8 +82,9 @@ extension BCListViewController {
       target: self,
       action: #selector(scan(_:)))
     
+    
     let modeButtonItem = UIBarButtonItem(
-      image: UIImage(named: "Main/List/Mode-\(_mode.rawValue)"),
+      image: UIImage(),
       style: .plain,
       target: self,
       action: #selector(switchMode(_:)))
@@ -89,16 +92,44 @@ extension BCListViewController {
     navigationItem.rightBarButtonItem = scanButtonItem
     navigationItem.leftBarButtonItem = modeButtonItem
     
+//    _mode = .table
   }
   
   // MARK: Button Actions
   @objc
-  func scan(_ sender: UIBarButtonItem) {
+  fileprivate func scan(_ sender: UIBarButtonItem) {
     let navigation = BCNavigationController(rootViewController: scan.item)
     
     present(navigation, animated: true)
   }
   
   @objc
-  func switchMode(_ sender: UIBarButtonItem) { _mode.toggle() }
+  fileprivate func switchMode(_ sender: UIBarButtonItem) { _mode.toggle() }
+}
+
+// MARK: - Subview controllers
+extension BCListViewController {
+  
+  fileprivate func launch() {
+    _mode = .table
+  }
+  
+  fileprivate func switchListController(mode: Mode) {
+    prepareMove(toParent: nil) {
+      self.children.forEach {
+        $0.removeFromParent()
+        $0.view.removeFromSuperview()
+      }
+    }
+    
+    let controller = mode == .table ?
+      BCListTableViewController() :
+      BCListCollectionViewController()
+    
+    prepareMove(toParent: self) {
+      self.addChild(controller)
+      self.view.addSubview(controller.view)
+      controller.view.frame = self.view.bounds
+    }
+  }
 }

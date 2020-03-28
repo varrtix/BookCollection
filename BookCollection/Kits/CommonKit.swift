@@ -190,3 +190,13 @@ public extension V2RXError.DataAccessObjects {
     }
   }
 }
+
+public extension UIViewController {
+  func prepareMove(toParent: UIViewController?, catching handle: @escaping () -> Void) {
+    DispatchQueue.main.async {
+      self.willMove(toParent: toParent)
+      handle()
+      self.didMove(toParent: toParent)
+    }
+  }
+}

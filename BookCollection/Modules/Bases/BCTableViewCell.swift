@@ -28,16 +28,15 @@
 
 import UIKit
 
-typealias ViewTuple = (title: String, item: BCViewController)
+class BCTableViewCell: UITableViewCell {
 
-struct BCColor {
-  enum BarTint {
-    static let green = UIColor(HEX: 0x009D82)
-    static let white = UIColor(R: 245, G: 245, B: 245)
-    static let gray = UIColor.darkGray
-  }
-  
-  enum ListTint {
-    static let snowWhite = UIColor(HEX: 0xF9F9F9)
-  }
+    override func awakeFromNib() {
+        super.awakeFromNib()
+    }
+
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+
+    }
+
 }

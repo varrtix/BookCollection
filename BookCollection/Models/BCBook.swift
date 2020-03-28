@@ -93,6 +93,7 @@ struct BCBook: BCCodable {
     images: BCImages?,
     series: BCSeries?,
     rating: BCRating?,
+    tags: [BCTag]?,
     authors: [BCAuthor]?,
     translators: [BCTranslator]?
   ) {
@@ -114,6 +115,7 @@ struct BCBook: BCCodable {
     
     self.authors = authors
     self.translators = translators
+    self.tags = tags
     self.images = images
     self.series = series
     self.rating = rating

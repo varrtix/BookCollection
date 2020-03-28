@@ -28,16 +28,11 @@
 
 import UIKit
 
-typealias ViewTuple = (title: String, item: BCViewController)
-
-struct BCColor {
-  enum BarTint {
-    static let green = UIColor(HEX: 0x009D82)
-    static let white = UIColor(R: 245, G: 245, B: 245)
-    static let gray = UIColor.darkGray
-  }
+class BCListCollectionViewController: BCViewController {
   
-  enum ListTint {
-    static let snowWhite = UIColor(HEX: 0xF9F9F9)
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    
+    view.backgroundColor = .systemYellow
   }
 }

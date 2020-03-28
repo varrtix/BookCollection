@@ -29,6 +29,14 @@
 import UIKit
 import SnapKit
 import Kingfisher
+//
+//protocol BCInfoViewControllerDelegate: class {
+//  func infoViewController(
+//    _ controller: BCInfoViewController, didAdding book: BCBook)
+//
+//  func infoViewController(
+//    _ controller: BCInfoViewController, didRemoving book: BCBook)
+//}
 
 class BCInfoViewController: BCViewController {
   
@@ -278,7 +286,7 @@ extension BCInfoViewController {
 extension BCInfoViewController {
   
   @objc
-  func mark(_ sender: UIButton? = nil) {
+  fileprivate func mark(_ sender: UIButton? = nil) {
     if book == nil { return }
     
     if sender?.isSelected ?? false {

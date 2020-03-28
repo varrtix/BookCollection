@@ -129,6 +129,7 @@ fileprivate extension BCBook {
       images: try BCImagesDAO.query(by: id, with: connection),
       series: try BCSeriesDAO.query(by: id, with: connection),
       rating: try BCRatingDAO.query(by: id, with: connection),
+      tags: try BCTagDAO.query(by: id, with: connection),
       authors: try BCAuthorDAO.query(by: id, with: connection),
       translators: try BCTranslatorDAO.query(by: id, with: connection)
     )
