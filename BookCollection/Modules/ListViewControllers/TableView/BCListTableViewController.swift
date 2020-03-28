@@ -49,12 +49,12 @@ class BCListTableViewController: BCViewController {
   
   fileprivate lazy var tableView = launchTableView()
   
-  fileprivate var books = [BCBook]() {
-    willSet {}
-  }
+  fileprivate var books = [BCBook]()
+//    willSet {}
+//  }
 }
 
-// MARK: View life-cycle
+// MARK: - View life-cycle
 extension BCListTableViewController {
   override func viewDidLoad() {
     super.viewDidLoad()

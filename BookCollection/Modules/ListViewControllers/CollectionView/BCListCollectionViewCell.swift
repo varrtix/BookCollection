@@ -27,7 +27,62 @@
 /// THE SOFTWARE.
 
 import UIKit
+import SnapKit
+import Kingfisher
 
 class BCListCollectionViewCell: BCCollectionViewCell {
+  
+  fileprivate lazy var coverImageView = UIImageView()
+  
+  fileprivate lazy var titleLabel = UILabel()
+  
+  
+  override init(frame: CGRect) {
+    super.init(frame: frame)
     
+    launchSubviews()
+  }
+  
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+}
+
+// MARK: - Subviews
+extension BCListCollectionViewCell {
+  fileprivate func launchSubviews() {
+    contentView.backgroundColor = BCColor.ListTint.snowWhite
+    
+    coverImageView.backgroundColor = .white
+    contentView.addSubview(coverImageView)
+    
+    titleLabel.font = UIFont.systemFont(ofSize: 16)
+    titleLabel.textColor = UIColor(HEX: 0x555555)
+    contentView.addSubview(titleLabel)
+    
+    coverImageView.snp.makeConstraints { make in
+      make.size.equalTo(CGSize(width: 80, height: 110))
+      make.left.right.top.equalToSuperview().inset(10)
+    }
+    
+    titleLabel.snp.makeConstraints { make in
+      make.bottom.centerX.equalToSuperview()
+      make.top.greaterThanOrEqualTo(coverImageView.snp.bottom).offset(5)
+    }
+  }
+  
+  override func prepareForReuse() {
+    coverImageView.image = nil
+    titleLabel.text = nil
+  }
+}
+
+// MARK: - Inject data
+extension BCListCollectionViewCell {
+  func inject(book: BCBook) {
+    if let image = book.image {
+      coverImageView.kf.setImage(with: URL(string: image))
+    }
+    titleLabel.text = book.title
+  }
 }
