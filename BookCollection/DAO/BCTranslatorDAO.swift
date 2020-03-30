@@ -55,6 +55,6 @@ struct BCTranslatorDAO {
       .prepare(BCTranslatorsTable.filter(id == BCTranslatorDBD.bookID))
       .map { $0[BCTranslatorDBD.name] ?? String() }
     
-    return translators[0].isEmpty ? nil : translators
+    return translators.isEmpty ? nil : translators
   }
 }

@@ -58,16 +58,20 @@ extension BCListCollectionViewCell {
     
     titleLabel.font = UIFont.systemFont(ofSize: 16)
     titleLabel.textColor = UIColor(HEX: 0x555555)
+    titleLabel.numberOfLines = 0
     contentView.addSubview(titleLabel)
     
     coverImageView.snp.makeConstraints { make in
-      make.size.equalTo(CGSize(width: 80, height: 110))
-      make.left.right.top.equalToSuperview().inset(10)
+//      make.size.equalTo(CGSize(width: 80, height: 110))
+//      make.left.right.top.equalToSuperview().inset(10)
+      make.left.right.top.equalToSuperview()
+      make.height.equalTo(coverImageView.snp.width).multipliedBy(7.0/5.0)
     }
     
     titleLabel.snp.makeConstraints { make in
-      make.bottom.centerX.equalToSuperview()
-      make.top.greaterThanOrEqualTo(coverImageView.snp.bottom).offset(5)
+      make.centerX.equalToSuperview()
+      make.top.equalTo(coverImageView.snp.bottom).offset(5)
+      make.left.right.equalToSuperview()
     }
   }
   

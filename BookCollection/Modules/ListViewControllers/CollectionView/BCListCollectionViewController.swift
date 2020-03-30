@@ -50,6 +50,10 @@ class BCListCollectionViewController: BCViewController {
   fileprivate lazy var collecitonView = launchCollectionView()
   
   fileprivate var books = [BCBook]()
+  
+  private let numbersOfPerRow: CGFloat = 3
+  
+  private let paddingInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
 }
 
 // MARK: - View life-cycle
@@ -57,7 +61,6 @@ extension BCListCollectionViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-//    view.backgroundColor = .systemYellow
     state = .ready
   }
   
@@ -92,12 +95,12 @@ extension BCListCollectionViewController {
   
   fileprivate func launchCollectionView() -> UICollectionView {
     let layout = UICollectionViewFlowLayout()
-    layout.scrollDirection = .vertical
     let collectionView = UICollectionView(
       frame: view.frame,
       collectionViewLayout: layout)
     
     collectionView.backgroundColor = BCColor.ListTint.snowWhite
+//    collectionView.backgroundColor = .systemTeal
     collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     collectionView.delegate = self
     collectionView.dataSource = self
@@ -140,11 +143,21 @@ extension BCListCollectionViewController: UICollectionViewDataSource {
 
 // MARK: Collectionview flowlayout delegate
 extension BCListCollectionViewController: UICollectionViewDelegateFlowLayout {
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize { CGSize(width: 90, height: 130) }
-  
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets { UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10) }
-  
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat { 10.0 }
-  
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat { 15.0 }
+  func collectionView(
+    _ collectionView: UICollectionView,
+    layout collectionViewLayout: UICollectionViewLayout,
+    sizeForItemAt indexPath: IndexPath
+  ) -> CGSize {
+    let paddingSpace = paddingInset.left * (numbersOfPerRow + 1)
+    let width = ((view.frame.width - paddingSpace) / numbersOfPerRow).rounded(.towardZero)
+    let height = width / 5 * 7 + 5 + 16 + 20
+
+    return CGSize(width: width, height: height)
+  }
+
+  func collectionView(
+    _ collectionView: UICollectionView,
+    layout collectionViewLayout: UICollectionViewLayout,
+    insetForSectionAt section: Int
+  ) -> UIEdgeInsets { paddingInset }
 }

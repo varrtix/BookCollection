@@ -108,7 +108,7 @@ extension BCScanViewController {
     super.viewDidAppear(animated)
     
     #if targetEnvironment(simulator)
-    state = .ready("9787115352118")
+    state = .ready("9787115318091")
     #endif
     
     NotificationCenter.default.addObserver(
@@ -392,7 +392,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
   }
   
   fileprivate func fetchBook(with ISBN: String) {
-    guard let url = URL(string: "https://douban.uieee.com/v2/book/isbn/\(ISBN)")
+    guard let url = URL(string: "https://douban-api.uieee.com/v2/book/isbn/\(ISBN)")
       else { return }
     
     state = .loading(url)

@@ -41,3 +41,5 @@ struct BCColor {
     static let snowWhite = UIColor(HEX: 0xF9F9F9)
   }
 }
+
+let screenSize = UIScreen.main.bounds.size
