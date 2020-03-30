@@ -100,7 +100,6 @@ extension BCListCollectionViewController {
       collectionViewLayout: layout)
     
     collectionView.backgroundColor = BCColor.ListTint.snowWhite
-//    collectionView.backgroundColor = .systemTeal
     collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     collectionView.delegate = self
     collectionView.dataSource = self

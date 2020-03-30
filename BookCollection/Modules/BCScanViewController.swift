@@ -330,7 +330,8 @@ extension BCScanViewController {
         let detailAction = UIAlertAction(title: "Detail", style: .default) { _ in
           let controller = BCInfoViewController(with: book)
           controller.isMarked = self._isMarked
-          self.present(controller, animated: true)
+          let navigation = BCNavigationController(rootViewController: controller)
+          self.present(navigation, animated: true)
         }
         alert.addAction(detailAction)
         alert.message = """
@@ -392,7 +393,7 @@ extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
   }
   
   fileprivate func fetchBook(with ISBN: String) {
-    guard let url = URL(string: "https://douban-api.uieee.com/v2/book/isbn/\(ISBN)")
+    guard let url = URL(string: "https://douban-api-git-master.zce.now.sh/v2/book/isbn/\(ISBN)")
       else { return }
     
     state = .loading(url)

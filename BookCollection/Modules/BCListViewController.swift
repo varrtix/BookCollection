@@ -66,6 +66,7 @@ extension BCListViewController {
     super.viewDidLoad()
     
 //    view.backgroundColor = .systemTeal
+    view.backgroundColor = BCColor.ListTint.snowWhite
     configureNavigationBar()
     launch()
   }

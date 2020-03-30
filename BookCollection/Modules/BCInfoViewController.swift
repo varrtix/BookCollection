@@ -90,13 +90,22 @@ extension BCInfoViewController {
 extension BCInfoViewController {
   
   fileprivate func configureNavigation() {
-    navigationItem.title = "Book Information"
+//    navigationItem.title = ?? "Book Information"
+    navigationItem.title = book?.title ?? "Book Information"
     
     navigationBarBackgroundImage = UIImage()
     
     shouldShowShadowImage = false
     
     shouldHideBottomBarWhenPushed = true
+    
+    if #available(iOS 13.0, *) {} else {
+      navigationItem.leftBarButtonItem = UIBarButtonItem(
+        title: "Back",
+        style: .plain,
+        target: self,
+        action: #selector(close(_:)))
+    }
   }
   // MARK: configure Subviews
   fileprivate func configureSubviews() {
@@ -302,6 +311,11 @@ extension BCInfoViewController {
         }) { V2RXError.printError($0) }
       }
     }
+  }
+  
+  @objc
+  fileprivate func close(_ sender: UIBarButtonItem? = nil) {
+    dismiss(animated: true)
   }
 }
 
