@@ -53,7 +53,7 @@ class BCListCollectionViewController: BCViewController {
   
   private let numbersOfPerRow: CGFloat = 3
   
-  private let paddingInset = UIEdgeInsets(top: 15, left: 15, bottom: 15, right: 15)
+  private let paddingInset = UIEdgeInsets(top: 20, left: 10, bottom: 20, right: 10)
   
   private let defaultPageSize = 100
 }
@@ -88,6 +88,13 @@ extension BCListCollectionViewController {
 // MARK: - View controllers
 extension BCListCollectionViewController {
   fileprivate func launch() {
+    
+    let longPressGesture = UILongPressGestureRecognizer(
+      target: self,
+      action: #selector(longPressHandler(_:))
+    )
+    collecitonView.addGestureRecognizer(longPressGesture)
+
     loadData(withOffset: 0, pageSize: defaultPageSize)
   }
   
@@ -101,7 +108,8 @@ extension BCListCollectionViewController {
       frame: view.frame,
       collectionViewLayout: layout)
     
-    collectionView.backgroundColor = BCColor.ListTint.snowWhite
+//    collectionView.backgroundColor = BCColor.ListTint.snowWhite
+    collectionView.backgroundColor = .systemTeal
     collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     collectionView.delegate = self
     collectionView.dataSource = self
@@ -150,7 +158,8 @@ extension BCListCollectionViewController: UICollectionViewDelegateFlowLayout {
     sizeForItemAt indexPath: IndexPath
   ) -> CGSize {
     let paddingSpace = paddingInset.left * (numbersOfPerRow + 1)
-    let width = ((view.frame.width - paddingSpace) / numbersOfPerRow).rounded(.towardZero)
+    let width = ((view.frame.width - paddingSpace) /
+      numbersOfPerRow).rounded(.towardZero)
     let height = width / 5 * 7 + 5 + 16 + 20
 
     return CGSize(width: width, height: height)
@@ -161,4 +170,20 @@ extension BCListCollectionViewController: UICollectionViewDelegateFlowLayout {
     layout collectionViewLayout: UICollectionViewLayout,
     insetForSectionAt section: Int
   ) -> UIEdgeInsets { paddingInset }
+}
+
+// MARK: Collectionview actions
+extension BCListCollectionViewController {
+  @objc
+  func longPressHandler(_ sender: UILongPressGestureRecognizer) {
+    let points = sender.location(in: collecitonView)
+    guard
+      let indexPath = collecitonView.indexPathForItem(at: points),
+      sender.state == .began
+      else { return }
+    let cell = collecitonView.cellForItem(at: indexPath) as! BCListCollectionViewCell
+    UIView.animate(withDuration: 0.5) {
+      cell.deleteButton.isHidden = false
+    }
+  }
 }

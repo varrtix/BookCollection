@@ -36,6 +36,7 @@ class BCListCollectionViewCell: BCCollectionViewCell {
   
   fileprivate lazy var titleLabel = UILabel()
   
+  lazy var deleteButton = UIButton()
   
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -51,12 +52,12 @@ class BCListCollectionViewCell: BCCollectionViewCell {
 // MARK: - Subviews
 extension BCListCollectionViewCell {
   fileprivate func launchSubviews() {
-    contentView.backgroundColor = BCColor.ListTint.snowWhite
+    contentView.backgroundColor = .clear
     
     coverImageView.backgroundColor = .white
     contentView.addSubview(coverImageView)
     
-    titleLabel.font = UIFont.systemFont(ofSize: 16)
+    titleLabel.font = UIFont.systemFont(ofSize: 14)
     titleLabel.textColor = UIColor(HEX: 0x555555)
     titleLabel.numberOfLines = 0
     contentView.addSubview(titleLabel)
@@ -64,15 +65,23 @@ extension BCListCollectionViewCell {
     coverImageView.snp.makeConstraints { make in
 //      make.size.equalTo(CGSize(width: 80, height: 110))
 //      make.left.right.top.equalToSuperview().inset(10)
-      make.left.right.top.equalToSuperview()
+      make.left.right.top.equalToSuperview().inset(10)
       make.height.equalTo(coverImageView.snp.width).multipliedBy(7.0/5.0)
     }
     
     titleLabel.snp.makeConstraints { make in
       make.centerX.equalToSuperview()
-      make.top.equalTo(coverImageView.snp.bottom).offset(5)
+      make.top.equalTo(coverImageView.snp.bottom).offset(10)
       make.left.right.equalToSuperview()
     }
+    
+    deleteButton.setImage(UIImage(named: "Main/List/delete"), for: .normal)
+    contentView.addSubview(deleteButton)
+    
+    deleteButton.snp.makeConstraints { make in
+      make.right.top.equalToSuperview()
+    }
+    deleteButton.isHidden = true
   }
   
   override func prepareForReuse() {
