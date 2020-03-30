@@ -106,8 +106,12 @@ struct BCBookDAO {
     return try BCBook(book: book, with: connection)
   }
   
-  static func queryAll(with connection: Connection) throws -> [BCBook] {
-    let books = try connection.prepare(BCBookTable)
+  static func queryAll(
+    offset: Int,
+    size: Int,
+    with connection: Connection
+  ) throws -> [BCBook] {
+    let books = try connection.prepare(BCBookTable.limit(size, offset: offset))
     
     return try books.map { try BCBook(book: $0, with: connection) }
   }

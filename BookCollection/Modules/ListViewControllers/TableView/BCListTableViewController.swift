@@ -52,6 +52,7 @@ class BCListTableViewController: BCViewController {
   fileprivate var books = [BCBook]()
 //    willSet {}
 //  }
+  private let defaultPageSize = 100
 }
 
 // MARK: - View life-cycle
@@ -72,8 +73,10 @@ extension BCListTableViewController {
 
 // MARK: - Data
 extension BCListTableViewController {
-  fileprivate func loadData() {
-    BCBookListService.getAllBooks {
+  fileprivate func loadData(withOffset: Int, pageSize: Int) {
+    if withOffset == 0 { books.removeAll() }
+    
+    BCBookListService.getAllBooks(withOffset: withOffset, andSize: pageSize) {
       BCDBResult.handle($0, success: {
         self.books = $0
         self.tableView.reloadData()
@@ -85,7 +88,7 @@ extension BCListTableViewController {
 // MARK: - View controllers
 extension BCListTableViewController {
   fileprivate func launch() {
-    loadData()
+    loadData(withOffset: 0, pageSize: defaultPageSize)
   }
   
   fileprivate func wakeup() {

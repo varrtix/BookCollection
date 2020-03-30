@@ -53,7 +53,9 @@ class BCListCollectionViewController: BCViewController {
   
   private let numbersOfPerRow: CGFloat = 3
   
-  private let paddingInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+  private let paddingInset = UIEdgeInsets(top: 15, left: 15, bottom: 15, right: 15)
+  
+  private let defaultPageSize = 100
 }
 
 // MARK: - View life-cycle
@@ -73,8 +75,8 @@ extension BCListCollectionViewController {
 
 // MARK: - Data
 extension BCListCollectionViewController {
-  fileprivate func loadData() {
-    BCBookListService.getAllBooks {
+  fileprivate func loadData(withOffset: Int, pageSize: Int) {
+    BCBookListService.getAllBooks(withOffset: withOffset, andSize: pageSize) {
       BCDBResult.handle($0, success: {
         self.books = $0
         self.collecitonView.reloadData()
@@ -86,7 +88,7 @@ extension BCListCollectionViewController {
 // MARK: - View controllers
 extension BCListCollectionViewController {
   fileprivate func launch() {
-    loadData()
+    loadData(withOffset: 0, pageSize: defaultPageSize)
   }
   
   fileprivate func wakeup() {

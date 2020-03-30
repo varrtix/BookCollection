@@ -30,13 +30,17 @@ import Foundation
 
 class BCBookListService {
   class func getAllBooks(
+    withOffset: Int,
+    andSize: Int,
     at queue: DispatchQueue = .main,
     completionHandler: @escaping (BCResult<[BCBook]>) -> Void
   ) {
     let group = DispatchGroup()
     group.enter()
     BCDB.AsyncConnect { conn in
-      let result = BCResult<[BCBook]> { try BCBookDAO.queryAll(with: conn) }
+      let result = BCResult<[BCBook]> {
+        try BCBookDAO.queryAll(offset: withOffset, size: andSize, with: conn)
+      }
       group.leave()
 
       group.notify(queue: queue) { completionHandler(result) }
