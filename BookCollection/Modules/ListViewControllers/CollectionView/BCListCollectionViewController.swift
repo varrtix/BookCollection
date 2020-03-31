@@ -78,7 +78,7 @@ extension BCListCollectionViewController {
   fileprivate func loadData(withOffset: Int, pageSize: Int) {
     BCBookListService.getAllBooks(withOffset: withOffset, andSize: pageSize) {
       BCDBResult.handle($0, success: {
-        self.books = $0
+        self.books += $0
         self.collecitonView.reloadData()
       }) { V2RXError.printError($0) }
     }
@@ -108,8 +108,8 @@ extension BCListCollectionViewController {
       frame: view.frame,
       collectionViewLayout: layout)
     
-//    collectionView.backgroundColor = BCColor.ListTint.snowWhite
-    collectionView.backgroundColor = .systemTeal
+    collectionView.backgroundColor = BCColor.ListTint.snowWhite
+//    collectionView.backgroundColor = .systemTeal
     collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     collectionView.delegate = self
     collectionView.dataSource = self
@@ -124,6 +124,15 @@ extension BCListCollectionViewController {
 
 // MARK: - Collectionview delegate
 extension BCListCollectionViewController: UICollectionViewDelegate {
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    if
+      let cell = collectionView.cellForItem(at: indexPath)
+        as? BCListCollectionViewCell,
+      cell.isEditing == true {
+      cell.isEditing = false
+      collectionView.deselectItem(at: indexPath, animated: true)
+    }
+  }
 }
 
 // MARK: - Collectionview datasource
@@ -144,14 +153,19 @@ extension BCListCollectionViewController: UICollectionViewDataSource {
     if cell == nil {
       cell = BCListCollectionViewCell()
     }
-    cell!.inject(book: books[indexPath.row])
-    cell!.delegate = self
+    cell?.inject(book: books[indexPath.row])
+    cell?.delegate = self
+    
+    if cell?.cover == nil,
+      !collectionView.isDragging && !collectionView.isDecelerating {
+      cell?.loadingImage(with: books[indexPath.row].image)
+    }
     
     return cell!
   }
 }
 
-// MARK: Collectionview flowlayout delegate
+// MARK: - Collectionview flowlayout delegate
 extension BCListCollectionViewController: UICollectionViewDelegateFlowLayout {
   func collectionView(
     _ collectionView: UICollectionView,
@@ -183,13 +197,11 @@ extension BCListCollectionViewController {
       sender.state == .began
       else { return }
     let cell = collecitonView.cellForItem(at: indexPath) as! BCListCollectionViewCell
-    UIView.animate(withDuration: 0.5) {
-      cell.deleteButton.isHidden = false
-    }
+    cell.isEditing = true
   }
 }
 
-// MARK: Collectionview cell delegate
+// MARK: - Collectionview cell delegate
 extension BCListCollectionViewController: BCListCollectionViewCellDelegate {
   func removeCell(_ cell: BCListCollectionViewCell) {
     guard let indexPath = collecitonView.indexPath(for: cell)
@@ -200,6 +212,32 @@ extension BCListCollectionViewController: BCListCollectionViewCellDelegate {
         self.books.remove(at: indexPath.row)
         self.collecitonView.deleteItems(at: [indexPath])
       }) { V2RXError.printError($0) }
+    }
+  }
+}
+
+// MARK: - Scrollview delegate
+extension BCListCollectionViewController {
+  func scrollViewDidEndDragging(
+    _ scrollView: UIScrollView,
+    willDecelerate decelerate: Bool) {
+    if !decelerate {
+      loadingCoversForVisibleCells()
+    }
+  }
+  
+  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    loadingCoversForVisibleCells()
+  }
+  
+  fileprivate func loadingCoversForVisibleCells() {
+    collecitonView.visibleCells.forEach {
+      if let cell = $0 as? BCListCollectionViewCell,
+        let indexPath = collecitonView.indexPath(for: cell) {
+        if cell.cover == nil {
+          cell.loadingImage(with: books[indexPath.row].image)
+        }
+      }
     }
   }
 }

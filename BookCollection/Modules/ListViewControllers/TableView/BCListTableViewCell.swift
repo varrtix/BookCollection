@@ -40,6 +40,8 @@ class BCListTableViewCell: BCTableViewCell {
   
   fileprivate lazy var tagsView = UIView()
   
+  var cover: UIImage? { coverImageView.image }
+  
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     
@@ -120,9 +122,9 @@ extension BCListTableViewCell {
       authorLabel.text = author
     }
     
-    if let image = book.image {
-      coverImageView.kf.setImage(with: URL(string: image))
-    }
+//    if let image = book.image {
+//      coverImageView.kf.setImage(with: URL(string: image))
+//    }
     
     if let tags = book.tags {
       let stackView = UIStackView(
@@ -147,5 +149,10 @@ extension BCListTableViewCell {
       stackView.snp.makeConstraints { $0.edges.equalToSuperview() }
       
     }
+  }
+  
+  func loadingImage(with path: String?) {
+    guard path != nil else { return }
+    coverImageView.kf.setImage(with: URL(string: path!))
   }
 }

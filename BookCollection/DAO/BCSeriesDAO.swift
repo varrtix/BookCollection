@@ -44,7 +44,7 @@ struct BCSeriesDAO {
 //    let table = BCDBTable.list[BCDBTable.Kind.series]!
 //    let series = BCSeriesDB()
 //    let rowID = try connection.run(BCSeriesTable.insert(
-    return try connection.run(BCSeriesTable.insert(
+    try connection.run(BCSeriesTable.insert(
       or: conflict,
       BCSeriesDBD.bookID <- id,
       BCSeriesDBD.seriesID <- series.seriesID,

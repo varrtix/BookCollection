@@ -40,7 +40,7 @@ struct BCTranslatorDAO {
     by id: Int64,
     with connection: Connection
   ) throws -> Int64 {
-    return try connection.run(BCTranslatorsTable.insert(
+    try connection.run(BCTranslatorsTable.insert(
       or: conflict,
       BCTranslatorDBD.bookID <- id,
       BCTranslatorDBD.name <- translator

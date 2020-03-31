@@ -40,7 +40,21 @@ class BCListCollectionViewCell: BCCollectionViewCell {
   
   fileprivate lazy var titleLabel = UILabel()
   
-  lazy var deleteButton = UIButton()
+  fileprivate lazy var deleteButton = UIButton()
+  
+  var isEditing = false {
+    didSet {
+      DispatchQueue.main.async {
+        UIView.animate(
+          withDuration: 1,
+          delay: 0.2,
+          options: .curveEaseInOut,
+          animations: { self.deleteButton.isHidden = oldValue })
+      }
+    }
+  }
+  
+  var cover: UIImage? { coverImageView.image }
   
   var delegate: BCListCollectionViewCellDelegate?
   
@@ -69,8 +83,8 @@ extension BCListCollectionViewCell {
     contentView.addSubview(titleLabel)
     
     coverImageView.snp.makeConstraints { make in
-//      make.size.equalTo(CGSize(width: 80, height: 110))
-//      make.left.right.top.equalToSuperview().inset(10)
+      //      make.size.equalTo(CGSize(width: 80, height: 110))
+      //      make.left.right.top.equalToSuperview().inset(10)
       make.left.right.top.equalToSuperview().inset(10)
       make.height.equalTo(coverImageView.snp.width).multipliedBy(7.0/5.0)
     }
@@ -100,10 +114,15 @@ extension BCListCollectionViewCell {
 // MARK: - Inject data
 extension BCListCollectionViewCell {
   func inject(book: BCBook) {
-    if let image = book.image {
-      coverImageView.kf.setImage(with: URL(string: image))
-    }
+//    if let image = book.image {
+//      coverImageView.kf.setImage(with: URL(string: image))
+//    }
     titleLabel.text = book.title
+  }
+  
+  func loadingImage(with path: String?) {
+    guard path != nil else { return }
+    coverImageView.kf.setImage(with: URL(string: path!))
   }
 }
 

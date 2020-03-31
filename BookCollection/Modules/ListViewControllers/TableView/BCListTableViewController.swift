@@ -27,6 +27,7 @@
 /// THE SOFTWARE.
 
 import UIKit
+import ESPullToRefresh
 
 class BCListTableViewController: BCViewController {
   
@@ -50,9 +51,19 @@ class BCListTableViewController: BCViewController {
   fileprivate lazy var tableView = launchTableView()
   
   fileprivate var books = [BCBook]()
-//    willSet {}
-//  }
-  private let defaultPageSize = 100
+  
+  private var booksCount: Int {
+    var count = 0
+    BCBookListService.getBooksCount {
+      BCDBResult.handle($0, success: { value in
+        count = value
+      })
+    }
+    return count
+  }
+  
+  private var pageOffset = 0
+  private let defaultPageSize = 5
 }
 
 // MARK: - View life-cycle
@@ -60,7 +71,6 @@ extension BCListTableViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    //    view.backgroundColor = .systemRed
     state = .ready
   }
   
@@ -73,13 +83,17 @@ extension BCListTableViewController {
 
 // MARK: - Data
 extension BCListTableViewController {
-  fileprivate func loadData(withOffset: Int, pageSize: Int) {
-    if withOffset == 0 { books.removeAll() }
+  fileprivate func loadData() {
+    if pageOffset == 0 { books.removeAll() }
     
-    BCBookListService.getAllBooks(withOffset: withOffset, andSize: pageSize) {
+    BCBookListService.getAllBooks(withOffset: pageOffset, andSize: defaultPageSize) {
       BCDBResult.handle($0, success: {
-        self.books = $0
+        self.books += $0
+        
         self.tableView.reloadData()
+        self.tableView.es.stopLoadingMore()
+        
+        self.pageOffset += self.defaultPageSize
       }) { V2RXError.printError($0) }
     }
   }
@@ -88,7 +102,7 @@ extension BCListTableViewController {
 // MARK: - View controllers
 extension BCListTableViewController {
   fileprivate func launch() {
-    loadData(withOffset: 0, pageSize: defaultPageSize)
+    loadData()
   }
   
   fileprivate func wakeup() {
@@ -105,6 +119,13 @@ extension BCListTableViewController {
     
     view.addSubview(tableView)
     
+    tableView.es.addInfiniteScrolling { [unowned self] in
+      if self.pageOffset > self.booksCount {
+        self.tableView.es.noticeNoMoreData()
+      }
+      self.loadData()
+    }
+
     return tableView
   }
 }
@@ -136,10 +157,16 @@ extension BCListTableViewController: UITableViewDataSource {
     let identifier = "BCListTableViewCell"
     
     var cell = tableView.dequeueReusableCell(withIdentifier: identifier) as? BCListTableViewCell
+    
     if cell == nil {
       cell = BCListTableViewCell(style: .default, reuseIdentifier: identifier)
     }
-    cell!.inject(book: books[indexPath.row])
+    cell?.inject(book: books[indexPath.row])
+    
+    if cell?.cover == nil,
+      !tableView.isDragging && !tableView.isDecelerating {
+      cell?.loadingImage(with: books[indexPath.row].image)
+    }
     
     return cell!
   }
@@ -158,6 +185,32 @@ extension BCListTableViewController: UITableViewDataSource {
           }) { V2RXError.printError($0) }
       }
       default: break
+    }
+  }
+}
+
+// MARK: - Scrollview delegate
+extension BCListTableViewController {
+  func scrollViewDidEndDragging(
+    _ scrollView: UIScrollView,
+    willDecelerate decelerate: Bool) {
+    if !decelerate {
+      loadingCoversForVisibleCells()
+    }
+  }
+  
+  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    loadingCoversForVisibleCells()
+  }
+  
+  fileprivate func loadingCoversForVisibleCells() {
+    tableView.visibleCells.forEach {
+      if let cell = $0 as? BCListTableViewCell,
+        let indexPath = tableView.indexPath(for: cell) {
+        if cell.cover == nil {
+          cell.loadingImage(with: books[indexPath.row].image)
+        }
+      }
     }
   }
 }

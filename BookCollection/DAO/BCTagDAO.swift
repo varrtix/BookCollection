@@ -41,7 +41,7 @@ struct BCTagDAO {
     by id: Int64,
     with connection: Connection
   ) throws -> Int64 {
-    return try connection.run(BCTagsTable.insert(
+    try connection.run(BCTagsTable.insert(
       or: conflict,
       BCTagDBD.bookID <- id,
       BCTagDBD.count <- tag.count,

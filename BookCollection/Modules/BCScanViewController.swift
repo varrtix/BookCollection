@@ -343,7 +343,11 @@ extension BCScanViewController {
         if _isMarked { break }
 
         let nextAction = UIAlertAction(title: "Mark and Continue", style: .cancel) { _ in
-          self.launch()
+          BCBookInfoService.mark(book) {
+            BCDBResult.handle($0, success: { _ in
+              self.launch()
+            }) { V2RXError.printError($0) }
+          }
         }
         alert.addAction(nextAction)
       

@@ -74,7 +74,7 @@ struct BCDatabase {
   }
   
   @discardableResult
-  func AsyncConnect(
+  func asyncConnect(
     at queue: DispatchQueue = BCDatabase.daoQueue,
     _ handler: @escaping (Connection) -> Void
   ) -> Self {
@@ -82,6 +82,17 @@ struct BCDatabase {
       let connection = try Connection(BCDatabase.fileURL)
       _ = try connection.prepare("PRAGMA FOREIGN_KEYS=ON")
       queue.async { handler(connection) }
+    } catch { V2RXError.printError(error) }
+    
+    return self
+  }
+  
+  @discardableResult
+  func syncConnect(_ handler: @escaping (Connection) -> Void) -> Self {
+    do {
+      let connection = try Connection(BCDatabase.fileURL)
+      _ = try connection.prepare("PRAGMA FOREIGN_KEYS=ON")
+      handler(connection)
     } catch { V2RXError.printError(error) }
     
     return self

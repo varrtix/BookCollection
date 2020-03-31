@@ -37,13 +37,22 @@ class BCBookListService {
   ) {
     let group = DispatchGroup()
     group.enter()
-    BCDB.AsyncConnect { conn in
+    BCDB.asyncConnect { conn in
       let result = BCResult<[BCBook]> {
         try BCBookDAO.queryAll(offset: withOffset, size: andSize, with: conn)
       }
       group.leave()
 
       group.notify(queue: queue) { completionHandler(result) }
+    }
+  }
+  
+  class func getBooksCount(completionHandler: @escaping (BCResult<Int>) -> Void) {
+    BCDB.syncConnect { conn in
+      let result = BCResult<Int> {
+        try BCBookDAO.queryCount(with: conn)
+      }
+      completionHandler(result)
     }
   }
 }

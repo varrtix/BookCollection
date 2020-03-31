@@ -42,7 +42,7 @@ struct BCImagesDAO {
   ) throws -> Int64 {
 //    let table = BCDBTable.list[BCDBTable.Kind.images]!
 //    let images = BCImagesDB()
-    return try connection.run(BCImagesTable.insert(
+    try connection.run(BCImagesTable.insert(
       or: conflict,
       BCImagesDBD.bookID <- id,
       BCImagesDBD.small <- images.small,

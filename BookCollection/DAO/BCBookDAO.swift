@@ -120,7 +120,11 @@ struct BCBookDAO {
     by doubanID: String,
     with connection: Connection
   ) throws -> Int {
-    return try connection.run(BCBookTable.filter(doubanID == BCBookDBD.doubanID).delete())
+    try connection.run(BCBookTable.filter(doubanID == BCBookDBD.doubanID).delete())
+  }
+  
+  static func queryCount(with connection: Connection) throws -> Int {
+    try connection.scalar(BCBookTable.count)
   }
 }
 

@@ -43,7 +43,7 @@ class BCBookInfoService {
   ) {
     let group = DispatchGroup()
     group.enter()
-    BCDB.AsyncConnect { conn in
+    BCDB.asyncConnect { conn in
       let result = BCResult<Int64> {
         try BCBookDAO.insert(or: .ignore, book, with: conn)
       }
@@ -65,7 +65,7 @@ class BCBookInfoService {
   ) {
     let group = DispatchGroup()
     group.enter()
-    BCDB.AsyncConnect { conn in
+    BCDB.asyncConnect { conn in
       let result = BCResult<Int> {
         try BCBookDAO.delete(by: doubanID, with: conn)
       }
@@ -87,7 +87,7 @@ class BCBookInfoService {
   ) {
     let group = DispatchGroup()
     group.enter()
-    BCDB.AsyncConnect { conn in
+    BCDB.asyncConnect { conn in
       let result = BCResult<BCBook?> {
         try BCBookDAO.query(by: isbn, with: conn)
       }

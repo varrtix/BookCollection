@@ -43,7 +43,7 @@ struct BCRatingDAO {
 //    let table = BCDBTable.list[BCDBTable.Kind.rating]!
 //    let rating = BCRatingDB()
 //    let rowID = try connection.run(table.insert(
-    return try connection.run(BCRatingTable.insert(
+    try connection.run(BCRatingTable.insert(
       or: conflict,
       BCRatingDBD.bookID <- id,
       BCRatingDBD.max <- rating.max,

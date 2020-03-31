@@ -32,7 +32,7 @@ import SQLite
 class BCDatabaseOperation: AsyncOperation {
   
   override func main() {
-    BCDB.check().AsyncConnect { self.createTables(with: $0) }
+    BCDB.check().asyncConnect { self.createTables(with: $0) }
   }
 }
 
