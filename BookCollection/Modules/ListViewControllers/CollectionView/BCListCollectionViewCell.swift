@@ -30,6 +30,10 @@ import UIKit
 import SnapKit
 import Kingfisher
 
+protocol BCListCollectionViewCellDelegate {
+  func removeCell(_ cell: BCListCollectionViewCell)
+}
+
 class BCListCollectionViewCell: BCCollectionViewCell {
   
   fileprivate lazy var coverImageView = UIImageView()
@@ -37,6 +41,8 @@ class BCListCollectionViewCell: BCCollectionViewCell {
   fileprivate lazy var titleLabel = UILabel()
   
   lazy var deleteButton = UIButton()
+  
+  var delegate: BCListCollectionViewCellDelegate?
   
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -76,6 +82,7 @@ extension BCListCollectionViewCell {
     }
     
     deleteButton.setImage(UIImage(named: "Main/List/delete"), for: .normal)
+    deleteButton.addTarget(self, action: #selector(remove(_:)), for: .touchUpInside)
     contentView.addSubview(deleteButton)
     
     deleteButton.snp.makeConstraints { make in
@@ -97,5 +104,13 @@ extension BCListCollectionViewCell {
       coverImageView.kf.setImage(with: URL(string: image))
     }
     titleLabel.text = book.title
+  }
+}
+
+// MARK: - Actions
+extension BCListCollectionViewCell {
+  @objc
+  func remove(_ sender: UIButton? = nil) {
+    delegate?.removeCell(self)
   }
 }

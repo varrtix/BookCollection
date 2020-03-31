@@ -145,6 +145,7 @@ extension BCListCollectionViewController: UICollectionViewDataSource {
       cell = BCListCollectionViewCell()
     }
     cell!.inject(book: books[indexPath.row])
+    cell!.delegate = self
     
     return cell!
   }
@@ -184,6 +185,21 @@ extension BCListCollectionViewController {
     let cell = collecitonView.cellForItem(at: indexPath) as! BCListCollectionViewCell
     UIView.animate(withDuration: 0.5) {
       cell.deleteButton.isHidden = false
+    }
+  }
+}
+
+// MARK: Collectionview cell delegate
+extension BCListCollectionViewController: BCListCollectionViewCellDelegate {
+  func removeCell(_ cell: BCListCollectionViewCell) {
+    guard let indexPath = collecitonView.indexPath(for: cell)
+      else { return }
+    // MARK: delete row on database
+    BCBookInfoService.unmark(by: books[indexPath.row].doubanID) {
+      BCDBResult.handle($0, success: { _ in
+        self.books.remove(at: indexPath.row)
+        self.collecitonView.deleteItems(at: [indexPath])
+      }) { V2RXError.printError($0) }
     }
   }
 }
