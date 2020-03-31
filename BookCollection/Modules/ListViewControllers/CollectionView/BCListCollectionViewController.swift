@@ -27,6 +27,7 @@
 /// THE SOFTWARE.
 
 import UIKit
+import ESPullToRefresh
 
 class BCListCollectionViewController: BCViewController {
   
@@ -55,7 +56,18 @@ class BCListCollectionViewController: BCViewController {
   
   private let paddingInset = UIEdgeInsets(top: 20, left: 10, bottom: 20, right: 10)
   
-  private let defaultPageSize = 100
+  private var booksCount: Int {
+    var count = 0
+    BCBookListService.getBooksCount {
+      BCDBResult.handle($0, success: { value in
+        count = value
+      })
+    }
+    return count
+  }
+  
+  private var pageOffset = 0
+  private let defaultPageSize = 15
 }
 
 // MARK: - View life-cycle
@@ -75,11 +87,17 @@ extension BCListCollectionViewController {
 
 // MARK: - Data
 extension BCListCollectionViewController {
-  fileprivate func loadData(withOffset: Int, pageSize: Int) {
-    BCBookListService.getAllBooks(withOffset: withOffset, andSize: pageSize) {
+  fileprivate func loadData() {
+    if pageOffset == 0 { books.removeAll() }
+    
+    BCBookListService.getAllBooks(withOffset: pageOffset, andSize: defaultPageSize) {
       BCDBResult.handle($0, success: {
         self.books += $0
+        
         self.collecitonView.reloadData()
+        self.collecitonView.es.stopLoadingMore()
+        
+        self.pageOffset += self.defaultPageSize
       }) { V2RXError.printError($0) }
     }
   }
@@ -95,7 +113,7 @@ extension BCListCollectionViewController {
     )
     collecitonView.addGestureRecognizer(longPressGesture)
 
-    loadData(withOffset: 0, pageSize: defaultPageSize)
+    loadData()
   }
   
   fileprivate func wakeup() {
@@ -117,6 +135,14 @@ extension BCListCollectionViewController {
     collectionView.register(BCListCollectionViewCell.self, forCellWithReuseIdentifier: "BCListCollectionViewCell")
     
     view.addSubview(collectionView)
+    
+    collectionView.es.addInfiniteScrolling {
+      if self.pageOffset > self.booksCount {
+        self.collecitonView.es.noticeNoMoreData()
+      }
+      
+      self.loadData()
+    }
 
     return collectionView
   }

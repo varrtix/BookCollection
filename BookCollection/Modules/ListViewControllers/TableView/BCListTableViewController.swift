@@ -123,6 +123,7 @@ extension BCListTableViewController {
       if self.pageOffset > self.booksCount {
         self.tableView.es.noticeNoMoreData()
       }
+      
       self.loadData()
     }
 
