@@ -33,15 +33,13 @@ class BCNavigationController: UINavigationController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    loadBarStyle()
+    setupBar()
     
-    loadModalStyle()
+    setupPresentation()
   }
-}
-
-// MARK: - Navigation configurations
-extension BCNavigationController {
-  fileprivate func loadBarStyle() {
+  
+  // MARK: - Navigation configurations
+  private func setupBar() {
     navigationBar.barTintColor = BCColor.BarTint.green
     navigationBar.tintColor = BCColor.BarTint.white
     navigationBar.titleTextAttributes = [
@@ -49,7 +47,7 @@ extension BCNavigationController {
     ]
   }
   
-  fileprivate func loadModalStyle() {
+  private func setupPresentation() {
     if #available(iOS 13.0, *) {
       modalPresentationStyle = .automatic
     } else {

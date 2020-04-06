@@ -31,7 +31,7 @@ import SQLite
 
 let BCSeriesDBD = BCSeriesDB.default
 
-struct BCSeries: BCCodable {
+struct BCSeries: Codable {
   
   let seriesID: String?
   
@@ -48,7 +48,7 @@ struct BCSeries: BCCodable {
   }
 }
 
-struct BCSeriesDB: BCDBModel {
+struct BCSeriesDB {
   
   static let `default` = BCSeriesDB()
   

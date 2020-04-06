@@ -27,170 +27,93 @@
 /// THE SOFTWARE.
 
 import UIKit
-import AVFoundation
-import Alamofire
-//import ESPullToRefresh
-import SnapKit
 
-class BCScanViewController: BCViewController {
-  // View variables
+final class BCScanViewController: BCViewController {
+  
   lazy fileprivate var scanView = BCScanView(
     self.view.frame,
     rect: BCScanView.Constraint.size,
     vertical: BCScanView.Constraint.verticalOffset
   )
   
-  lazy fileprivate var _isMarked = false
+  fileprivate let isbnService = BCISBNCaptor()
   
-  // controller variables
-  lazy fileprivate var sessionIsCommitted = false
+  fileprivate enum State {
+    case ready, startup, running, stopping, done
+  }
   
-  fileprivate let captureSession = AVCaptureSession()
-  
-  fileprivate var state = State.stop {
+  fileprivate var state = State.done {
     willSet {
-      DispatchQueue.main.async {
-        switch newValue {
-          case .ready(let isbn):
-            self.cleanup()
-            BCBookInfoService.search(with: isbn) {
-              BCDBResult.handle($0, success: { value in
-                if value == nil {
-                  self._isMarked = false
-                  self.fetchBook(with: isbn)
-                } else {
-                  self._isMarked = true
-                  self.state = .success(value!)
-                }
-              }) { V2RXError.printError($0) }
-          }
-          case .loading(let url):
-            self.present(self.alertController(.waiting(url)), animated: true)
-          case .success(let book):
-            self.dismiss {
-              self.present(self.alertController(.success(book)), animated: true)
-          }
-          case .failure(let error):
-            self.dismiss {
-              self.present(self.alertController(.failure(error)), animated: true)
-          }
-          case .stop: break
-        }
+      switch newValue {
+        case .ready: configureViews()
+        case .startup: startup()
+        case .running: launch()
+        case .stopping: cleanup()
+        case .done: break
       }
     }
   }
+  
+  deinit { state = .done }
 }
 
-// MARK: - View lifecycle
+// MARK: - View controller life-cycle
 extension BCScanViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+    state = .ready
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    state = .startup
+  }
+  
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    state = .running
+  }
+  
+  override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
+    state = .stopping
+  }
+}
+
+// MARK: - View configurations
+fileprivate extension BCScanViewController {
+  
+  func configureViews() {
     view.backgroundColor = BCColor.BarTint.gray
     
-    // configure components of view
     configureNavigationBar()
     configureScanView()
     configureTip()
   }
   
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    
-    #if targetEnvironment(simulator)
-    if !scanView.isAnimating { scanView.startAnimating() }
-    #endif
-    
-    launch()
-  }
-  
-  override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
-    
-    #if targetEnvironment(simulator)
-    state = .ready("9787115318091")
-    #endif
-    
-    NotificationCenter.default.addObserver(
-      self,
-      selector: #selector(launch),
-      name: UIApplication.willEnterForegroundNotification,
-      object: nil
-    )
-  }
-  
-  override func viewDidDisappear(_ animated: Bool) {
-    NotificationCenter.default.removeObserver(
-      self,
-      name: UIApplication.willEnterForegroundNotification,
-      object: nil
-    )
-    
-    cleanup()
-    
-    super.viewDidDisappear(animated)
-  }
-}
-
-// MARK: - Launch actions
-extension BCScanViewController {
-  
-  @objc
-  fileprivate func launch() {
-    state = .stop
-    // STEP 1: camera authorization
-    // STEP 2: if allow camera session, else cleanup and dismiss
-    guard cameraAuthorization() else {
-      present(alertController(.authorize), animated: true)
-      return
-    }
-    if sessionIsCommitted {
-      startup()
-      return
-    }
-    do {
-      try configureCamera()
-    } catch CameraError.invalidDevice {
-      print("Invalid device")
-    } catch CameraError.inputCaptureError {
-      print("Input capture error")
-    } catch {
-      print("Unexpected error: \(error)")
-    }
-  }
-  
-  fileprivate func startup() {
-    if !captureSession.isRunning { captureSession.startRunning() }
-    if !scanView.isAnimating { scanView.startAnimating() }
-  }
-  
-  fileprivate func cleanup() {
-    if captureSession.isRunning { captureSession.stopRunning() }
-    if scanView.isAnimating { scanView.stopAnimating() }
-  }
-}
-
-// MARK: - Navigation settings
-extension BCScanViewController {
-  fileprivate func configureNavigationBar() {
+  func configureNavigationBar() {
     navigationBarBackgroundImage = UIImage()
     
     // The fucking items ARE NOT INCLUDED in property navigationController of itself.
-    navigationItem.rightBarButtonItem = generateBarButton(
+    navigationItem.rightBarButtonItem = getBarButton(
       "Scan/light-off",
       and: "Scan/light-on",
       action: #selector(light(_:)))
     
     guard #available(iOS 13.0, *) else {
-      navigationItem.leftBarButtonItem = generateBarButton(
+      navigationItem.leftBarButtonItem = getBarButton(
         "Scan/back-button",
         action: #selector(dismiss(_:)))
       return
     }
   }
   
-  // loadButton
-  fileprivate func generateBarButton(
+  func configureScanView() { view.addSubview(scanView) }
+  
+  func configureTip() {}
+  
+  // MARK: Bar button wrapper
+  func getBarButton(
     _ imageNamed: String, and selectImageNamed: String? = nil,
     action: Selector) -> UIBarButtonItem {
     
@@ -205,240 +128,96 @@ extension BCScanViewController {
     
     return UIBarButtonItem(customView: button)
   }
+}
+
+// MARK: - objc actions
+@objc
+fileprivate extension BCScanViewController {
   
-  // BarButton Actions
-  @objc
-  fileprivate func dismiss(_ sender: UIButton? = nil) {
+  func startup() {
+    #if targetEnvironment(simulator)
+    scanView.startAnimating()
+    #endif
+    
+    if isbnService.isPermitted {
+      if let layer = isbnService.capture() {
+        layer.frame = view.layer.bounds
+        view.layer.insertSublayer(layer, at: 0)
+        scanView.startAnimating()
+      }
+    } else {
+      present(alertController(.authorize, completion: {
+        self.dismiss(animated: true)
+      }), animated: true)
+    }
+  }
+  
+  func launch() {
+    // STEP 1: camera authorization
+    // STEP 2: if allow camera session, else cleanup and dismiss
+    isbnService.startRunning().handler = { [unowned self] isbn in
+      self.present(self.alertController(.waiting(isbn), completion: {
+        self.state = .running
+      }), animated: true)
+      
+      self.isbnService.stopRunning()
+      
+      BCBookInfoService.search(with: isbn) { result in
+        guard case let .failure(error) = result else {
+          if case let .success(book) = result {
+            self.presentAlert(.success(book)) { self.state = .running }
+          }
+          return
+        }
+        
+        if (error as? V2RXError.DataAccessObjects) == .notFound {
+          BCBook.fetch(with: isbn) { response in
+            switch response {
+              case .success(let book):
+                self.presentAlert(.success(book)) {
+                  BCBookInfoService.mark(book) { dbResult in
+                    switch dbResult {
+                      case .success(_): self.state = .running
+                      case .failure(let error): V2RXError.printError(error)
+                    }
+                  }
+              }
+              case .failure(let afError):
+                self.presentAlert(.failure(afError)) { self.state = .running }
+            }
+          }
+        } else {
+          self.presentAlert(.failure(error)) { self.state = .running }
+        }
+      }
+    }
+    
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(launch),
+      name: UIApplication.willEnterForegroundNotification,
+      object: nil
+    )
+  }
+  
+  func cleanup() {
+    isbnService.stopRunning()
+    scanView.stopAnimating()
+    
+    NotificationCenter.default.removeObserver(
+      self,
+      name: UIApplication.willEnterForegroundNotification,
+      object: nil
+    )
+  }
+  
+  // MARK: BarButton actions
+  func dismiss(_ sender: UIButton? = nil) {
     navigationController?.dismiss(animated: true)
   }
   
-  @objc
-  fileprivate func light(_ sender: UIButton) {
+  func light(_ sender: UIButton) {
     sender.isSelected.toggle()
-    // TODO: Turn on and off the light.
-  }
-}
-
-// MARK: - Visual modules
-extension BCScanViewController {
-  
-  fileprivate enum CameraError: Error {
-    case invalidDevice
-    case inputCaptureError
-  }
-  
-  fileprivate func configureCamera() throws {
-    captureSession.beginConfiguration()
-    
-    guard let captureDevice = AVCaptureDevice.default(for: .video)
-      else { throw CameraError.invalidDevice }
-    
-    do {
-      guard let captureInput = try? AVCaptureDeviceInput(device: captureDevice)
-        else { throw CameraError.inputCaptureError }
-      
-      if captureSession.canAddInput(captureInput) { captureSession.addInput(captureInput) }
-      
-    } catch let error as NSError {
-      print("Input error: \(error)")
-    }
-    
-    let captureOutput = AVCaptureMetadataOutput()
-    captureOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
-    
-    if captureSession.canAddOutput(captureOutput) {
-      captureSession.addOutput(captureOutput)
-      // Filter types must be that after addoutput
-      captureOutput.metadataObjectTypes = [.ean13]
-    }
-    
-    // Add preview scene
-    let layer = AVCaptureVideoPreviewLayer(session: captureSession)
-    layer.frame = view.layer.bounds
-    // IMPORTANT: addsublayer will replace the layer of scanView
-    // but isnertsublayer at index 0 will replace parent's layer.
-    view.layer.insertSublayer(layer, at: 0)
-    
-    captureSession.commitConfiguration()
-    sessionIsCommitted = true
-    startup()
-  }
-  
-  fileprivate func configureScanView() {
-    scanView.backgroundColor = .clear
-    scanView.autoresizingMask = [.flexibleWidth, .flexibleHeight,]
-    
-    view.addSubview(scanView)
-  }
-  
-  fileprivate func configureTip() {
-    
-  }
-}
-
-// MARK: - Alert modules
-extension BCScanViewController {
-  fileprivate enum Alert {
-    case authorize
-    case waiting(URL)
-    case success(BCBook)
-    case failure(AFError)
-  }
-  
-  fileprivate func alertController(_ type: Alert) -> UIAlertController {
-    let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
-    alert.view.tintColor = .black
-    
-    switch type {
-      case .authorize:
-        alert.title = "Something wrong"
-        alert.message = "This App need the permission to use iPhone's camera."
-        let settingAction = UIAlertAction(title: "Setting", style: .default) { _ in
-          guard let url = URL(string: UIApplication.openSettingsURLString),
-            UIApplication.shared.canOpenURL(url) else { return }
-          UIApplication.shared.open(url)
-        }
-        
-        let cancelAction = UIAlertAction(title: "OK", style: .cancel)
-        cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
-        
-        alert.addActions([settingAction, cancelAction])
-      
-      case .waiting(let url):
-        alert.title = "Loading"
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
-          self.cancelRequest(for: url)
-          self.launch()
-        }
-        
-        alert.message = "..."
-        alert.addAction(cancelAction)
-        DispatchQueue.main.async {
-          UIView.transition(
-            with: alert.view,
-            duration: 1.5,
-            options: [.autoreverse, .repeat, .transitionCrossDissolve, .curveLinear],
-            animations: {
-              alert.message = "... ..."
-          })
-      }
-      
-      case .success(let book):
-        alert.title = "Book Information"
-        alert.message = "Not found!"
-        
-        let detailAction = UIAlertAction(title: "Detail", style: .default) { _ in
-          let controller = BCInfoViewController(with: book)
-          controller.isMarked = self._isMarked
-          let navigation = BCNavigationController(rootViewController: controller)
-          self.present(navigation, animated: true)
-        }
-        alert.addAction(detailAction)
-        alert.message = """
-        \(book.title ?? "No title")
-        \(book.isbn13 ?? "No ISBN13")
-        \(book.authors?.first ?? "No author")
-        """
-
-        if _isMarked { break }
-
-        let nextAction = UIAlertAction(title: "Mark and Continue", style: .cancel) { _ in
-          BCBookInfoService.mark(book) {
-            BCDBResult.handle($0, success: { _ in
-              self.launch()
-            }) { V2RXError.printError($0) }
-          }
-        }
-        alert.addAction(nextAction)
-      
-      case .failure(let error):
-        alert.title = "Something wrong"
-        alert.message = "Error: " + String(describing: error.errorDescription)
-        let action = UIAlertAction(title: "OK", style: .cancel) { _ in
-          self.launch()
-        }
-        alert.addAction(action)
-    }
-    
-    return alert
-  }
-  
-  fileprivate func dismiss(completion: (() -> Void)? = nil) {
-    guard navigationController?.presentedViewController is UIAlertController else {
-      if completion != nil { completion!() }
-      return
-    }
-    navigationController?.presentedViewController?.view.layer.removeAllAnimations()
-    navigationController?.dismiss(animated: true, completion: completion)
-  }
-}
-
-// MARK: - ISBN identification
-extension BCScanViewController: AVCaptureMetadataOutputObjectsDelegate {
-  fileprivate enum State {
-    case ready(String)
-    case loading(URL)
-    case success(BCBook)
-    case failure(AFError)
-    case stop
-  }
-  
-  func metadataOutput(
-    _ output: AVCaptureMetadataOutput,
-    didOutput metadataObjects: [AVMetadataObject],
-    from connection: AVCaptureConnection) {
-    
-    guard
-      let object = metadataObjects.first as? AVMetadataMachineReadableCodeObject,
-      let ISBN = object.stringValue
-      else { return }
-    
-    state = .ready(ISBN)
-  }
-  
-  fileprivate func fetchBook(with ISBN: String) {
-    guard let url = URL(string: "https://douban-api-git-master.zce.now.sh/v2/book/isbn/\(ISBN)")
-      else { return }
-    
-    state = .loading(url)
-    
-    AF.request(url)
-      .validate()
-      .responseDecodable(of: BCBook.self) { response in
-        // TODO: Throws detail
-        guard case let .failure(error) = response.result else {
-          guard case let .success(book) = response.result else {
-            print("Response success, but it has an unexpected error!")
-            return
-          }
-          self.state = .success(book)
-          return
-        }
-        self.state = .failure(error)
-    }
-  }
-  
-  fileprivate func cancelRequest(for url: URL?) {
-    Alamofire.Session.default.session.getAllTasks {
-      $0.forEach { task in
-        guard
-          let url = url,
-          let taskURL = task.currentRequest?.url
-          else { return }
-        if taskURL == url { task.cancel() }
-      }
-    }
-  }
-}
-
-// MARK: - Device authorization
-extension BCScanViewController {
-  fileprivate func cameraAuthorization() -> Bool {
-    switch AVCaptureDevice.authorizationStatus(for: .video) {
-      case .restricted: fallthrough
-      case .denied: return false
-      default: break
-    }
-    return true
+    // MARK: TODO: Turn on and off the light.
   }
 }

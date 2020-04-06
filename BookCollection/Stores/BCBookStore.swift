@@ -27,9 +27,43 @@
 /// THE SOFTWARE.
 
 import Foundation
+import Alamofire
 
-protocol BCModel {}
+fileprivate let repo = "https://douban-api-git-master.zce.now.sh/"
 
-protocol BCDBModel {}
+fileprivate let bookQueryURL = repo + "v2/book/isbn/"
 
-typealias BCCodable = BCModel & Codable
+class BCBookStore {
+  let sourceURL: URL?
+  
+//  let book: BCBook
+  
+  init(isbn: String) {
+    self.sourceURL = URL(string: bookQueryURL + isbn)
+  }
+  
+  func fetch(
+    at queue: DispatchQueue = .main,
+    completionHandler: @escaping (Result<BCBook, AFError>) -> Void
+  ) {
+    guard let url = sourceURL else { return }
+    
+    AF.request(url)
+    .validate()
+      .responseDecodable(of: BCBook.self) { response in
+        queue.async { completionHandler(response.result) }
+    }
+  }
+  
+  func cancel() {
+    AF.session.getAllTasks {
+      $0.forEach { task in
+        guard
+          let url = self.sourceURL,
+          let taskURL = task.currentRequest?.url
+          else { return }
+        if taskURL == url { task.cancel() }
+      }
+    }
+  }
+}

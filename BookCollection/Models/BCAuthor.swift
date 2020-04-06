@@ -33,7 +33,7 @@ let BCAuthorDBD = BCAuthorDB.default
 
 let BCTranslatorDBD = BCTranslatorDB.default
 
-struct BCAuthorDB: BCDBModel {
+struct BCAuthorDB {
   
   static let `default` = BCAuthorDB()
 

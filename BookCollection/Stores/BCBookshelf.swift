@@ -27,43 +27,50 @@
 /// THE SOFTWARE.
 
 import Foundation
-import SQLite
 
-let BCRatingDBD = BCRatingDB.default
-
-struct BCRating: Codable {
-
-  let max: Int?
+final class BCBookshelf {
+  static let shared = BCBookshelf()
   
-  let numRaters: Int?
+  var books: [BCBook]!
   
-  let average: String?
-  
-  let min: Int?
-  
-  enum CodingKeys: String, CodingKey {
-    case max, numRaters, average, min
+  init() {
+    launchDatabse()
+    
   }
   
-  init(result: Row) {
-    self.max = result[BCRatingDBD.max]
-    self.numRaters = result[BCRatingDBD.numRaters]
-    self.min = result[BCRatingDBD.min]
-    self.average = result[BCRatingDBD.average]
+  private func launchDatabse() {
+    let database = BCDatabaseOperation()
+    database.start()
+    #if DEBUG
+    // MARK: TODO: Write all logs to a log file
+    print("Database path: \(BCDatabase.fileURL)")
+    #endif
   }
-}
-
-struct BCRatingDB {
-
-  static let `default` = BCRatingDB()
   
-  let bookID = Expression<Int64>("book_id")
+  class func getAllBooks(
+    withOffset: Int,
+    andSize: Int,
+    at queue: DispatchQueue = .main,
+    completionHandler: @escaping (BCResult<[BCBook]>) -> Void
+  ) {
+    let group = DispatchGroup()
+    group.enter()
+    BCDB.asyncConnect { conn in
+      let result = BCResult<[BCBook]> {
+        try BCBookDAO.queryAll(offset: withOffset, size: andSize, with: conn)
+      }
+      group.leave()
+      
+      group.notify(queue: queue) { completionHandler(result) }
+    }
+  }
   
-  let max = Expression<Int?>(BCRating.CodingKeys.max.rawValue)
-  
-  let numRaters = Expression<Int?>(BCRating.CodingKeys.numRaters.rawValue)
-  
-  let average = Expression<String?>(BCRating.CodingKeys.average.rawValue)
-  
-  let min = Expression<Int?>(BCRating.CodingKeys.min.rawValue)
+  class func getBooksCount(completionHandler: @escaping (BCResult<Int>) -> Void) {
+    BCDB.syncConnect { conn in
+      let result = BCResult<Int> {
+        try BCBookDAO.queryCount(with: conn)
+      }
+      completionHandler(result)
+    }
+  }
 }

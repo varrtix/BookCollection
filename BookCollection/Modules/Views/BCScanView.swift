@@ -86,6 +86,10 @@ class BCScanView: UIView {
     self.verticalOffset = offset
     
     super.init(frame: frame)
+    
+    autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    
+    backgroundColor = .clear
   }
   
   required init?(coder: NSCoder) {
@@ -228,7 +232,7 @@ extension BCScanView {
   }
   
   func stopAnimating() {
-    _isAnimating = .stop
+    if isAnimating { _isAnimating = .stop }
   }
 }
 

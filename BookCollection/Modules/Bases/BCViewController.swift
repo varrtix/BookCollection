@@ -34,22 +34,15 @@ class BCViewController: UIViewController {
   
   lazy var shouldHideBottomBarWhenPushed = false
   
-  var navigationBarBackgroundImage: UIImage?
-  
-  override func viewDidLoad() {
-    super.viewDidLoad()
-  }
+  lazy var navigationBarBackgroundImage: UIImage? = nil
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     
-    adjustNavigator()
+    setupNavigationBar()
   }
-}
-
-// MARK: - Navigation configurations
-extension BCViewController {
-  func adjustNavigator() {
+  
+  private func setupNavigationBar() {
     if shouldShowShadowImage {
       navigationController?.navigationBar.shadowImage = nil
     } else {

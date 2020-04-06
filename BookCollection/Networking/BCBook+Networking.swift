@@ -27,43 +27,44 @@
 /// THE SOFTWARE.
 
 import Foundation
-import SQLite
+import Alamofire
 
-let BCRatingDBD = BCRatingDB.default
+typealias BCBookHandler = (BCBook) -> Void
 
-struct BCRating: Codable {
+fileprivate let repo = "https://douban-api-git-master.zce.now.sh/"
+fileprivate let bookQueryURL = repo + "v2/book/isbn/"
 
-  let max: Int?
+extension BCBook {
   
-  let numRaters: Int?
+//  static let sourceURL = 
   
-  let average: String?
-  
-  let min: Int?
-  
-  enum CodingKeys: String, CodingKey {
-    case max, numRaters, average, min
+  static func fetch(
+    with isbn: String,
+    at queue: DispatchQueue = .main,
+    completionHandler: @escaping (Result<BCBook, AFError>) -> Void
+  ) {
+    guard let url = URL(
+      string: bookQueryURL + isbn)
+      else { return }
+    
+    AF.request(url)
+      .validate()
+      .responseDecodable(of: BCBook.self) { response in
+        queue.async { completionHandler(response.result) }
+    }
   }
   
-  init(result: Row) {
-    self.max = result[BCRatingDBD.max]
-    self.numRaters = result[BCRatingDBD.numRaters]
-    self.min = result[BCRatingDBD.min]
-    self.average = result[BCRatingDBD.average]
+  static func cancelFetch(with isbn: String) {
+    AF.session.getAllTasks {
+      $0.forEach { task in
+        guard
+          let url = URL(string: bookQueryURL + isbn),
+          let taskURL = task.currentRequest?.url
+          else { return }
+        if taskURL == url { task.cancel() }
+      }
+    }
   }
-}
-
-struct BCRatingDB {
-
-  static let `default` = BCRatingDB()
   
-  let bookID = Expression<Int64>("book_id")
-  
-  let max = Expression<Int?>(BCRating.CodingKeys.max.rawValue)
-  
-  let numRaters = Expression<Int?>(BCRating.CodingKeys.numRaters.rawValue)
-  
-  let average = Expression<String?>(BCRating.CodingKeys.average.rawValue)
-  
-  let min = Expression<Int?>(BCRating.CodingKeys.min.rawValue)
+//  static func cancelAll() { AF.cancelAllRequests() }
 }

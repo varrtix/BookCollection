@@ -98,10 +98,10 @@ struct BCBookDAO {
   static func query(
     by isbn: String,
     with connection: Connection
-  ) throws -> BCBook? {
+  ) throws -> BCBook {
     guard let book = try connection
       .pluck(BCBookTable.filter(isbn == (isbn.count == 10 ? BCBookDBD.isbn10 : BCBookDBD.isbn13)))
-      else { return nil }
+      else { throw V2RXError.DataAccessObjects.notFound }
     
     return try BCBook(book: book, with: connection)
   }
@@ -139,7 +139,8 @@ fileprivate extension BCBook {
       rating: try BCRatingDAO.query(by: id, with: connection),
       tags: try BCTagDAO.query(by: id, with: connection),
       authors: try BCAuthorDAO.query(by: id, with: connection),
-      translators: try BCTranslatorDAO.query(by: id, with: connection)
+      translators: try BCTranslatorDAO.query(by: id, with: connection),
+      type: .database
     )
   }
 }

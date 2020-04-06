@@ -83,12 +83,12 @@ class BCBookInfoService {
   class func search(
     with isbn: String,
     at queue: DispatchQueue = .main,
-    completionHandler: @escaping (BCResult<BCBook?>) -> Void
+    completionHandler: @escaping (BCResult<BCBook>) -> Void
   ) {
     let group = DispatchGroup()
     group.enter()
     BCDB.asyncConnect { conn in
-      let result = BCResult<BCBook?> {
+      let result = BCResult<BCBook> {
         try BCBookDAO.query(by: isbn, with: conn)
       }
       group.leave()
@@ -96,4 +96,39 @@ class BCBookInfoService {
       group.notify(queue: queue) { completionHandler(result) }
     }
   }
+  
+//  class func get(
+//    with isbn: String,
+//    at queue: DispatchQueue = .main,
+//    completionHandler: @escaping (BCResult<BCBook>) -> Void
+//  ) {
+////    let bookResult = BCResult<BCBook> {
+////      var book: BCBook?
+////      var finalError: Error?
+////      BCBookInfoService.search(with: isbn) { result in
+////        switch result {
+////          case .success(let value):
+////            book = value
+////          case .failure(let error):
+////            if let error = error as? V2RXError.DataAccessObjects, error == .notFound {
+////              BCBook.fetch(with: isbn) { response in
+////                switch response {
+////                  case .success(let value): book = value
+////                  case .failure(let afError as Error): finalError = afError
+////                }
+////              }
+////            } else { finalError = error }
+////        }
+////      }
+////      if finalError != nil { throw finalError! }
+////      return book!
+////    }
+////    queue.async { completionHandler(bookResult) }
+//  }
+//
+//  class func get(with isbn: String) {
+//    BCBookInfoService.search(with: isbn) { result in
+//
+//    }
+//  }
 }

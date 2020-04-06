@@ -31,7 +31,7 @@ import SQLite
 
 let BCImagesDBD = BCImagesDB.default
 
-struct BCImages: BCCodable {
+struct BCImages: Codable {
 
   let small: String?
   
@@ -50,7 +50,7 @@ struct BCImages: BCCodable {
   }
 }
 
-struct BCImagesDB: BCDBModel {
+struct BCImagesDB {
   
   static let `default` = BCImagesDB()
   

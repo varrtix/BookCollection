@@ -30,7 +30,7 @@ import UIKit
 
 class BCListViewController: BCViewController {
   
-  fileprivate enum Mode: String {
+  private enum ViewMode: String {
     case table, collection
     
     mutating func toggle() {
@@ -41,20 +41,13 @@ class BCListViewController: BCViewController {
     }
   }
   
-  lazy fileprivate var scan: ViewTuple = ("Scan", BCScanViewController())
-  
-  fileprivate var _mode = Mode.table {
+  private var viewMode = ViewMode.table {
     willSet {
       DispatchQueue.main.async {
-        guard self.navigationItem.leftBarButtonItem != nil else { return }
-        self.navigationItem
-          .leftBarButtonItem?
-          .image = UIImage(named: "Main/List/Mode-\(newValue.rawValue)")
-//        switch newValue {
-//          case .table: break
-//          case .collection: break
-//        }
-        self.switchListController(mode: newValue)
+        self.navigationItem.leftBarButtonItem?.image = UIImage(
+          named: "Main/List/Mode-\(newValue.rawValue)"
+        )
+        self.toggleController(mode: newValue)
       }
     }
   }
@@ -65,20 +58,44 @@ extension BCListViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-//    view.backgroundColor = .systemTeal
     view.backgroundColor = BCColor.ListTint.snowWhite
-    configureNavigationBar()
-    launch()
+    setupNavigationBar()
+    viewMode = .table
+  }
+}
+
+
+// MARK: - view configurations
+extension BCListViewController {
+  
+  private func toggleController(mode: ViewMode) {
+    prepareMove(toParent: nil) {
+      self.children.forEach {
+        $0.removeFromParent()
+        $0.view.removeFromSuperview()
+      }
+    }
+    
+    let viewController = mode == .table ?
+      BCMapping.ViewControllers.tableList.raw :
+      BCMapping.ViewControllers.collectionList.raw
+
+    prepareMove(toParent: self) {
+      self.addChild(viewController)
+      self.view.addSubview(viewController.view)
+      viewController.view.frame = self.view.bounds
+    }
   }
 }
 
 // MARK: - Navigation Bar
 extension BCListViewController {
-  fileprivate func configureNavigationBar() {
+  
+  private func setupNavigationBar() {
     navigationItem.title = "BookCollection"
     
     let scanButtonItem = UIBarButtonItem(
-      image: UIImage(named: "Main/\(scan.title)"),
+      image: UIImage(named: "Main/\(BCMapping.ViewControllers.scan.rawValue)"),
       style: .plain,
       target: self,
       action: #selector(scan(_:)))
@@ -92,45 +109,18 @@ extension BCListViewController {
     
     navigationItem.rightBarButtonItem = scanButtonItem
     navigationItem.leftBarButtonItem = modeButtonItem
-    
-//    _mode = .table
   }
   
   // MARK: Button Actions
   @objc
-  fileprivate func scan(_ sender: UIBarButtonItem) {
-    let navigation = BCNavigationController(rootViewController: scan.item)
+  private func scan(_ sender: UIBarButtonItem) {
+    let navigationController = BCNavigationController(
+      rootViewController: BCMapping.ViewControllers.scan.raw
+    )
     
-    present(navigation, animated: true)
+    present(navigationController, animated: true)
   }
   
   @objc
-  fileprivate func switchMode(_ sender: UIBarButtonItem) { _mode.toggle() }
-}
-
-// MARK: - Subview controllers
-extension BCListViewController {
-  
-  fileprivate func launch() {
-    _mode = .table
-  }
-  
-  fileprivate func switchListController(mode: Mode) {
-    prepareMove(toParent: nil) {
-      self.children.forEach {
-        $0.removeFromParent()
-        $0.view.removeFromSuperview()
-      }
-    }
-    
-    let controller = mode == .table ?
-      BCListTableViewController() :
-      BCListCollectionViewController()
-    
-    prepareMove(toParent: self) {
-      self.addChild(controller)
-      self.view.addSubview(controller.view)
-      controller.view.frame = self.view.bounds
-    }
-  }
+  private func switchMode(_ sender: UIBarButtonItem) { viewMode.toggle() }
 }

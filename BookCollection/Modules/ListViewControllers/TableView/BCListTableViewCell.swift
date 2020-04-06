@@ -122,10 +122,6 @@ extension BCListTableViewCell {
       authorLabel.text = author
     }
     
-//    if let image = book.image {
-//      coverImageView.kf.setImage(with: URL(string: image))
-//    }
-    
     if let tags = book.tags {
       let stackView = UIStackView(
         arrangedSubviews: tags[0...min(tags.count, 3)].map { item -> UIButton in

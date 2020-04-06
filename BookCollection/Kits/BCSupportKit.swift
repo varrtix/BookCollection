@@ -28,7 +28,37 @@
 
 import UIKit
 
-typealias ViewTuple = (title: String, item: BCViewController)
+// View controllers configurations
+//typealias ViewTuple = (title: String, item: BCViewController)
+//typealias BCViewControllerDictionary = [String: UIViewController]
+
+//let mainBarControllers: BCViewControllerDictionary = [
+//  "Collections": BCListViewController(),
+//  "Me": BCAnalyticViewController(),
+//]
+
+struct BCMapping {
+  enum ViewControllers: String, CaseIterable {
+    case collections = "Collections"
+    case scan = "Scan"
+    case me = "Me"
+    
+    case tableList = "TableList"
+    case collectionList = "CollectionList"
+
+    var raw: UIViewController {
+      switch self {
+        case .collections: return BCListViewController()
+        case .scan: return BCScanViewController()
+        case .me: return BCAnalyticViewController()
+        case .tableList: return BCListTableViewController()
+        case .collectionList: return BCListCollectionViewController()
+      }
+    }
+    
+    var identifier: String { self.rawValue }
+  }
+}
 
 struct BCColor {
   enum BarTint {

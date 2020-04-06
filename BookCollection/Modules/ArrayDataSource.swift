@@ -26,44 +26,33 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
-import Foundation
-import SQLite
+import UIKit
 
-let BCRatingDBD = BCRatingDB.default
-
-struct BCRating: Codable {
-
-  let max: Int?
+class ArrayDataSource: NSObject {
+  typealias TableViewCellHandler = (BCTableViewCell, BCBook) -> Void
   
-  let numRaters: Int?
+  private let items: [BCBook]
+  private let cellIdentifier: String
+  private let cellHandler: TableViewCellHandler
   
-  let average: String?
-  
-  let min: Int?
-  
-  enum CodingKeys: String, CodingKey {
-    case max, numRaters, average, min
+  init(with items: [BCBook], identifier: String, handler: @escaping TableViewCellHandler) {
+    self.items = items
+    self.cellIdentifier = identifier
+    self.cellHandler = handler
   }
   
-  init(result: Row) {
-    self.max = result[BCRatingDBD.max]
-    self.numRaters = result[BCRatingDBD.numRaters]
-    self.min = result[BCRatingDBD.min]
-    self.average = result[BCRatingDBD.average]
-  }
+  subscript(indexPath: IndexPath) -> BCBook { items[indexPath.row] }
 }
 
-struct BCRatingDB {
-
-  static let `default` = BCRatingDB()
+// MARK: - TableView DataSource
+extension ArrayDataSource: UITableViewDataSource {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { items.count }
   
-  let bookID = Expression<Int64>("book_id")
-  
-  let max = Expression<Int?>(BCRating.CodingKeys.max.rawValue)
-  
-  let numRaters = Expression<Int?>(BCRating.CodingKeys.numRaters.rawValue)
-  
-  let average = Expression<String?>(BCRating.CodingKeys.average.rawValue)
-  
-  let min = Expression<Int?>(BCRating.CodingKeys.min.rawValue)
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! BCTableViewCell
+    
+    cellHandler(cell, self[indexPath])
+    
+    return cell
+  }
 }

@@ -26,31 +26,40 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 /// THE SOFTWARE.
 
-import Foundation
+import UIKit
 
-typealias BCResult<Success> = Result<Success, Error>
-
-struct BCDBResult {
-  static func handle<T: Any>(
-    _ result: BCResult<T>,
-    success handler: ((T) -> ())? = nil,
-    failure elseHandler: ((Error) -> ())? = nil
-  ) {
-    switch result {
-      case .success(let value):
-        if handler == nil { return }
-        handler!(value)
-      case .failure(let error):
-        if elseHandler == nil { return }
-        elseHandler!(error)
+class BCTabBarViewController: UITabBarController, UITabBarControllerDelegate {
+  
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    
+    delegate = self
+    
+    setupView()
+  }
+  
+  private func setupView() {
+    tabBar.itemPositioning = .centered
+    
+    tabBar.unselectedItemTintColor = BCColor.BarTint.gray
+    tabBar.barTintColor = BCColor.BarTint.white
+    tabBar.tintColor = BCColor.BarTint.green
+    
+    viewControllers  = BCMapping.ViewControllers.allCases.map {
+      let viewController = $0.raw
+      viewController.tabBarItem.title = $0.rawValue
+      viewController.tabBarItem.image = UIImage(named: "Tabbar/\($0.rawValue)")
+      
+      if viewController is BCListViewController {
+        return BCNavigationController(rootViewController: viewController)
+      }
+      return viewController
     }
   }
-}
-
-struct BCErrorResult<Success>: Error {
-  func catching(_ body: () throws -> Success) -> Error? {
-    let result = BCResult<Success>(catching: body)
-    guard case let .failure(error) = result else { return nil }
-    return error
-  }
+  
+  // MARK: Tabbar controller delegate
+  func tabBarController(
+    _ tabBarController: UITabBarController,
+    shouldSelect viewController: UIViewController
+  ) -> Bool { true }
 }

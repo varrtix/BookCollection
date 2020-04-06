@@ -31,7 +31,8 @@ import SQLite
 
 let BCBookDBD = BCBookDB.default
 
-struct BCBook: BCCodable {
+//struct BCBook: BCCodable {
+struct BCBook: Codable {
   
   let doubanID: String
   
@@ -63,17 +64,23 @@ struct BCBook: BCCodable {
   
   let price: String?
   
-  var authors: [String]?
+  let authors: [String]?
+//  var authors: [String]?
   
-  var translators: [String]?
+//  var translators: [String]?
+  let translators: [String]?
   
-  var tags: [BCTag]?
+  let tags: [BCTag]?
+//  var tags: [BCTag]?
   
-  var images: BCImages?
+//  var images: BCImages?
+  let images: BCImages?
   
-  var series: BCSeries?
+//  var series: BCSeries?
+  let series: BCSeries?
   
-  var rating: BCRating?
+//  var rating: BCRating?
+  let rating: BCRating?
   
   enum CodingKeys: String, CodingKey {
     case doubanID = "id"
@@ -88,41 +95,53 @@ struct BCBook: BCCodable {
     case tags, images, series, rating
   }
   
-  init(
-    book: Row,
-    images: BCImages?,
-    series: BCSeries?,
-    rating: BCRating?,
-    tags: [BCTag]?,
-    authors: [BCAuthor]?,
-    translators: [BCTranslator]?
-  ) {
-    self.doubanID = book[BCBookDBD.doubanID]
-    self.title = book [BCBookDBD.title]
-    self.subtitle = book[BCBookDBD.subtitle]
-    self.originTitle = book[BCBookDBD.originTitle]
-    self.publishedDate = book[BCBookDBD.publishedDate]
-    self.publisher = book[BCBookDBD.publisher]
-    self.isbn10 = book[BCBookDBD.isbn10]
-    self.isbn13 = book[BCBookDBD.isbn13]
-    self.image = book[BCBookDBD.image]
-    self.binding = book[BCBookDBD.binding]
-    self.authorIntroduction = book[BCBookDBD.authorIntroduction]
-    self.catalog = book[BCBookDBD.catalog]
-    self.pages = book[BCBookDBD.pages]
-    self.summary = book[BCBookDBD.summary]
-    self.price = book[BCBookDBD.price]
+//  var type: SourceType = .networking
+  
+//  init(
+//    book: Row,
+//    images: BCImages?,
+//    series: BCSeries?,
+//    rating: BCRating?,
+//    tags: [BCTag]?,
+//    authors: [BCAuthor]?,
+//    translators: [BCTranslator]?
+//    type: SourceType
+//  ) {
+//    self.doubanID = book[BCBookDBD.doubanID]
+//    self.title = book [BCBookDBD.title]
+//    self.subtitle = book[BCBookDBD.subtitle]
+//    self.originTitle = book[BCBookDBD.originTitle]
+//    self.publishedDate = book[BCBookDBD.publishedDate]
+//    self.publisher = book[BCBookDBD.publisher]
+//    self.isbn10 = book[BCBookDBD.isbn10]
+//    self.isbn13 = book[BCBookDBD.isbn13]
+//    self.image = book[BCBookDBD.image]
+//    self.binding = book[BCBookDBD.binding]
+//    self.authorIntroduction = book[BCBookDBD.authorIntroduction]
+//    self.catalog = book[BCBookDBD.catalog]
+//    self.pages = book[BCBookDBD.pages]
+//    self.summary = book[BCBookDBD.summary]
+//    self.price = book[BCBookDBD.price]
+//
+//    self.authors = authors
+//    self.translators = translators
+//    self.tags = tags
+//    self.images = images
+//    self.series = series
+//    self.rating = rating
     
-    self.authors = authors
-    self.translators = translators
-    self.tags = tags
-    self.images = images
-    self.series = series
-    self.rating = rating
-  }
+//    self.type = type
+//  }
 }
 
-struct BCBookDB: BCDBModel {
+//extension BCBook {
+//  enum SourceType: String {
+//    case database, networking, unknown
+//  }
+//}
+
+//struct BCBookDB: BCDBModel {
+struct BCBookDB {
   
   static let `default` = BCBookDB()
   

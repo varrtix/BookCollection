@@ -27,26 +27,26 @@
 /// THE SOFTWARE.
 
 import UIKit
-import ESPullToRefresh
+//import ESPullToRefresh
 
 class BCListTableViewController: BCViewController {
   
-  fileprivate enum State {
-    case ready, start, wait, stop
-  }
-  
-  fileprivate var state = State.stop {
-    willSet {
-      switch newValue {
-        case .ready:
-          launch()
-        case .start:
-          wakeup()
-        case .wait: break
-        case .stop: break
-      }
-    }
-  }
+//  fileprivate enum State {
+//    case ready, start, wait, stop
+//  }
+//
+//  fileprivate var state = State.stop {
+//    willSet {
+//      switch newValue {
+//        case .ready:
+//          launch()
+//        case .start:
+//          wakeup()
+//        case .wait: break
+//        case .stop: break
+//      }
+//    }
+//  }
   
   fileprivate lazy var tableView = launchTableView()
   
@@ -71,13 +71,15 @@ extension BCListTableViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    state = .ready
+//    state = .ready
+    launch()
   }
   
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     
-    state = .start
+//    state = .start
+    wakeup()
   }
 }
 

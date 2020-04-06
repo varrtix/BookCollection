@@ -31,7 +31,7 @@ import SQLite
 
 let BCTagDBD = BCTagDB.default
 
-struct BCTag: BCCodable {
+struct BCTag: Codable {
 
   let count: Int?
   
@@ -45,7 +45,7 @@ struct BCTag: BCCodable {
   }
 }
   
-struct BCTagDB: BCDBModel {
+struct BCTagDB {
   
   static let `default` = BCTagDB()
   

@@ -28,6 +28,4 @@
 
 import UIKit
 
-class BCCollectionViewCell: UICollectionViewCell {
-    
-}
+class BCCollectionViewCell: UICollectionViewCell {}

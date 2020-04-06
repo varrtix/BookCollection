@@ -13,11 +13,11 @@
 		560175E02424789C008C9578 /* BCSeries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175DF2424789C008C9578 /* BCSeries.swift */; };
 		560175E324247979008C9578 /* BCRating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175E224247979008C9578 /* BCRating.swift */; };
 		560175E524247A00008C9578 /* BCAuthor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175E424247A00008C9578 /* BCAuthor.swift */; };
-		560175E72424A331008C9578 /* BCObjectPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175E62424A331008C9578 /* BCObjectPattern.swift */; };
 		560175EB24250385008C9578 /* BCBookInfoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175EA24250385008C9578 /* BCBookInfoService.swift */; };
 		560522DB242DBF4C00A11316 /* BCBookListService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560522DA242DBF4C00A11316 /* BCBookListService.swift */; };
 		560522DE242DD48A00A11316 /* BCListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560522DD242DD48A00A11316 /* BCListTableViewController.swift */; };
 		560522E0242DD49E00A11316 /* BCListCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560522DF242DD49E00A11316 /* BCListCollectionViewController.swift */; };
+		561B9231243AC95B0039FA4B /* BCTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 561B9230243AC95B0039FA4B /* BCTabBarViewController.swift */; };
 		5625EFE7242F1093001E1D6D /* BCTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625EFE6242F1093001E1D6D /* BCTableViewCell.swift */; };
 		5625EFE9242F10CC001E1D6D /* BCCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625EFE8242F10CC001E1D6D /* BCCollectionViewCell.swift */; };
 		5625EFEB242F1114001E1D6D /* BCListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625EFEA242F1114001E1D6D /* BCListTableViewCell.swift */; };
@@ -29,6 +29,9 @@
 		5632C666242B04410094E804 /* BCSeriesDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5632C665242B04410094E804 /* BCSeriesDAO.swift */; };
 		5632C668242B04510094E804 /* BCImagesDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5632C667242B04510094E804 /* BCImagesDAO.swift */; };
 		5632C66A242B04590094E804 /* BCRatingDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5632C669242B04590094E804 /* BCRatingDAO.swift */; };
+		5632EA7924344D2E00F33DB8 /* ArrayDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5632EA7824344D2E00F33DB8 /* ArrayDataSource.swift */; };
+		563B7FD724346D4600664960 /* BCBook+Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563B7FD624346D4600664960 /* BCBook+Networking.swift */; };
+		563B7FD92434710700664960 /* BCISBNCaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563B7FD82434710700664960 /* BCISBNCaptor.swift */; };
 		563F9C84241B7B85005B8E5E /* BCSupportKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563F9C83241B7B85005B8E5E /* BCSupportKit.swift */; };
 		563F9C86241B7BCE005B8E5E /* CommonKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563F9C85241B7BCE005B8E5E /* CommonKit.swift */; };
 		564CC8952417911000E9D08B /* BCScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 564CC8942417911000E9D08B /* BCScanView.swift */; };
@@ -48,7 +51,10 @@
 		567D764D2423B17000F94CD6 /* BCDataAccessObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567D764C2423B17000F94CD6 /* BCDataAccessObjects.swift */; };
 		56B611EB2422296100C7C6A8 /* BCInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B611EA2422296100C7C6A8 /* BCInfoViewController.swift */; };
 		56BB95B42426313000555EEA /* BCDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BB95B32426313000555EEA /* BCDatabase.swift */; };
+		56BC57932435C689007D972F /* BCScanViewController+Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BC57922435C689007D972F /* BCScanViewController+Alert.swift */; };
 		56BCB9692428F18300B4D7CA /* BCDBTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BCB9682428F18300B4D7CA /* BCDBTable.swift */; };
+		56C983BD243991A30006F878 /* BCBookStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C983BC243991A30006F878 /* BCBookStore.swift */; };
+		56C983C02439F1FD0006F878 /* BCBookshelf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C983BF2439F1FD0006F878 /* BCBookshelf.swift */; };
 		56EC7409242711C300C684B6 /* BCResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56EC7408242711C300C684B6 /* BCResult.swift */; };
 /* End PBXBuildFile section */
 
@@ -76,11 +82,11 @@
 		560175DF2424789C008C9578 /* BCSeries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCSeries.swift; sourceTree = "<group>"; };
 		560175E224247979008C9578 /* BCRating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCRating.swift; sourceTree = "<group>"; };
 		560175E424247A00008C9578 /* BCAuthor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCAuthor.swift; sourceTree = "<group>"; };
-		560175E62424A331008C9578 /* BCObjectPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCObjectPattern.swift; sourceTree = "<group>"; };
 		560175EA24250385008C9578 /* BCBookInfoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCBookInfoService.swift; sourceTree = "<group>"; };
 		560522DA242DBF4C00A11316 /* BCBookListService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCBookListService.swift; sourceTree = "<group>"; };
 		560522DD242DD48A00A11316 /* BCListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCListTableViewController.swift; sourceTree = "<group>"; };
 		560522DF242DD49E00A11316 /* BCListCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCListCollectionViewController.swift; sourceTree = "<group>"; };
+		561B9230243AC95B0039FA4B /* BCTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCTabBarViewController.swift; sourceTree = "<group>"; };
 		5625EFE6242F1093001E1D6D /* BCTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCTableViewCell.swift; sourceTree = "<group>"; };
 		5625EFE8242F10CC001E1D6D /* BCCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCCollectionViewCell.swift; sourceTree = "<group>"; };
 		5625EFEA242F1114001E1D6D /* BCListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCListTableViewCell.swift; sourceTree = "<group>"; };
@@ -92,6 +98,9 @@
 		5632C665242B04410094E804 /* BCSeriesDAO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCSeriesDAO.swift; sourceTree = "<group>"; };
 		5632C667242B04510094E804 /* BCImagesDAO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCImagesDAO.swift; sourceTree = "<group>"; };
 		5632C669242B04590094E804 /* BCRatingDAO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCRatingDAO.swift; sourceTree = "<group>"; };
+		5632EA7824344D2E00F33DB8 /* ArrayDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayDataSource.swift; sourceTree = "<group>"; };
+		563B7FD624346D4600664960 /* BCBook+Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCBook+Networking.swift"; sourceTree = "<group>"; };
+		563B7FD82434710700664960 /* BCISBNCaptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCISBNCaptor.swift; sourceTree = "<group>"; };
 		563F9C83241B7B85005B8E5E /* BCSupportKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCSupportKit.swift; sourceTree = "<group>"; };
 		563F9C85241B7BCE005B8E5E /* CommonKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonKit.swift; sourceTree = "<group>"; };
 		564CC8942417911000E9D08B /* BCScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCScanView.swift; sourceTree = "<group>"; };
@@ -117,7 +126,10 @@
 		567D764C2423B17000F94CD6 /* BCDataAccessObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCDataAccessObjects.swift; sourceTree = "<group>"; };
 		56B611EA2422296100C7C6A8 /* BCInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCInfoViewController.swift; sourceTree = "<group>"; };
 		56BB95B32426313000555EEA /* BCDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCDatabase.swift; sourceTree = "<group>"; };
+		56BC57922435C689007D972F /* BCScanViewController+Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCScanViewController+Alert.swift"; sourceTree = "<group>"; };
 		56BCB9682428F18300B4D7CA /* BCDBTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCDBTable.swift; sourceTree = "<group>"; };
+		56C983BC243991A30006F878 /* BCBookStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCBookStore.swift; sourceTree = "<group>"; };
+		56C983BF2439F1FD0006F878 /* BCBookshelf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCBookshelf.swift; sourceTree = "<group>"; };
 		56EC7408242711C300C684B6 /* BCResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCResult.swift; sourceTree = "<group>"; };
 		C3AEABD81807DB8C6E651C4D /* Pods-BookCollection.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookCollection.release.xcconfig"; path = "Target Support Files/Pods-BookCollection/Pods-BookCollection.release.xcconfig"; sourceTree = "<group>"; };
 		F4CF3752E322A66A69ADE8E9 /* Pods-BookCollection.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookCollection.debug.xcconfig"; path = "Target Support Files/Pods-BookCollection/Pods-BookCollection.debug.xcconfig"; sourceTree = "<group>"; };
@@ -155,14 +167,6 @@
 				3DFCA765E26B5A9157283683 /* Pods_BookCollection.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		560175E12424794A008C9578 /* Bases */ = {
-			isa = PBXGroup;
-			children = (
-				560175E62424A331008C9578 /* BCObjectPattern.swift */,
-			);
-			path = Bases;
 			sourceTree = "<group>";
 		};
 		560522DC242DD44A00A11316 /* ListViewControllers */ = {
@@ -211,29 +215,34 @@
 			isa = PBXGroup;
 			children = (
 				563F9C83241B7B85005B8E5E /* BCSupportKit.swift */,
+				563B7FD82434710700664960 /* BCISBNCaptor.swift */,
+				56EC7408242711C300C684B6 /* BCResult.swift */,
 				563F9C85241B7BCE005B8E5E /* CommonKit.swift */,
 			);
 			path = Kits;
 			sourceTree = "<group>";
 		};
-		564CC893241790CD00E9D08B /* ScanView */ = {
+		564CC893241790CD00E9D08B /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				564CC8942417911000E9D08B /* BCScanView.swift */,
 			);
-			path = ScanView;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		5667FB2224168259009F9E65 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				560522DC242DD44A00A11316 /* ListViewControllers */,
 				5675CA282417637600437044 /* Bases */,
-				564CC893241790CD00E9D08B /* ScanView */,
+				560522DC242DD44A00A11316 /* ListViewControllers */,
+				564CC893241790CD00E9D08B /* Views */,
 				5667FB23241682D2009F9E65 /* BCListViewController.swift */,
 				5667FB252416833B009F9E65 /* BCScanViewController.swift */,
+				56BC57922435C689007D972F /* BCScanViewController+Alert.swift */,
 				5667FB2724168386009F9E65 /* BCAnalyticViewController.swift */,
 				56B611EA2422296100C7C6A8 /* BCInfoViewController.swift */,
+				5632EA7824344D2E00F33DB8 /* ArrayDataSource.swift */,
+				561B9230243AC95B0039FA4B /* BCTabBarViewController.swift */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -241,7 +250,6 @@
 		5671DDFE2419FEB900979210 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				560175E12424794A008C9578 /* Bases */,
 				5671DDFF2419FEDC00979210 /* BCBook.swift */,
 				560175DB2424742A008C9578 /* BCTag.swift */,
 				560175DD242477C8008C9578 /* BCImages.swift */,
@@ -316,8 +324,9 @@
 			children = (
 				5675CA2A2417644600437044 /* Assets */,
 				5671DDFE2419FEB900979210 /* Models */,
+				56C983BE2439BD5E0006F878 /* Networking */,
+				567D764A24239FA300F94CD6 /* Stores */,
 				562725F0242A5DC500E6C8EC /* DAO */,
-				567D764A24239FA300F94CD6 /* Services */,
 				567D76472423619C00F94CD6 /* Database */,
 				5667FB2224168259009F9E65 /* Modules */,
 				563F9C87241B7BDA005B8E5E /* Kits */,
@@ -351,18 +360,27 @@
 				56BB95B32426313000555EEA /* BCDatabase.swift */,
 				567D76482423625C00F94CD6 /* BCDatabaseOperation.swift */,
 				56BCB9682428F18300B4D7CA /* BCDBTable.swift */,
-				56EC7408242711C300C684B6 /* BCResult.swift */,
 			);
 			path = Database;
 			sourceTree = "<group>";
 		};
-		567D764A24239FA300F94CD6 /* Services */ = {
+		567D764A24239FA300F94CD6 /* Stores */ = {
 			isa = PBXGroup;
 			children = (
 				560175EA24250385008C9578 /* BCBookInfoService.swift */,
 				560522DA242DBF4C00A11316 /* BCBookListService.swift */,
+				56C983BC243991A30006F878 /* BCBookStore.swift */,
+				56C983BF2439F1FD0006F878 /* BCBookshelf.swift */,
 			);
-			path = Services;
+			path = Stores;
+			sourceTree = "<group>";
+		};
+		56C983BE2439BD5E0006F878 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				563B7FD624346D4600664960 /* BCBook+Networking.swift */,
+			);
+			path = Networking;
 			sourceTree = "<group>";
 		};
 		61C4266BA1D85BAB2D658C5D /* Pods */ = {
@@ -560,15 +578,17 @@
 				567D76492423625C00F94CD6 /* BCDatabaseOperation.swift in Sources */,
 				5625EFE7242F1093001E1D6D /* BCTableViewCell.swift in Sources */,
 				5625EFEF242F1147001E1D6D /* BCListCollectionViewCell.swift in Sources */,
+				561B9231243AC95B0039FA4B /* BCTabBarViewController.swift in Sources */,
 				560522DB242DBF4C00A11316 /* BCBookListService.swift in Sources */,
+				56BC57932435C689007D972F /* BCScanViewController+Alert.swift in Sources */,
 				560175E02424789C008C9578 /* BCSeries.swift in Sources */,
 				5632C66A242B04590094E804 /* BCRatingDAO.swift in Sources */,
 				564CC8952417911000E9D08B /* BCScanView.swift in Sources */,
 				5675CA272417637100437044 /* BCNavigationController.swift in Sources */,
 				56BB95B42426313000555EEA /* BCDatabase.swift in Sources */,
 				567D764D2423B17000F94CD6 /* BCDataAccessObjects.swift in Sources */,
-				560175E72424A331008C9578 /* BCObjectPattern.swift in Sources */,
 				560175E524247A00008C9578 /* BCAuthor.swift in Sources */,
+				56C983C02439F1FD0006F878 /* BCBookshelf.swift in Sources */,
 				560175DE242477C8008C9578 /* BCImages.swift in Sources */,
 				5625EFEB242F1114001E1D6D /* BCListTableViewCell.swift in Sources */,
 				5632C668242B04510094E804 /* BCImagesDAO.swift in Sources */,
@@ -577,11 +597,15 @@
 				5632C664242B04370094E804 /* BCTagDAO.swift in Sources */,
 				560522E0242DD49E00A11316 /* BCListCollectionViewController.swift in Sources */,
 				563F9C86241B7BCE005B8E5E /* CommonKit.swift in Sources */,
+				56C983BD243991A30006F878 /* BCBookStore.swift in Sources */,
+				5632EA7924344D2E00F33DB8 /* ArrayDataSource.swift in Sources */,
 				566D37DD241A659B00DE970C /* BCViewController.swift in Sources */,
 				567B0A4624167A2D00B595A7 /* AppDelegate.swift in Sources */,
 				563F9C84241B7B85005B8E5E /* BCSupportKit.swift in Sources */,
 				56BCB9692428F18300B4D7CA /* BCDBTable.swift in Sources */,
 				560175DC2424742A008C9578 /* BCTag.swift in Sources */,
+				563B7FD724346D4600664960 /* BCBook+Networking.swift in Sources */,
+				563B7FD92434710700664960 /* BCISBNCaptor.swift in Sources */,
 				5632C660242B027D0094E804 /* BCAuthorDAO.swift in Sources */,
 				562725F2242A5E2E00E6C8EC /* BCBookDAO.swift in Sources */,
 				5667FB262416833B009F9E65 /* BCScanViewController.swift in Sources */,

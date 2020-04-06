@@ -33,77 +33,83 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   
   var window: UIWindow?
   
-  lazy fileprivate var bars: [ViewTuple] = [
-    ("Collections", BCListViewController()),
-    ("Me", BCAnalyticViewController()),
-  ]
+//  lazy fileprivate var bars: [ViewTuple] = [
+//    ("Collections", BCListViewController()),
+//    ("Me", BCAnalyticViewController()),
+//  ]
   
   func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
     
-    launchDatabase()
-    loadWindow()
+//    launchDatabase()
+    setupWindow()
     
     return true
   }
 }
 
-// MARK: - RootViewController Setting
+// MARK: - RootViewController setting
 extension AppDelegate: UITabBarControllerDelegate {
-  
-  fileprivate func loadWindow() {
+  private func setupWindow() {
     window = UIWindow(frame: UIScreen.main.bounds)
-    
     window?.makeKeyAndVisible()
-    
-    window?.rootViewController = loadTabBarController()
-  }
-  
-  fileprivate func loadTabBarController() -> UITabBarController {
-    let tabBarController = UITabBarController()
-    
-    tabBarController.delegate = self
-    
-    tabBarController.tabBar.itemPositioning = .centered
-    
-    tabBarController.tabBar.unselectedItemTintColor = BCColor.BarTint.gray
-    tabBarController.tabBar.barTintColor = BCColor.BarTint.white
-    tabBarController.tabBar.tintColor = BCColor.BarTint.green
-    
-    tabBarController.viewControllers = bars.map { bar in
-      bar.item.tabBarItem.title = bar.title
-      bar.item.tabBarItem.image = UIImage(
-        named: "Tabbar/\(bar.title)")
-      
-      if bar.item is BCListViewController {
-        return BCNavigationController(rootViewController: bar.item)
-      }
-      
-      return bar.item
-    }
-    
-    return tabBarController
+    window?.rootViewController = BCTabBarViewController()
   }
 }
+//
+//  fileprivate func setupWindow() {
+//    window = UIWindow(frame: UIScreen.main.bounds)
+//
+//    window?.makeKeyAndVisible()
+//
+//    window?.rootViewController = loadTabBarController()
+//  }
+  
+//  fileprivate func loadTabBarController() -> UITabBarController {
+//    let tabBarController = UITabBarController()
+//
+//    tabBarController.delegate = self
+//
+//    tabBarController.tabBar.itemPositioning = .centered
+//
+//    tabBarController.tabBar.unselectedItemTintColor = BCColor.BarTint.gray
+//    tabBarController.tabBar.barTintColor = BCColor.BarTint.white
+//    tabBarController.tabBar.tintColor = BCColor.BarTint.green
+//
+//    tabBarController.viewControllers = bars.map { bar in
+//      bar.item.tabBarItem.title = bar.title
+//      bar.item.tabBarItem.image = UIImage(
+//        named: "Tabbar/\(bar.title)")
+//
+//      if bar.item is BCListViewController {
+//        return BCNavigationController(rootViewController: bar.item)
+//      }
+//
+//      return bar.item
+//    }
+//
+//    return tabBarController
+//  }
+//}
 
 // MARK: - TabBar Delegate
-extension AppDelegate {
-  
-  func tabBarController(
-    _ tabBarController: UITabBarController,
-    shouldSelect viewController: UIViewController) -> Bool { true }
-}
+//extension AppDelegate {
+//
+//  func tabBarController(
+//    _ tabBarController: UITabBarController,
+//    shouldSelect viewController: UIViewController) -> Bool { true }
+//}
 
 // MARK: - Database
-extension AppDelegate {
-  func launchDatabase() {
-      let database = BCDatabaseOperation()
-      database.start()
-      #if DEBUG
-      // MARK: TODO: Write all logs to a log file
-      print("Database path: \(BCDatabase.fileURL)")
-      #endif
-  }
-}
+//extension AppDelegate {
+//  func launchDatabase() {
+//      let database = BCDatabaseOperation()
+//      database.start()
+//      #if DEBUG
+//      // MARK: TODO: Write all logs to a log file
+//      print("Database path: \(BCDatabase.fileURL)")
+//      #endif
+//  }
+//}
