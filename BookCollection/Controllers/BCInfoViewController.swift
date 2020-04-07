@@ -300,13 +300,13 @@ extension BCInfoViewController {
     
     if sender?.isSelected ?? false {
       BCBookInfoService.unmark(by: book!.doubanID) {
-        BCDBResult.handle($0, success: { id in
+        BCResponse.handle($0, success: { id in
           if id > 0 { sender?.isSelected.toggle() }
         }) { V2RXError.printError($0) }
       }
     } else {
       BCBookInfoService.mark(book!) {
-        BCDBResult.handle($0, success: { id in
+        BCResponse.handle($0, success: { id in
           if id > 0 { sender?.isSelected.toggle() }
         }) { V2RXError.printError($0) }
       }

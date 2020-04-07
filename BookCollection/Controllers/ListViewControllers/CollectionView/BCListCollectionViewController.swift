@@ -59,7 +59,7 @@ class BCListCollectionViewController: BCViewController {
   private var booksCount: Int {
     var count = 0
     BCBookListService.getBooksCount {
-      BCDBResult.handle($0, success: { value in
+      BCResponse.handle($0, success: { value in
         count = value
       })
     }
@@ -91,7 +91,7 @@ extension BCListCollectionViewController {
     if pageOffset == 0 { books.removeAll() }
     
     BCBookListService.getAllBooks(withOffset: pageOffset, andSize: defaultPageSize) {
-      BCDBResult.handle($0, success: {
+      BCResponse.handle($0, success: {
         self.books += $0
         
         self.collecitonView.reloadData()
@@ -234,7 +234,7 @@ extension BCListCollectionViewController: BCListCollectionViewCellDelegate {
       else { return }
     // MARK: delete row on database
     BCBookInfoService.unmark(by: books[indexPath.row].doubanID) {
-      BCDBResult.handle($0, success: { _ in
+      BCResponse.handle($0, success: { _ in
         self.books.remove(at: indexPath.row)
         self.collecitonView.deleteItems(at: [indexPath])
       }) { V2RXError.printError($0) }

@@ -30,14 +30,16 @@ import UIKit
 
 final class BCScanViewController: BCViewController {
   
-  lazy fileprivate var scanView = BCScanView(
+  lazy private var scanView = BCScanView(
     self.view.frame,
     rect: BCScanView.Constraint.size,
     vertical: BCScanView.Constraint.verticalOffset
   )
   
-  fileprivate let isbnService = BCISBNCaptor()
+  private var isbnCaptor: BCISBNCaptor?
   
+//  private var captureLayer: CALayer?
+
   fileprivate enum State {
     case ready, startup, running, stopping, done
   }
@@ -45,7 +47,7 @@ final class BCScanViewController: BCViewController {
   fileprivate var state = State.done {
     willSet {
       switch newValue {
-        case .ready: configureViews()
+        case .ready: setupViews()
         case .startup: startup()
         case .running: launch()
         case .stopping: cleanup()
@@ -81,17 +83,17 @@ extension BCScanViewController {
 }
 
 // MARK: - View configurations
-fileprivate extension BCScanViewController {
+private extension BCScanViewController {
   
-  func configureViews() {
+  func setupViews() {
     view.backgroundColor = BCColor.BarTint.gray
     
-    configureNavigationBar()
-    configureScanView()
-    configureTip()
+    setupNavigationBar()
+    setupScanView()
+    setupTipView()
   }
   
-  func configureNavigationBar() {
+  func setupNavigationBar() {
     navigationBarBackgroundImage = UIImage()
     
     // The fucking items ARE NOT INCLUDED in property navigationController of itself.
@@ -108,9 +110,9 @@ fileprivate extension BCScanViewController {
     }
   }
   
-  func configureScanView() { view.addSubview(scanView) }
+  func setupScanView() { view.addSubview(scanView) }
   
-  func configureTip() {}
+  func setupTipView() {}
   
   // MARK: Bar button wrapper
   func getBarButton(
@@ -139,71 +141,88 @@ fileprivate extension BCScanViewController {
     scanView.startAnimating()
     #endif
     
-    if isbnService.isPermitted {
-      if let layer = isbnService.capture() {
-        layer.frame = view.layer.bounds
-        view.layer.insertSublayer(layer, at: 0)
-        scanView.startAnimating()
-      }
-    } else {
-      present(alertController(.authorize, completion: {
-        self.dismiss(animated: true)
-      }), animated: true)
+    isbnCaptor = BCISBNCaptor() { response in
+      
     }
+
+    guard let layer = isbnCaptor?.layer else { return }
+    
+    layer.frame = view.layer.bounds
+    view.layer.insertSublayer(layer, at: 0)
+//    captureLayer = isbnCaptor?.layer
+
+//    captureLayer?.frame = view.layer.bounds
+    
+//    if captureLayer != nil { view.layer.insertSublayer(captureLayer!, at: 0) }
+//    if let layer = captureLayer { view.layer.insertSublayer(layer, at: 0) }
+//    view.layer.insertSublayer(captureLayer?, at: 0)
+//    if isbnService.isPermitted {
+//      if let layer = isbnService.capture() {
+//        layer.frame = view.layer.bounds
+//        view.layer.insertSublayer(layer, at: 0)
+//        scanView.startAnimating()
+//      }
+//    } else {
+//      present(alertController(.authorize, completion: {
+//        self.dismiss(animated: true)
+//      }), animated: true)
+//    }
   }
   
   func launch() {
     // STEP 1: camera authorization
     // STEP 2: if allow camera session, else cleanup and dismiss
-    isbnService.startRunning().handler = { [unowned self] isbn in
-      self.present(self.alertController(.waiting(isbn), completion: {
-        self.state = .running
-      }), animated: true)
-      
-      self.isbnService.stopRunning()
-      
-      BCBookInfoService.search(with: isbn) { result in
-        guard case let .failure(error) = result else {
-          if case let .success(book) = result {
-            self.presentAlert(.success(book)) { self.state = .running }
-          }
-          return
-        }
-        
-        if (error as? V2RXError.DataAccessObjects) == .notFound {
-          BCBook.fetch(with: isbn) { response in
-            switch response {
-              case .success(let book):
-                self.presentAlert(.success(book)) {
-                  BCBookInfoService.mark(book) { dbResult in
-                    switch dbResult {
-                      case .success(_): self.state = .running
-                      case .failure(let error): V2RXError.printError(error)
-                    }
-                  }
-              }
-              case .failure(let afError):
-                self.presentAlert(.failure(afError)) { self.state = .running }
-            }
-          }
-        } else {
-          self.presentAlert(.failure(error)) { self.state = .running }
-        }
-      }
-    }
+//    isbnService.startRunning().handler = { [unowned self] isbn in
+//      self.present(self.alertController(.waiting(isbn), completion: {
+//        self.state = .running
+//      }), animated: true)
+//
+//      self.isbnService.stopRunning()
+//
+//      BCBookInfoService.search(with: isbn) { result in
+//        guard case let .failure(error) = result else {
+//          if case let .success(book) = result {
+//            self.presentAlert(.success(book)) { self.state = .running }
+//          }
+//          return
+//        }
+//
+//        if (error as? V2RXError.DataAccessObjects) == .notFound {
+//          BCBook.fetch(with: isbn) { response in
+//            switch response {
+//              case .success(let book):
+//                self.presentAlert(.success(book)) {
+//                  BCBookInfoService.mark(book) { dbResult in
+//                    switch dbResult {
+//                      case .success(_): self.state = .running
+//                      case .failure(let error): V2RXError.printError(error)
+//                    }
+//                  }
+//              }
+//              case .failure(let afError):
+//                self.presentAlert(.failure(afError)) { self.state = .running }
+//            }
+//          }
+//        } else {
+//          self.presentAlert(.failure(error)) { self.state = .running }
+//        }
+//      }
+//    }
     
     NotificationCenter.default.addObserver(
       self,
-      selector: #selector(launch),
+      selector: #selector(startup),
       name: UIApplication.willEnterForegroundNotification,
       object: nil
     )
   }
   
   func cleanup() {
-    isbnService.stopRunning()
+//    isbnService.stopRunning()
     scanView.stopAnimating()
-    
+//    captureLayer?.removeFromSuperlayer()
+    isbnCaptor?.layer.removeFromSuperlayer()
+
     NotificationCenter.default.removeObserver(
       self,
       name: UIApplication.willEnterForegroundNotification,

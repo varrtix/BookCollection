@@ -211,15 +211,22 @@
 			path = DAO;
 			sourceTree = "<group>";
 		};
-		563F9C87241B7BDA005B8E5E /* Kits */ = {
+		563F9C87241B7BDA005B8E5E /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				56C983BE2439BD5E0006F878 /* Networking */,
+				567D764A24239FA300F94CD6 /* Stores */,
+				562725F0242A5DC500E6C8EC /* DAO */,
+				567D76472423619C00F94CD6 /* Database */,
+				5675CA2B2417652300437044 /* AppDelegate */,
+				5675CA292417642500437044 /* Storyboards */,
 				563F9C83241B7B85005B8E5E /* BCSupportKit.swift */,
 				563B7FD82434710700664960 /* BCISBNCaptor.swift */,
 				56EC7408242711C300C684B6 /* BCResult.swift */,
 				563F9C85241B7BCE005B8E5E /* CommonKit.swift */,
+				56BB95B32426313000555EEA /* BCDatabase.swift */,
 			);
-			path = Kits;
+			path = Modules;
 			sourceTree = "<group>";
 		};
 		564CC893241790CD00E9D08B /* Views */ = {
@@ -230,12 +237,11 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		5667FB2224168259009F9E65 /* Modules */ = {
+		5667FB2224168259009F9E65 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				5675CA282417637600437044 /* Bases */,
 				560522DC242DD44A00A11316 /* ListViewControllers */,
-				564CC893241790CD00E9D08B /* Views */,
 				5667FB23241682D2009F9E65 /* BCListViewController.swift */,
 				5667FB252416833B009F9E65 /* BCScanViewController.swift */,
 				56BC57922435C689007D972F /* BCScanViewController+Alert.swift */,
@@ -244,7 +250,7 @@
 				5632EA7824344D2E00F33DB8 /* ArrayDataSource.swift */,
 				561B9230243AC95B0039FA4B /* BCTabBarViewController.swift */,
 			);
-			path = Modules;
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		5671DDFE2419FEB900979210 /* Models */ = {
@@ -322,16 +328,11 @@
 		567B0A4424167A2D00B595A7 /* BookCollection */ = {
 			isa = PBXGroup;
 			children = (
-				5675CA2A2417644600437044 /* Assets */,
 				5671DDFE2419FEB900979210 /* Models */,
-				56C983BE2439BD5E0006F878 /* Networking */,
-				567D764A24239FA300F94CD6 /* Stores */,
-				562725F0242A5DC500E6C8EC /* DAO */,
-				567D76472423619C00F94CD6 /* Database */,
-				5667FB2224168259009F9E65 /* Modules */,
-				563F9C87241B7BDA005B8E5E /* Kits */,
-				5675CA2B2417652300437044 /* AppDelegate */,
-				5675CA292417642500437044 /* Storyboards */,
+				564CC893241790CD00E9D08B /* Views */,
+				5667FB2224168259009F9E65 /* Controllers */,
+				563F9C87241B7BDA005B8E5E /* Modules */,
+				56EFF05E243C932200125610 /* Resources */,
 			);
 			path = BookCollection;
 			sourceTree = "<group>";
@@ -357,7 +358,6 @@
 		567D76472423619C00F94CD6 /* Database */ = {
 			isa = PBXGroup;
 			children = (
-				56BB95B32426313000555EEA /* BCDatabase.swift */,
 				567D76482423625C00F94CD6 /* BCDatabaseOperation.swift */,
 				56BCB9682428F18300B4D7CA /* BCDBTable.swift */,
 			);
@@ -381,6 +381,14 @@
 				563B7FD624346D4600664960 /* BCBook+Networking.swift */,
 			);
 			path = Networking;
+			sourceTree = "<group>";
+		};
+		56EFF05E243C932200125610 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5675CA2A2417644600437044 /* Assets */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		61C4266BA1D85BAB2D658C5D /* Pods */ = {

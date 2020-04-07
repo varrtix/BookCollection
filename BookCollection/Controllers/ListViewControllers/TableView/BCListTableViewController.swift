@@ -55,7 +55,7 @@ class BCListTableViewController: BCViewController {
   private var booksCount: Int {
     var count = 0
     BCBookListService.getBooksCount {
-      BCDBResult.handle($0, success: { value in
+      BCResponse.handle($0, success: { value in
         count = value
       })
     }
@@ -89,7 +89,7 @@ extension BCListTableViewController {
     if pageOffset == 0 { books.removeAll() }
     
     BCBookListService.getAllBooks(withOffset: pageOffset, andSize: defaultPageSize) {
-      BCDBResult.handle($0, success: {
+      BCResponse.handle($0, success: {
         self.books += $0
         
         self.tableView.reloadData()
@@ -182,7 +182,7 @@ extension BCListTableViewController: UITableViewDataSource {
     switch editingStyle {
       case .delete:
         BCBookInfoService.unmark(by: books[indexPath.row].doubanID) {
-          BCDBResult.handle($0, success: { _ in
+          BCResponse.handle($0, success: { _ in
             self.books.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
           }) { V2RXError.printError($0) }
