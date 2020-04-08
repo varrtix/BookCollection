@@ -35,6 +35,17 @@ final class BCDatabase {
   
   static let shared = BCDatabase()
   
+  var connection: Connection? {
+    do {
+      let connection = try Connection(file)
+      _ = try connection.prepare("PRAGMA FOREIGN_KEYS=ON")
+      return connection
+    } catch {
+      print("Connect error: \(error)\nfunction: \(#function), line: \(#line) in \(#file).")
+      return nil
+    }
+  }
+  
   private let directory: URL
   
   private let file: URL
@@ -57,15 +68,5 @@ final class BCDatabase {
     }
     
     return self
-  }
-  
-  func connect(_ handler: @escaping (Connection) -> Void) {
-    do {
-      let connection = try Connection(file)
-      _ = try connection.prepare("PRAGMA FOREIGN_KEYS=ON")
-      handler(connection)
-    } catch {
-      print("Connect error: \(error)\nfunction: \(#function), line: \(#line) in \(#file).")
-    }
   }
 }
