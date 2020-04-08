@@ -52,80 +52,20 @@ final class BCDatabase {
       do {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
       } catch {
-        print("Error: \(error)\nfunction: \(#function), line: \(#line) in \(#file).")
+        print("URL error: \(error)\nfunction: \(#function), line: \(#line) in \(#file).")
       }
     }
     
     return self
   }
+  
+  func connect(_ handler: @escaping (Connection) -> Void) {
+    do {
+      let connection = try Connection(file)
+      _ = try connection.prepare("PRAGMA FOREIGN_KEYS=ON")
+      handler(connection)
+    } catch {
+      print("Connect error: \(error)\nfunction: \(#function), line: \(#line) in \(#file).")
+    }
+  }
 }
-
-//let BCDB = BCDatabase.default
-//
-//struct BCDatabase {
-//
-//  static let `default` = BCDatabase()
-//
-//  static var directoryURL: URL {
-//    URL(
-//      fileURLWithPath: "BCDB",
-//      relativeTo: FileManager.documentDirectoryURL)
-//  }
-//
-//  static var fileURL: URL {
-//    URL(
-//      fileURLWithPath: "Book.sqlite",
-//      relativeTo: directoryURL)
-//  }
-//
-//  static let daoQueue = DispatchQueue(
-//    label: "com.varrtix.bcdao",
-//    qos: .background,
-//    attributes: .concurrent)
-//
-//  static let daoSubQueue = DispatchQueue(
-//    label: "com.varrtix.bcsubdao",
-//    qos: .background,
-//    attributes: .concurrent)
-//
-//  @discardableResult
-//  func check() -> Self {
-//    do {
-//      if !FileManager.default.fileExists(
-//        atPath: BCDatabase
-//          .directoryURL
-//          .absoluteString) {
-//        try FileManager.default.createDirectory(
-//          at: BCDatabase.directoryURL,
-//          withIntermediateDirectories: true)
-//      }
-//    } catch { V2RXError.printError(error) }
-//
-//    return self
-//  }
-//
-//  @discardableResult
-//  func asyncConnect(
-//    at queue: DispatchQueue = BCDatabase.daoQueue,
-//    _ handler: @escaping (Connection) -> Void
-//  ) -> Self {
-//    do {
-//      let connection = try Connection(BCDatabase.fileURL)
-//      _ = try connection.prepare("PRAGMA FOREIGN_KEYS=ON")
-//      queue.async { handler(connection) }
-//    } catch { V2RXError.printError(error) }
-//
-//    return self
-//  }
-//
-//  @discardableResult
-//  func syncConnect(_ handler: @escaping (Connection) -> Void) -> Self {
-//    do {
-//      let connection = try Connection(BCDatabase.fileURL)
-//      _ = try connection.prepare("PRAGMA FOREIGN_KEYS=ON")
-//      handler(connection)
-//    } catch { V2RXError.printError(error) }
-//
-//    return self
-//  }
-//}
