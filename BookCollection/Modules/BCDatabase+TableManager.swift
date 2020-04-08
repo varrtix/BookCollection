@@ -27,63 +27,26 @@
 /// THE SOFTWARE.
 
 import Foundation
-import SQLite
 
-let DB = BCDatabase.shared
-
-final class BCDatabase {
+extension BCDatabase {
   
-  static let shared = BCDatabase()
+  static let TM = TableManager.shared
   
-  var connection: Connection? {
-    do {
-      return try Connection(file).pragma(.foreignKeys(true))
-    } catch {
-      print("Connect error: \(error)\nfunction: \(#function), line: \(#line) in \(#file).")
-      return nil
-    }
-  }
-  
-  private let directory: URL
-  
-  private let file: URL
-  
-  private init() {
-    directory = URL(fileURLWithPath: "BCDB", relativeTo: FileManager.documentDirectory)
-    file = URL(fileURLWithPath: "Book.sqlite", relativeTo: directory)
+  final class TableManager {
     
-  }
+    static let shared: TableManager = {
+      return TableManager()
+    } ()
 
-  @discardableResult
-  func validate() -> Self {
-    if !FileManager.default.fileExists(atPath: directory.absoluteString) {
+    private enum Kind: String, CaseIterable {
+      case book, authors, translators
+      case tags, images, series, rating
       
-      do {
-        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-      } catch {
-        print("URL error: \(error)\nfunction: \(#function), line: \(#line) in \(#file).")
-      }
+      var raw: String { "TB_BC_" + self.rawValue.uppercased() }
     }
     
-    return self
-  }
-}
-
-extension Connection {
-  func pragma(_ pragma: Pragma) -> Self {
-    _ = try? self.prepare("PRAGMA " + pragma.statement)
-    return self
-  }
-  
-  enum Pragma {
-    case fetch(String)
-    case foreignKeys(Bool)
-    
-    var statement: String {
-      switch self {
-        case let .foreignKeys(sign): return "FOREIGN_KEYS = \(sign ? "ON" : "OFF")"
-        case let .fetch(value): return value
-      }
+    func create() {
+      
     }
   }
 }
