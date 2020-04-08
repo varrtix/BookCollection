@@ -48,7 +48,7 @@
 		567B0A5D24167A2E00B595A7 /* BookCollectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567B0A5C24167A2E00B595A7 /* BookCollectionTests.swift */; };
 		567B0A6824167A2E00B595A7 /* BookCollectionUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567B0A6724167A2E00B595A7 /* BookCollectionUITests.swift */; };
 		567D76492423625C00F94CD6 /* BCDatabaseOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567D76482423625C00F94CD6 /* BCDatabaseOperation.swift */; };
-		567D764D2423B17000F94CD6 /* BCDataAccessObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567D764C2423B17000F94CD6 /* BCDataAccessObjects.swift */; };
+		567D764D2423B17000F94CD6 /* BCDAO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567D764C2423B17000F94CD6 /* BCDAO.swift */; };
 		56B611EB2422296100C7C6A8 /* BCInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B611EA2422296100C7C6A8 /* BCInfoViewController.swift */; };
 		56BB95B42426313000555EEA /* BCDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BB95B32426313000555EEA /* BCDatabase.swift */; };
 		56BC57932435C689007D972F /* BCScanViewController+Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BC57922435C689007D972F /* BCScanViewController+Alert.swift */; };
@@ -56,6 +56,16 @@
 		56C983BD243991A30006F878 /* BCBookStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C983BC243991A30006F878 /* BCBookStore.swift */; };
 		56C983C02439F1FD0006F878 /* BCBookshelf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C983BF2439F1FD0006F878 /* BCBookshelf.swift */; };
 		56EC7409242711C300C684B6 /* BCResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56EC7408242711C300C684B6 /* BCResult.swift */; };
+		56F02A36243DB2CF000DAAFE /* BCDatabase+TableOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F02A35243DB2CF000DAAFE /* BCDatabase+TableOperation.swift */; };
+		56F02A38243DB767000DAAFE /* BCDatabase+Table.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F02A37243DB767000DAAFE /* BCDatabase+Table.swift */; };
+		56F02A3D243DF4B5000DAAFE /* BCBookTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F02A3C243DF4B5000DAAFE /* BCBookTable.swift */; };
+		56F02A3F243E1708000DAAFE /* BCTagTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F02A3E243E1708000DAAFE /* BCTagTable.swift */; };
+		56F02A41243E1881000DAAFE /* BCTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F02A40243E1881000DAAFE /* BCTable.swift */; };
+		56F02A43243E1B16000DAAFE /* BCImagesTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F02A42243E1B16000DAAFE /* BCImagesTable.swift */; };
+		56F02A45243E1BB0000DAAFE /* BCSeriesTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F02A44243E1BAF000DAAFE /* BCSeriesTable.swift */; };
+		56F02A47243E1BB7000DAAFE /* BCRatingTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F02A46243E1BB7000DAAFE /* BCRatingTable.swift */; };
+		56F02A49243E1C63000DAAFE /* BCAuthorsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F02A48243E1C63000DAAFE /* BCAuthorsTable.swift */; };
+		56F02A4B243E1DF4000DAAFE /* BCTranslatorsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F02A4A243E1DF4000DAAFE /* BCTranslatorsTable.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -123,7 +133,7 @@
 		567B0A6724167A2E00B595A7 /* BookCollectionUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCollectionUITests.swift; sourceTree = "<group>"; };
 		567B0A6924167A2E00B595A7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		567D76482423625C00F94CD6 /* BCDatabaseOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCDatabaseOperation.swift; sourceTree = "<group>"; };
-		567D764C2423B17000F94CD6 /* BCDataAccessObjects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCDataAccessObjects.swift; sourceTree = "<group>"; };
+		567D764C2423B17000F94CD6 /* BCDAO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCDAO.swift; sourceTree = "<group>"; };
 		56B611EA2422296100C7C6A8 /* BCInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCInfoViewController.swift; sourceTree = "<group>"; };
 		56BB95B32426313000555EEA /* BCDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCDatabase.swift; sourceTree = "<group>"; };
 		56BC57922435C689007D972F /* BCScanViewController+Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCScanViewController+Alert.swift"; sourceTree = "<group>"; };
@@ -131,6 +141,16 @@
 		56C983BC243991A30006F878 /* BCBookStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCBookStore.swift; sourceTree = "<group>"; };
 		56C983BF2439F1FD0006F878 /* BCBookshelf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCBookshelf.swift; sourceTree = "<group>"; };
 		56EC7408242711C300C684B6 /* BCResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCResult.swift; sourceTree = "<group>"; };
+		56F02A35243DB2CF000DAAFE /* BCDatabase+TableOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCDatabase+TableOperation.swift"; sourceTree = "<group>"; };
+		56F02A37243DB767000DAAFE /* BCDatabase+Table.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCDatabase+Table.swift"; sourceTree = "<group>"; };
+		56F02A3C243DF4B5000DAAFE /* BCBookTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCBookTable.swift; sourceTree = "<group>"; };
+		56F02A3E243E1708000DAAFE /* BCTagTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCTagTable.swift; sourceTree = "<group>"; };
+		56F02A40243E1881000DAAFE /* BCTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCTable.swift; sourceTree = "<group>"; };
+		56F02A42243E1B16000DAAFE /* BCImagesTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCImagesTable.swift; sourceTree = "<group>"; };
+		56F02A44243E1BAF000DAAFE /* BCSeriesTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCSeriesTable.swift; sourceTree = "<group>"; };
+		56F02A46243E1BB7000DAAFE /* BCRatingTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCRatingTable.swift; sourceTree = "<group>"; };
+		56F02A48243E1C63000DAAFE /* BCAuthorsTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCAuthorsTable.swift; sourceTree = "<group>"; };
+		56F02A4A243E1DF4000DAAFE /* BCTranslatorsTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCTranslatorsTable.swift; sourceTree = "<group>"; };
 		C3AEABD81807DB8C6E651C4D /* Pods-BookCollection.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookCollection.release.xcconfig"; path = "Target Support Files/Pods-BookCollection/Pods-BookCollection.release.xcconfig"; sourceTree = "<group>"; };
 		F4CF3752E322A66A69ADE8E9 /* Pods-BookCollection.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookCollection.debug.xcconfig"; path = "Target Support Files/Pods-BookCollection/Pods-BookCollection.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -199,7 +219,7 @@
 		562725F0242A5DC500E6C8EC /* DAO */ = {
 			isa = PBXGroup;
 			children = (
-				567D764C2423B17000F94CD6 /* BCDataAccessObjects.swift */,
+				567D764C2423B17000F94CD6 /* BCDAO.swift */,
 				562725F1242A5E2E00E6C8EC /* BCBookDAO.swift */,
 				5632C65F242B027D0094E804 /* BCAuthorDAO.swift */,
 				5632C661242B03D30094E804 /* BCTranslatorDAO.swift */,
@@ -223,7 +243,6 @@
 				5675CA292417642500437044 /* Storyboards */,
 				563B7FD82434710700664960 /* BCISBNCaptor.swift */,
 				56EC7408242711C300C684B6 /* BCResult.swift */,
-				56BB95B32426313000555EEA /* BCDatabase.swift */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -357,6 +376,10 @@
 		567D76472423619C00F94CD6 /* Database */ = {
 			isa = PBXGroup;
 			children = (
+				56F02A3B243DF35F000DAAFE /* Models */,
+				56BB95B32426313000555EEA /* BCDatabase.swift */,
+				56F02A35243DB2CF000DAAFE /* BCDatabase+TableOperation.swift */,
+				56F02A37243DB767000DAAFE /* BCDatabase+Table.swift */,
 				567D76482423625C00F94CD6 /* BCDatabaseOperation.swift */,
 				56BCB9682428F18300B4D7CA /* BCDBTable.swift */,
 			);
@@ -397,6 +420,21 @@
 				563F9C85241B7BCE005B8E5E /* CommonKit.swift */,
 			);
 			path = Supports;
+			sourceTree = "<group>";
+		};
+		56F02A3B243DF35F000DAAFE /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				56F02A40243E1881000DAAFE /* BCTable.swift */,
+				56F02A3C243DF4B5000DAAFE /* BCBookTable.swift */,
+				56F02A3E243E1708000DAAFE /* BCTagTable.swift */,
+				56F02A42243E1B16000DAAFE /* BCImagesTable.swift */,
+				56F02A44243E1BAF000DAAFE /* BCSeriesTable.swift */,
+				56F02A46243E1BB7000DAAFE /* BCRatingTable.swift */,
+				56F02A48243E1C63000DAAFE /* BCAuthorsTable.swift */,
+				56F02A4A243E1DF4000DAAFE /* BCTranslatorsTable.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		61C4266BA1D85BAB2D658C5D /* Pods */ = {
@@ -585,34 +623,44 @@
 			files = (
 				5632C666242B04410094E804 /* BCSeriesDAO.swift in Sources */,
 				5625EFE9242F10CC001E1D6D /* BCCollectionViewCell.swift in Sources */,
+				56F02A36243DB2CF000DAAFE /* BCDatabase+TableOperation.swift in Sources */,
 				5667FB2824168386009F9E65 /* BCAnalyticViewController.swift in Sources */,
 				560522DE242DD48A00A11316 /* BCListTableViewController.swift in Sources */,
+				56F02A41243E1881000DAAFE /* BCTable.swift in Sources */,
+				56F02A3D243DF4B5000DAAFE /* BCBookTable.swift in Sources */,
 				5667FB24241682D2009F9E65 /* BCListViewController.swift in Sources */,
 				56B611EB2422296100C7C6A8 /* BCInfoViewController.swift in Sources */,
 				560175EB24250385008C9578 /* BCBookInfoService.swift in Sources */,
 				5671DE002419FEDC00979210 /* BCBook.swift in Sources */,
+				56F02A47243E1BB7000DAAFE /* BCRatingTable.swift in Sources */,
 				567D76492423625C00F94CD6 /* BCDatabaseOperation.swift in Sources */,
 				5625EFE7242F1093001E1D6D /* BCTableViewCell.swift in Sources */,
 				5625EFEF242F1147001E1D6D /* BCListCollectionViewCell.swift in Sources */,
 				561B9231243AC95B0039FA4B /* BCTabBarViewController.swift in Sources */,
 				560522DB242DBF4C00A11316 /* BCBookListService.swift in Sources */,
+				56F02A4B243E1DF4000DAAFE /* BCTranslatorsTable.swift in Sources */,
 				56BC57932435C689007D972F /* BCScanViewController+Alert.swift in Sources */,
 				560175E02424789C008C9578 /* BCBook+Series.swift in Sources */,
 				5632C66A242B04590094E804 /* BCRatingDAO.swift in Sources */,
 				564CC8952417911000E9D08B /* BCScanView.swift in Sources */,
 				5675CA272417637100437044 /* BCNavigationController.swift in Sources */,
 				56BB95B42426313000555EEA /* BCDatabase.swift in Sources */,
-				567D764D2423B17000F94CD6 /* BCDataAccessObjects.swift in Sources */,
+				567D764D2423B17000F94CD6 /* BCDAO.swift in Sources */,
 				560175E524247A00008C9578 /* BCBook+Author.swift in Sources */,
+				56F02A45243E1BB0000DAAFE /* BCSeriesTable.swift in Sources */,
 				56C983C02439F1FD0006F878 /* BCBookshelf.swift in Sources */,
+				56F02A38243DB767000DAAFE /* BCDatabase+Table.swift in Sources */,
 				560175DE242477C8008C9578 /* BCBook+Images.swift in Sources */,
 				5625EFEB242F1114001E1D6D /* BCListTableViewCell.swift in Sources */,
 				5632C668242B04510094E804 /* BCImagesDAO.swift in Sources */,
 				560175E324247979008C9578 /* BCBook+Rating.swift in Sources */,
+				56F02A43243E1B16000DAAFE /* BCImagesTable.swift in Sources */,
 				56EC7409242711C300C684B6 /* BCResult.swift in Sources */,
+				56F02A49243E1C63000DAAFE /* BCAuthorsTable.swift in Sources */,
 				5632C664242B04370094E804 /* BCTagDAO.swift in Sources */,
 				560522E0242DD49E00A11316 /* BCListCollectionViewController.swift in Sources */,
 				563F9C86241B7BCE005B8E5E /* CommonKit.swift in Sources */,
+				56F02A3F243E1708000DAAFE /* BCTagTable.swift in Sources */,
 				56C983BD243991A30006F878 /* BCBookStore.swift in Sources */,
 				5632EA7924344D2E00F33DB8 /* ArrayDataSource.swift in Sources */,
 				566D37DD241A659B00DE970C /* BCViewController.swift in Sources */,

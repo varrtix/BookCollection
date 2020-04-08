@@ -27,28 +27,42 @@
 /// THE SOFTWARE.
 
 import Foundation
-import SQLite
 
-//let BCBookTable = BCDBTable.list[BCDBTable.Kind.book]!
-//let BCAuthorsTable = BCDBTable.list[BCDBTable.Kind.authors]!
-//let BCTranslatorsTable = BCDBTable.list[BCDBTable.Kind.translators]!
-//let BCTagsTable = BCDBTable.list[BCDBTable.Kind.tags]!
-//let BCImagesTable = BCDBTable.list[BCDBTable.Kind.images]!
-//let BCSeriesTable = BCDBTable.list[BCDBTable.Kind.series]!
-//let BCRatingTable = BCDBTable.list[BCDBTable.Kind.rating]!
-//
-struct BCDBTable {
+struct BCBookTable: BCTable {
   
-  enum Kind: String, CaseIterable {
-    case book, authors, translators
-    case tags, images, series, rating
-    
-    var raw: String { "TB_BC_\(self.rawValue.uppercased())" }
-  }
+  typealias Keys = BCBook.CodingKeys
   
-  static let list = Dictionary(
-    uniqueKeysWithValues: zip(
-      Kind.allCases,
-      Kind.allCases.map { Table($0.raw) })
-  )
+  let kind: Table.Kind = .book
+  
+  let id = TB.int64Exp("local_id")
+  
+  let doubanID = TB.stringExp(Keys.doubanID)
+  
+  let title = TB.optStringExp(Keys.title)
+  
+  let subtitle = TB.optStringExp(Keys.subtitle)
+  
+  let originTitle = TB.optStringExp(Keys.originTitle)
+  
+  let publishedDate = TB.optStringExp(Keys.publishedDate)
+  
+  let publisher = TB.optStringExp(Keys.publisher)
+  
+  let isbn10 = TB.optStringExp(Keys.isbn10)
+  
+  let isbn13 = TB.optStringExp(Keys.isbn13)
+  
+  let image = TB.optStringExp(Keys.image)
+  
+  let binding = TB.optStringExp(Keys.binding)
+  
+  let authorIntroduction = TB.optStringExp(Keys.authorIntroduction)
+  
+  let catalog = TB.optStringExp(Keys.catalog)
+  
+  let pages = TB.optStringExp(Keys.pages)
+  
+  let summary = TB.optStringExp(Keys.summary)
+  
+  let price = TB.optStringExp(Keys.price)
 }

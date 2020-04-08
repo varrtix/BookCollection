@@ -27,28 +27,38 @@
 /// THE SOFTWARE.
 
 import Foundation
-import SQLite
 
-//let BCBookTable = BCDBTable.list[BCDBTable.Kind.book]!
-//let BCAuthorsTable = BCDBTable.list[BCDBTable.Kind.authors]!
-//let BCTranslatorsTable = BCDBTable.list[BCDBTable.Kind.translators]!
-//let BCTagsTable = BCDBTable.list[BCDBTable.Kind.tags]!
-//let BCImagesTable = BCDBTable.list[BCDBTable.Kind.images]!
-//let BCSeriesTable = BCDBTable.list[BCDBTable.Kind.series]!
-//let BCRatingTable = BCDBTable.list[BCDBTable.Kind.rating]!
-//
-struct BCDBTable {
+extension BCDatabase {
   
-  enum Kind: String, CaseIterable {
-    case book, authors, translators
-    case tags, images, series, rating
+  final class TableOperation: AsyncOperation {
     
-    var raw: String { "TB_BC_\(self.rawValue.uppercased())" }
+    static let shared: TableOperation = {
+      let tableOperation = TableOperation()
+      
+      tableOperation.start()
+      
+      return tableOperation
+    }()
+    
+    override func main() {
+      guard let connection = DB.validate().connection else { return }
+//      Table.Kind.allCases.forEach { kind in
+//        do {
+//          switch kind {
+//            default:
+//              try connection.run(kind.table.create(ifNotExists: true) { builder in
+//                builder.column(kind.columns[0])
+//              })
+//          }
+////          try connection.run(kind.table.create(ifNotExists: true) { builder in
+////            kind.columns.forEach { builder.column($0) }
+////          })
+//        } catch { }
+//      }
+      try connection.run(Table.Kind.book.table.create(ifNotExists: true) { builder in
+        builder.column(Expression<Int64>("local_id"))
+        
+      })
+    }
   }
-  
-  static let list = Dictionary(
-    uniqueKeysWithValues: zip(
-      Kind.allCases,
-      Kind.allCases.map { Table($0.raw) })
-  )
 }

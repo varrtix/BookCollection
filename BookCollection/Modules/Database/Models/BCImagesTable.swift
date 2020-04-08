@@ -27,63 +27,18 @@
 /// THE SOFTWARE.
 
 import Foundation
-import SQLite
 
-let DB = BCDatabase.shared
-
-final class BCDatabase {
+struct BCImagesTable: BCTable {
   
-  static let shared = BCDatabase()
+  typealias Keys = BCBook.Images.CodingKeys
   
-  var connection: Connection? {
-    do {
-      return try Connection(file).pragma(.foreignKeys(true))
-    } catch {
-      print("Connect error: \(error)\nfunction: \(#function), line: \(#line) in \(#file).")
-      return nil
-    }
-  }
+  let kind: Table.Kind = .images
   
-  private let directory: URL
+  let id = TB.int64Exp("book_id")
   
-  private let file: URL
+  let small = TB.optStringExp(Keys.small)
   
-  private init() {
-    directory = URL(fileURLWithPath: "BCDB", relativeTo: FileManager.documentDirectory)
-    file = URL(fileURLWithPath: "Book.sqlite", relativeTo: directory)
-    
-  }
-
-  @discardableResult
-  func validate() -> Self {
-    if !FileManager.default.fileExists(atPath: directory.absoluteString) {
-      
-      do {
-        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-      } catch {
-        print("URL error: \(error)\nfunction: \(#function), line: \(#line) in \(#file).")
-      }
-    }
-    
-    return self
-  }
-}
-
-extension Connection {
-  func pragma(_ pragma: Pragma) -> Self {
-    _ = try? self.prepare("PRAGMA " + pragma.statement)
-    return self
-  }
+  let medium = TB.optStringExp(Keys.medium)
   
-  enum Pragma {
-    case fetch(String)
-    case foreignKeys(Bool)
-    
-    var statement: String {
-      switch self {
-        case let .foreignKeys(sign): return "FOREIGN_KEYS = \(sign ? "ON" : "OFF")"
-        case let .fetch(value): return value
-      }
-    }
-  }
+  let large = TB.optStringExp(Keys.large)
 }

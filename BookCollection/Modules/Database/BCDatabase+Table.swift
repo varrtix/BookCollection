@@ -29,27 +29,76 @@
 import Foundation
 import SQLite
 
+protocol BCConvertibleExpression {
+
+  func int64Exp(_ key: String) -> Expression<Int64>
+  
+  func int64Exp(_ key: CodingKey) -> Expression<Int64>
+  
+  func optIntExp(_ key: String) -> Expression<Int?>
+
+  func optIntExp(_ key: CodingKey) -> Expression<Int?>
+  
+  func stringExp(_ key: String) -> Expression<String>
+
+  func stringExp(_ key: CodingKey) -> Expression<String>
+  
+  func optStringExp(_ key: String) -> Expression<String?>
+
+  func optStringExp(_ key: CodingKey) -> Expression<String?>
+}
+
 extension BCDatabase {
   
-  class Table {
-    
-    static let shared: Table = {
-      let table = Table()
-      
-      return table
-    }()
-    
+  class Table: BCConvertibleExpression {
+
+    static let shared = Table()
+
     enum Kind: String, CaseIterable {
       case book, authors, translators
       case tags, images, series, rating
       
       var raw: String { "TB_BC_" + self.rawValue.uppercased() }
     }
+    
+    func int64Exp(_ key: String) -> Expression<Int64> {
+      Expression<Int64>(key)
+    }
+    
+    func int64Exp(_ key: CodingKey) -> Expression<Int64> {
+      int64Exp(key.stringValue)
+    }
+    
+    func stringExp(_ key: String) -> Expression<String> {
+      Expression<String>(key)
+    }
+    
+    func stringExp(_ key: CodingKey) -> Expression<String> {
+      stringExp(key.stringValue)
+    }
+    
+    func optStringExp(_ key: String) -> Expression<String?> {
+      Expression<String?>(key)
+    }
+
+    func optStringExp(_ key: CodingKey) -> Expression<String?> {
+      optStringExp(key.stringValue)
+    }
+    
+    func optIntExp(_ key: String) -> Expression<Int?> {
+      Expression<Int?>(key)
+    }
+    
+    func optIntExp(_ key: CodingKey) -> Expression<Int?> {
+      optIntExp(key.stringValue)
+    }
   }
 }
 
 extension BCDatabase.Table.Kind {
-  
+
+  var table: Table { Table(self.raw) }
+
   var columns: [Expressible] {
     var columns: [Expressible] = [Expression<Int64>("book_id")]
     

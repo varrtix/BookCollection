@@ -27,11 +27,14 @@
 /// THE SOFTWARE.
 
 import Foundation
-//import SQLite
 
-//protocol BCDAO {
-//  associatedtype Model
+struct BCAuthorsTable: BCTable {
   
-//  static func insert(or conflict: SQLite.OnConflict, _ model: Model, with connection: Connection) throws -> Int64
-                                                  
-//}
+  typealias Keys = BCBook.Author
+  
+  let kind: Table.Kind = .authors
+  
+  let id = TB.int64Exp("book_id")
+  
+  let name = TB.optStringExp("name")
+}

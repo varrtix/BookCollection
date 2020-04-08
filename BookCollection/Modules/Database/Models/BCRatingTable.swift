@@ -27,28 +27,20 @@
 /// THE SOFTWARE.
 
 import Foundation
-import SQLite
 
-//let BCBookTable = BCDBTable.list[BCDBTable.Kind.book]!
-//let BCAuthorsTable = BCDBTable.list[BCDBTable.Kind.authors]!
-//let BCTranslatorsTable = BCDBTable.list[BCDBTable.Kind.translators]!
-//let BCTagsTable = BCDBTable.list[BCDBTable.Kind.tags]!
-//let BCImagesTable = BCDBTable.list[BCDBTable.Kind.images]!
-//let BCSeriesTable = BCDBTable.list[BCDBTable.Kind.series]!
-//let BCRatingTable = BCDBTable.list[BCDBTable.Kind.rating]!
-//
-struct BCDBTable {
+struct BCRatingTable: BCTable {
   
-  enum Kind: String, CaseIterable {
-    case book, authors, translators
-    case tags, images, series, rating
-    
-    var raw: String { "TB_BC_\(self.rawValue.uppercased())" }
-  }
+  typealias Keys = BCBook.Rating.CodingKeys
   
-  static let list = Dictionary(
-    uniqueKeysWithValues: zip(
-      Kind.allCases,
-      Kind.allCases.map { Table($0.raw) })
-  )
+  let kind: Table.Kind = .rating
+  
+  let id = TB.int64Exp("book_id")
+  
+  let max = TB.optIntExp(Keys.max)
+  
+  let numRaters = TB.optIntExp(Keys.numRaters)
+  
+  let average = TB.optStringExp(Keys.average)
+  
+  let min = TB.optIntExp(Keys.min)
 }

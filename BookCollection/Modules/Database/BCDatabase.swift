@@ -29,26 +29,69 @@
 import Foundation
 import SQLite
 
-//let BCBookTable = BCDBTable.list[BCDBTable.Kind.book]!
-//let BCAuthorsTable = BCDBTable.list[BCDBTable.Kind.authors]!
-//let BCTranslatorsTable = BCDBTable.list[BCDBTable.Kind.translators]!
-//let BCTagsTable = BCDBTable.list[BCDBTable.Kind.tags]!
-//let BCImagesTable = BCDBTable.list[BCDBTable.Kind.images]!
-//let BCSeriesTable = BCDBTable.list[BCDBTable.Kind.series]!
-//let BCRatingTable = BCDBTable.list[BCDBTable.Kind.rating]!
-//
-struct BCDBTable {
+let DB = BCDatabase.shared
+
+let TB = BCDatabase.Table.shared
+
+//let TO = BCDatabase.TableOperation.shared
+
+final class BCDatabase {
   
-  enum Kind: String, CaseIterable {
-    case book, authors, translators
-    case tags, images, series, rating
-    
-    var raw: String { "TB_BC_\(self.rawValue.uppercased())" }
+  static let shared = BCDatabase()
+  
+  let TO = TableOperation.shared
+  
+//  let TB = Table.shared
+
+  var connection: Connection? {
+    do {
+      return try Connection(file).pragma(.foreignKeys(true))
+    } catch {
+      print("Connect error: \(error)\nfunction: \(#function), line: \(#line) in \(#file).")
+      return nil
+    }
   }
   
-  static let list = Dictionary(
-    uniqueKeysWithValues: zip(
-      Kind.allCases,
-      Kind.allCases.map { Table($0.raw) })
-  )
+  private let directory: URL
+  
+  private let file: URL
+  
+  private init() {
+    directory = URL(fileURLWithPath: "BCDB", relativeTo: FileManager.documentDirectory)
+    file = URL(fileURLWithPath: "Book.sqlite", relativeTo: directory)
+    
+  }
+
+  @discardableResult
+  func validate() -> Self {
+    if !FileManager.default.fileExists(atPath: directory.absoluteString) {
+      
+      do {
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+      } catch {
+        print("URL error: \(error)\nfunction: \(#function), line: \(#line) in \(#file).")
+      }
+    }
+    
+    return self
+  }
+}
+
+extension Connection {
+  func pragma(_ pragma: Pragma) -> Self {
+    _ = try? self.prepare("PRAGMA " + pragma.statement)
+    return self
+  }
+  
+  enum Pragma {
+    case fetch(String)
+    case foreignKeys(Bool)
+    
+    var statement: String {
+      switch self {
+        case let .foreignKeys(sign): return "FOREIGN_KEYS = \(sign ? "ON" : "OFF")"
+        case let .fetch(value): return value
+      }
+    }
+  }
 }

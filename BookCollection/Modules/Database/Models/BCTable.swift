@@ -27,26 +27,15 @@
 /// THE SOFTWARE.
 
 import Foundation
+import SQLite
 
-extension BCDatabase {
+protocol BCTable {
   
-  static let TM = TableManager.shared
+  typealias Table = BCDatabase.Table
   
-  final class TableManager {
-    
-    static let shared: TableManager = {
-      return TableManager()
-    } ()
-
-    private enum Kind: String, CaseIterable {
-      case book, authors, translators
-      case tags, images, series, rating
-      
-      var raw: String { "TB_BC_" + self.rawValue.uppercased() }
-    }
-    
-    func create() {
-      
-    }
-  }
+  associatedtype Keys: Any
+  
+  var kind: Table.Kind { get }
+ 
+  var id: Expression<Int64> { get }
 }
