@@ -27,9 +27,6 @@
 /// THE SOFTWARE.
 
 import Foundation
-//import SQLite
-
-//let BCImagesDBD = BCImagesDB.default
 
 extension BCBook {
   
@@ -41,27 +38,8 @@ extension BCBook {
     
     let large: String?
     
-    enum CodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey, CaseIterable {
       case small, medium, large
     }
-    
-    //  init(result: Row) {
-    //    self.small = result[BCImagesDBD.small]
-    //    self.medium = result[BCImagesDBD.medium]
-    //    self.large = result[BCImagesDBD.large]
-    //  }
   }
 }
-
-//struct BCImagesDB {
-//
-//  static let `default` = BCImagesDB()
-//
-//  let bookID = Expression<Int64>("book_id")
-//
-//  let small = Expression<String?>(BCImages.CodingKeys.small.rawValue)
-//
-//  let medium = Expression<String?>(BCImages.CodingKeys.medium.rawValue)
-//
-//  let large = Expression<String?>(BCImages.CodingKeys.large.rawValue)
-//}

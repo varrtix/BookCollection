@@ -27,9 +27,6 @@
 /// THE SOFTWARE.
 
 import Foundation
-//import SQLite
-
-//let BCTagDBD = BCTagDB.default
 
 extension BCBook {
   
@@ -41,24 +38,8 @@ extension BCBook {
     
     let title: String?
     
-    enum CodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey, CaseIterable {
       case count, title
     }
-    
-    //  init(result: Row) {
-    //    self.count = result[BCTagDBD.count]
-    //    self.title = result[BCTagDBD.title]
-    //  }
   }
 }
-  
-//struct BCTagDB {
-//
-//  static let `default` = BCTagDB()
-//
-//  let bookID = Expression<Int64>("book_id")
-//
-//  let count = Expression<Int?>(BCTag.CodingKeys.count.rawValue)
-//
-//  let title = Expression<String?>(BCTag.CodingKeys.title.rawValue)
-//}

@@ -27,9 +27,6 @@
 /// THE SOFTWARE.
 
 import Foundation
-//import SQLite
-
-//let BCRatingDBD = BCRatingDB.default
 
 extension BCBook {
   
@@ -43,29 +40,8 @@ extension BCBook {
     
     let min: Int?
     
-    enum CodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey, CaseIterable {
       case max, numRaters, average, min
     }
   }
-  //  init(result: Row) {
-  //    self.max = result[BCRatingDBD.max]
-  //    self.numRaters = result[BCRatingDBD.numRaters]
-  //    self.min = result[BCRatingDBD.min]
-  //    self.average = result[BCRatingDBD.average]
-  //  }
 }
-
-//struct BCRatingDB {
-//
-//  static let `default` = BCRatingDB()
-//
-//  let bookID = Expression<Int64>("book_id")
-//
-//  let max = Expression<Int?>(BCRating.CodingKeys.max.rawValue)
-//
-//  let numRaters = Expression<Int?>(BCRating.CodingKeys.numRaters.rawValue)
-//
-//  let average = Expression<String?>(BCRating.CodingKeys.average.rawValue)
-//
-//  let min = Expression<Int?>(BCRating.CodingKeys.min.rawValue)
-//}

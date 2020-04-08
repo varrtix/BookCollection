@@ -27,9 +27,6 @@
 /// THE SOFTWARE.
 
 import Foundation
-//import SQLite
-
-//let BCSeriesDBD = BCSeriesDB.default
 
 extension BCBook {
   
@@ -39,25 +36,9 @@ extension BCBook {
     
     let title: String?
     
-    enum CodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey, CaseIterable {
       case seriesID = "id"
       case title
     }
-    
-    //  init(result: Row) {
-    //    self.seriesID = result[BCSeriesDBD.seriesID]
-    //    self.title = result[BCSeriesDBD.title]
-    //  }
   }
 }
-//
-//struct BCSeriesDB {
-//
-//  static let `default` = BCSeriesDB()
-//
-//  let bookID = Expression<Int64>("book_id")
-//
-//  let seriesID = Expression<String?>(BCSeries.CodingKeys.seriesID.rawValue)
-//
-//  let title = Expression<String?>(BCSeries.CodingKeys.title.rawValue)
-//}
