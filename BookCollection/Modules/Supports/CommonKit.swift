@@ -28,7 +28,7 @@
 
 import UIKit
 
-// MARK: - UIColor Extensions
+// MARK: - UIColor Extension
 public extension UIColor {
   convenience init(R: Int, G: Int, B: Int, A: Float) {
     assert(0...255 ~= R, "Invalid red component")
@@ -93,19 +93,20 @@ public extension UIColor {
   }
 }
 
-// MARK: - UIAlertController Extensions
+// MARK: - UIAlertController extension
 public extension UIAlertController {
   func addActions(_ actions: [UIAlertAction]) { actions.forEach { addAction($0) } }
 }
 
+// MARK: - Async operation
 public class AsyncOperation: Operation {
-  public enum State: String {
+  enum State: String {
     case Ready, Executing, Finished
     
     fileprivate var keyPath: String { "is" + rawValue }
   }
   
-  public var state = State.Ready {
+  var state = State.Ready {
     willSet {
       willChangeValue(forKey: newValue.keyPath)
       willChangeValue(forKey: state.keyPath)
@@ -139,12 +140,14 @@ public extension AsyncOperation {
   override func cancel() { state = .Finished }
 }
 
+// MARK: - FileManager extension
 public extension FileManager {
-  static var documentDirectoryURL: URL {
+  static var documentDirectory: URL {
     `default`.urls(for: .documentDirectory, in: .userDomainMask)[0]
   }
 }
 
+// MARK: - Common error
 public enum V2RXError: Error {
   public enum Fatal: Error {
     case location(method: String)
@@ -158,7 +161,7 @@ public enum V2RXError: Error {
   }
 }
 
-extension V2RXError: LocalizedError {
+public extension V2RXError: LocalizedError {
   static func printError(_ error: Error) {
     print(
       "V2RXError:\nDescription: \(error.localizedDescription)\n" +
@@ -191,6 +194,7 @@ public extension V2RXError.DataAccessObjects {
   }
 }
 
+// MARK: - UIViewController extension
 public extension UIViewController {
   func prepareMove(toParent: UIViewController?, catching handle: @escaping () -> Void) {
     DispatchQueue.main.async {

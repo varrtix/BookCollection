@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		3BEED3F04E181CF248F232A1 /* Pods_BookCollection.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DFCA765E26B5A9157283683 /* Pods_BookCollection.framework */; };
-		560175DC2424742A008C9578 /* BCTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175DB2424742A008C9578 /* BCTag.swift */; };
-		560175DE242477C8008C9578 /* BCImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175DD242477C8008C9578 /* BCImages.swift */; };
-		560175E02424789C008C9578 /* BCSeries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175DF2424789C008C9578 /* BCSeries.swift */; };
-		560175E324247979008C9578 /* BCRating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175E224247979008C9578 /* BCRating.swift */; };
-		560175E524247A00008C9578 /* BCAuthor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175E424247A00008C9578 /* BCAuthor.swift */; };
+		560175DC2424742A008C9578 /* BCBook+Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175DB2424742A008C9578 /* BCBook+Tag.swift */; };
+		560175DE242477C8008C9578 /* BCBook+Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175DD242477C8008C9578 /* BCBook+Images.swift */; };
+		560175E02424789C008C9578 /* BCBook+Series.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175DF2424789C008C9578 /* BCBook+Series.swift */; };
+		560175E324247979008C9578 /* BCBook+Rating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175E224247979008C9578 /* BCBook+Rating.swift */; };
+		560175E524247A00008C9578 /* BCBook+Author.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175E424247A00008C9578 /* BCBook+Author.swift */; };
 		560175EB24250385008C9578 /* BCBookInfoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175EA24250385008C9578 /* BCBookInfoService.swift */; };
 		560522DB242DBF4C00A11316 /* BCBookListService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560522DA242DBF4C00A11316 /* BCBookListService.swift */; };
 		560522DE242DD48A00A11316 /* BCListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560522DD242DD48A00A11316 /* BCListTableViewController.swift */; };
@@ -77,11 +77,11 @@
 
 /* Begin PBXFileReference section */
 		3DFCA765E26B5A9157283683 /* Pods_BookCollection.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BookCollection.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		560175DB2424742A008C9578 /* BCTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCTag.swift; sourceTree = "<group>"; };
-		560175DD242477C8008C9578 /* BCImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCImages.swift; sourceTree = "<group>"; };
-		560175DF2424789C008C9578 /* BCSeries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCSeries.swift; sourceTree = "<group>"; };
-		560175E224247979008C9578 /* BCRating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCRating.swift; sourceTree = "<group>"; };
-		560175E424247A00008C9578 /* BCAuthor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCAuthor.swift; sourceTree = "<group>"; };
+		560175DB2424742A008C9578 /* BCBook+Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCBook+Tag.swift"; sourceTree = "<group>"; };
+		560175DD242477C8008C9578 /* BCBook+Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCBook+Images.swift"; sourceTree = "<group>"; };
+		560175DF2424789C008C9578 /* BCBook+Series.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCBook+Series.swift"; sourceTree = "<group>"; };
+		560175E224247979008C9578 /* BCBook+Rating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCBook+Rating.swift"; sourceTree = "<group>"; };
+		560175E424247A00008C9578 /* BCBook+Author.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCBook+Author.swift"; sourceTree = "<group>"; };
 		560175EA24250385008C9578 /* BCBookInfoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCBookInfoService.swift; sourceTree = "<group>"; };
 		560522DA242DBF4C00A11316 /* BCBookListService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCBookListService.swift; sourceTree = "<group>"; };
 		560522DD242DD48A00A11316 /* BCListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCListTableViewController.swift; sourceTree = "<group>"; };
@@ -214,16 +214,15 @@
 		563F9C87241B7BDA005B8E5E /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				56EFF05F243C938B00125610 /* Supports */,
 				56C983BE2439BD5E0006F878 /* Networking */,
 				567D764A24239FA300F94CD6 /* Stores */,
 				562725F0242A5DC500E6C8EC /* DAO */,
 				567D76472423619C00F94CD6 /* Database */,
 				5675CA2B2417652300437044 /* AppDelegate */,
 				5675CA292417642500437044 /* Storyboards */,
-				563F9C83241B7B85005B8E5E /* BCSupportKit.swift */,
 				563B7FD82434710700664960 /* BCISBNCaptor.swift */,
 				56EC7408242711C300C684B6 /* BCResult.swift */,
-				563F9C85241B7BCE005B8E5E /* CommonKit.swift */,
 				56BB95B32426313000555EEA /* BCDatabase.swift */,
 			);
 			path = Modules;
@@ -257,11 +256,11 @@
 			isa = PBXGroup;
 			children = (
 				5671DDFF2419FEDC00979210 /* BCBook.swift */,
-				560175DB2424742A008C9578 /* BCTag.swift */,
-				560175DD242477C8008C9578 /* BCImages.swift */,
-				560175DF2424789C008C9578 /* BCSeries.swift */,
-				560175E224247979008C9578 /* BCRating.swift */,
-				560175E424247A00008C9578 /* BCAuthor.swift */,
+				560175DB2424742A008C9578 /* BCBook+Tag.swift */,
+				560175DD242477C8008C9578 /* BCBook+Images.swift */,
+				560175DF2424789C008C9578 /* BCBook+Series.swift */,
+				560175E224247979008C9578 /* BCBook+Rating.swift */,
+				560175E424247A00008C9578 /* BCBook+Author.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -389,6 +388,15 @@
 				5675CA2A2417644600437044 /* Assets */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		56EFF05F243C938B00125610 /* Supports */ = {
+			isa = PBXGroup;
+			children = (
+				563F9C83241B7B85005B8E5E /* BCSupportKit.swift */,
+				563F9C85241B7BCE005B8E5E /* CommonKit.swift */,
+			);
+			path = Supports;
 			sourceTree = "<group>";
 		};
 		61C4266BA1D85BAB2D658C5D /* Pods */ = {
@@ -589,18 +597,18 @@
 				561B9231243AC95B0039FA4B /* BCTabBarViewController.swift in Sources */,
 				560522DB242DBF4C00A11316 /* BCBookListService.swift in Sources */,
 				56BC57932435C689007D972F /* BCScanViewController+Alert.swift in Sources */,
-				560175E02424789C008C9578 /* BCSeries.swift in Sources */,
+				560175E02424789C008C9578 /* BCBook+Series.swift in Sources */,
 				5632C66A242B04590094E804 /* BCRatingDAO.swift in Sources */,
 				564CC8952417911000E9D08B /* BCScanView.swift in Sources */,
 				5675CA272417637100437044 /* BCNavigationController.swift in Sources */,
 				56BB95B42426313000555EEA /* BCDatabase.swift in Sources */,
 				567D764D2423B17000F94CD6 /* BCDataAccessObjects.swift in Sources */,
-				560175E524247A00008C9578 /* BCAuthor.swift in Sources */,
+				560175E524247A00008C9578 /* BCBook+Author.swift in Sources */,
 				56C983C02439F1FD0006F878 /* BCBookshelf.swift in Sources */,
-				560175DE242477C8008C9578 /* BCImages.swift in Sources */,
+				560175DE242477C8008C9578 /* BCBook+Images.swift in Sources */,
 				5625EFEB242F1114001E1D6D /* BCListTableViewCell.swift in Sources */,
 				5632C668242B04510094E804 /* BCImagesDAO.swift in Sources */,
-				560175E324247979008C9578 /* BCRating.swift in Sources */,
+				560175E324247979008C9578 /* BCBook+Rating.swift in Sources */,
 				56EC7409242711C300C684B6 /* BCResult.swift in Sources */,
 				5632C664242B04370094E804 /* BCTagDAO.swift in Sources */,
 				560522E0242DD49E00A11316 /* BCListCollectionViewController.swift in Sources */,
@@ -611,7 +619,7 @@
 				567B0A4624167A2D00B595A7 /* AppDelegate.swift in Sources */,
 				563F9C84241B7B85005B8E5E /* BCSupportKit.swift in Sources */,
 				56BCB9692428F18300B4D7CA /* BCDBTable.swift in Sources */,
-				560175DC2424742A008C9578 /* BCTag.swift in Sources */,
+				560175DC2424742A008C9578 /* BCBook+Tag.swift in Sources */,
 				563B7FD724346D4600664960 /* BCBook+Networking.swift in Sources */,
 				563B7FD92434710700664960 /* BCISBNCaptor.swift in Sources */,
 				5632C660242B027D0094E804 /* BCAuthorDAO.swift in Sources */,
@@ -794,7 +802,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8357EARWFK;
-				INFOPLIST_FILE = "$(SRCROOT)/BookCollection/AppDelegate/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/BookCollection/Modules/AppDelegate/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -814,7 +822,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8357EARWFK;
-				INFOPLIST_FILE = "$(SRCROOT)/BookCollection/AppDelegate/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/BookCollection/Modules/AppDelegate/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

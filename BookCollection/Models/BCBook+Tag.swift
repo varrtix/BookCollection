@@ -27,38 +27,38 @@
 /// THE SOFTWARE.
 
 import Foundation
-import SQLite
+//import SQLite
 
-let BCImagesDBD = BCImagesDB.default
+//let BCTagDBD = BCTagDB.default
 
-struct BCImages: Codable {
-
-  let small: String?
+extension BCBook {
   
-  let medium: String?
+  typealias Tags = [Tag]
   
-  let large: String?
-  
-  enum CodingKeys: String, CodingKey {
-    case small, medium, large
-  }
-  
-  init(result: Row) {
-    self.small = result[BCImagesDBD.small]
-    self.medium = result[BCImagesDBD.medium]
-    self.large = result[BCImagesDBD.large]
+  struct Tag: Codable {
+    
+    let count: Int?
+    
+    let title: String?
+    
+    enum CodingKeys: String, CodingKey {
+      case count, title
+    }
+    
+    //  init(result: Row) {
+    //    self.count = result[BCTagDBD.count]
+    //    self.title = result[BCTagDBD.title]
+    //  }
   }
 }
-
-struct BCImagesDB {
   
-  static let `default` = BCImagesDB()
-  
-  let bookID = Expression<Int64>("book_id")
-  
-  let small = Expression<String?>(BCImages.CodingKeys.small.rawValue)
-  
-  let medium = Expression<String?>(BCImages.CodingKeys.medium.rawValue)
-  
-  let large = Expression<String?>(BCImages.CodingKeys.large.rawValue)
-}
+//struct BCTagDB {
+//
+//  static let `default` = BCTagDB()
+//
+//  let bookID = Expression<Int64>("book_id")
+//
+//  let count = Expression<Int?>(BCTag.CodingKeys.count.rawValue)
+//
+//  let title = Expression<String?>(BCTag.CodingKeys.title.rawValue)
+//}

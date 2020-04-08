@@ -27,23 +27,37 @@
 /// THE SOFTWARE.
 
 import Foundation
-import SQLite
+//import SQLite
 
-let BCAuthorDBD = BCAuthorDB.default
+//let BCAuthorDBD = BCAuthorDB.default
 
-let BCTranslatorDBD = BCTranslatorDB.default
+//let BCTranslatorDBD = BCTranslatorDB.default
 
-struct BCAuthorDB {
+//struct BCAuthorDB {
   
-  static let `default` = BCAuthorDB()
+//  static let `default` = BCAuthorDB()
 
-  let bookID = Expression<Int64>("book_id")
+//  let bookID = Expression<Int64>("book_id")
   
-  let name = Expression<String?>("name")
+//  let name = Expression<String?>("name")
+//}
+
+//typealias BCTranslatorDB = BCAuthorDB
+
+//typealias BCAuthor = String
+
+//typealias BCTranslator = String
+
+extension BCBook {
+  
+  typealias Author = String
+  
+  typealias Authors = [Author]
 }
 
-typealias BCTranslatorDB = BCAuthorDB
-
-typealias BCAuthor = String
-
-typealias BCTranslator = String
+extension BCBook {
+  
+  typealias Translator = String
+  
+  typealias Translators = [Translator]
+}

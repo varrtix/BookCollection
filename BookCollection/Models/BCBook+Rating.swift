@@ -27,34 +27,45 @@
 /// THE SOFTWARE.
 
 import Foundation
-import SQLite
+//import SQLite
 
-let BCSeriesDBD = BCSeriesDB.default
+//let BCRatingDBD = BCRatingDB.default
 
-struct BCSeries: Codable {
+extension BCBook {
   
-  let seriesID: String?
-  
-  let title: String?
-  
-  enum CodingKeys: String, CodingKey {
-    case seriesID = "id"
-    case title
+  struct Rating: Codable {
+    
+    let max: Int?
+    
+    let numRaters: Int?
+    
+    let average: String?
+    
+    let min: Int?
+    
+    enum CodingKeys: String, CodingKey {
+      case max, numRaters, average, min
+    }
   }
-  
-  init(result: Row) {
-    self.seriesID = result[BCSeriesDBD.seriesID]
-    self.title = result[BCSeriesDBD.title]
-  }
+  //  init(result: Row) {
+  //    self.max = result[BCRatingDBD.max]
+  //    self.numRaters = result[BCRatingDBD.numRaters]
+  //    self.min = result[BCRatingDBD.min]
+  //    self.average = result[BCRatingDBD.average]
+  //  }
 }
 
-struct BCSeriesDB {
-  
-  static let `default` = BCSeriesDB()
-  
-  let bookID = Expression<Int64>("book_id")
-  
-  let seriesID = Expression<String?>(BCSeries.CodingKeys.seriesID.rawValue)
-  
-  let title = Expression<String?>(BCSeries.CodingKeys.title.rawValue)
-}
+//struct BCRatingDB {
+//
+//  static let `default` = BCRatingDB()
+//
+//  let bookID = Expression<Int64>("book_id")
+//
+//  let max = Expression<Int?>(BCRating.CodingKeys.max.rawValue)
+//
+//  let numRaters = Expression<Int?>(BCRating.CodingKeys.numRaters.rawValue)
+//
+//  let average = Expression<String?>(BCRating.CodingKeys.average.rawValue)
+//
+//  let min = Expression<Int?>(BCRating.CodingKeys.min.rawValue)
+//}

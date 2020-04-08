@@ -27,31 +27,37 @@
 /// THE SOFTWARE.
 
 import Foundation
-import SQLite
+//import SQLite
 
-let BCTagDBD = BCTagDB.default
+//let BCSeriesDBD = BCSeriesDB.default
 
-struct BCTag: Codable {
-
-  let count: Int?
+extension BCBook {
   
-  let title: String?
-  
-  enum CodingKeys: String, CodingKey { case count, title }
-  
-  init(result: Row) {
-    self.count = result[BCTagDBD.count]
-    self.title = result[BCTagDBD.title]
+  struct Series: Codable {
+    
+    let seriesID: String?
+    
+    let title: String?
+    
+    enum CodingKeys: String, CodingKey {
+      case seriesID = "id"
+      case title
+    }
+    
+    //  init(result: Row) {
+    //    self.seriesID = result[BCSeriesDBD.seriesID]
+    //    self.title = result[BCSeriesDBD.title]
+    //  }
   }
 }
-  
-struct BCTagDB {
-  
-  static let `default` = BCTagDB()
-  
-  let bookID = Expression<Int64>("book_id")
-  
-  let count = Expression<Int?>(BCTag.CodingKeys.count.rawValue)
-  
-  let title = Expression<String?>(BCTag.CodingKeys.title.rawValue)
-}
+//
+//struct BCSeriesDB {
+//
+//  static let `default` = BCSeriesDB()
+//
+//  let bookID = Expression<Int64>("book_id")
+//
+//  let seriesID = Expression<String?>(BCSeries.CodingKeys.seriesID.rawValue)
+//
+//  let title = Expression<String?>(BCSeries.CodingKeys.title.rawValue)
+//}

@@ -27,9 +27,9 @@
 /// THE SOFTWARE.
 
 import Foundation
-import SQLite
+//import SQLite
 
-let BCBookDBD = BCBookDB.default
+//let BCBookDBD = BCBookDB.default
 
 //struct BCBook: BCCodable {
 struct BCBook: Codable {
@@ -64,23 +64,28 @@ struct BCBook: Codable {
   
   let price: String?
   
-  let authors: [String]?
+//  let authors: [String]?
+  let authors: Authors?
 //  var authors: [String]?
   
 //  var translators: [String]?
-  let translators: [String]?
+  let translators: Translators?
   
-  let tags: [BCTag]?
+//  let tags: [BCTag]?
+  let tags: Tags?
 //  var tags: [BCTag]?
   
 //  var images: BCImages?
-  let images: BCImages?
+//  let images: BCImages?
+  let images: Images?
   
 //  var series: BCSeries?
-  let series: BCSeries?
+//  let series: BCSeries?
+  let series: Series?
   
 //  var rating: BCRating?
-  let rating: BCRating?
+//  let rating: BCRating?
+  let rating: Rating?
   
   enum CodingKeys: String, CodingKey {
     case doubanID = "id"
@@ -94,7 +99,7 @@ struct BCBook: Codable {
     case translators = "translator"
     case tags, images, series, rating
   }
-  
+}
 //  var type: SourceType = .networking
   
 //  init(
@@ -132,7 +137,7 @@ struct BCBook: Codable {
     
 //    self.type = type
 //  }
-}
+//}
 
 //extension BCBook {
 //  enum SourceType: String {
@@ -141,39 +146,39 @@ struct BCBook: Codable {
 //}
 
 //struct BCBookDB: BCDBModel {
-struct BCBookDB {
-  
-  static let `default` = BCBookDB()
-  
-  let id = Expression<Int64>("local_id")
-  
-  let doubanID = Expression<String>(BCBook.CodingKeys.doubanID.rawValue)
-  
-  let title = Expression<String?>(BCBook.CodingKeys.title.rawValue)
-  
-  let subtitle = Expression<String?>(BCBook.CodingKeys.subtitle.rawValue)
-  
-  let originTitle = Expression<String?>(BCBook.CodingKeys.originTitle.rawValue)
-  
-  let publishedDate = Expression<String?>(BCBook.CodingKeys.publishedDate.rawValue)
-  
-  let publisher = Expression<String?>(BCBook.CodingKeys.publisher.rawValue)
-  
-  let isbn10 = Expression<String?>(BCBook.CodingKeys.isbn10.rawValue)
-  
-  let isbn13 = Expression<String?>(BCBook.CodingKeys.isbn13.rawValue)
-  
-  let image = Expression<String?>(BCBook.CodingKeys.image.rawValue)
-  
-  let binding = Expression<String?>(BCBook.CodingKeys.binding.rawValue)
-  
-  let authorIntroduction = Expression<String?>(BCBook.CodingKeys.authorIntroduction.rawValue)
-  
-  let catalog = Expression<String?>(BCBook.CodingKeys.catalog.rawValue)
-  
-  let pages = Expression<String?>(BCBook.CodingKeys.pages.rawValue)
-  
-  let summary = Expression<String?>(BCBook.CodingKeys.summary.rawValue)
-  
-  let price = Expression<String?>(BCBook.CodingKeys.price.rawValue)
-}
+//struct BCBookDB {
+//
+//  static let `default` = BCBookDB()
+//
+//  let id = Expression<Int64>("local_id")
+//
+//  let doubanID = Expression<String>(BCBook.CodingKeys.doubanID.rawValue)
+//
+//  let title = Expression<String?>(BCBook.CodingKeys.title.rawValue)
+//
+//  let subtitle = Expression<String?>(BCBook.CodingKeys.subtitle.rawValue)
+//
+//  let originTitle = Expression<String?>(BCBook.CodingKeys.originTitle.rawValue)
+//
+//  let publishedDate = Expression<String?>(BCBook.CodingKeys.publishedDate.rawValue)
+//
+//  let publisher = Expression<String?>(BCBook.CodingKeys.publisher.rawValue)
+//
+//  let isbn10 = Expression<String?>(BCBook.CodingKeys.isbn10.rawValue)
+//
+//  let isbn13 = Expression<String?>(BCBook.CodingKeys.isbn13.rawValue)
+//
+//  let image = Expression<String?>(BCBook.CodingKeys.image.rawValue)
+//
+//  let binding = Expression<String?>(BCBook.CodingKeys.binding.rawValue)
+//
+//  let authorIntroduction = Expression<String?>(BCBook.CodingKeys.authorIntroduction.rawValue)
+//
+//  let catalog = Expression<String?>(BCBook.CodingKeys.catalog.rawValue)
+//
+//  let pages = Expression<String?>(BCBook.CodingKeys.pages.rawValue)
+//
+//  let summary = Expression<String?>(BCBook.CodingKeys.summary.rawValue)
+//
+//  let price = Expression<String?>(BCBook.CodingKeys.price.rawValue)
+//}
