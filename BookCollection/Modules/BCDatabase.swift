@@ -37,9 +37,10 @@ final class BCDatabase {
   
   var connection: Connection? {
     do {
-      let connection = try Connection(file)
-      _ = try connection.prepare("PRAGMA FOREIGN_KEYS=ON")
-      return connection
+      return try Connection(file)
+//      let connection = try Connection(file)
+//      _ = try connection.prepare("PRAGMA FOREIGN_KEYS = ON")
+//      return connection
     } catch {
       print("Connect error: \(error)\nfunction: \(#function), line: \(#line) in \(#file).")
       return nil
@@ -68,5 +69,24 @@ final class BCDatabase {
     }
     
     return self
+  }
+}
+
+extension Connection {
+  func pragma(_ pragma: Pragma) -> Self {
+    _ = try? self.prepare("PRAGMA " + pragma.statement)
+    return self
+  }
+  
+  enum Pragma {
+    case fetch(String)
+    case foreignKeys(Bool)
+    
+    var statement: String {
+      switch self {
+        case let .foreignKeys(sign): return "FOREIGN_KEYS = \(sign ? "ON" : "OFF")"
+        case let .fetch(value): return value
+      }
+    }
   }
 }
