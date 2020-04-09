@@ -33,13 +33,13 @@ let DB = BCDatabase.shared
 
 let TB = BCDatabase.Table.shared
 
-//let TO = BCDatabase.TableOperation.shared
+let TO = BCDatabase.TableOperation.shared
 
 final class BCDatabase {
   
   static let shared = BCDatabase()
   
-  let TO = TableOperation.shared
+//  let TO = TableOperation.shared
   
 //  let TB = Table.shared
 
@@ -78,6 +78,11 @@ final class BCDatabase {
 }
 
 extension Connection {
+  
+  convenience init(_ url: URL, readonly: Bool = false) throws {
+    try self.init(url.absoluteString, readonly: readonly)
+  }
+  
   func pragma(_ pragma: Pragma) -> Self {
     _ = try? self.prepare("PRAGMA " + pragma.statement)
     return self

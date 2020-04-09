@@ -30,30 +30,30 @@ import Foundation
 import SQLite
 
 protocol BCConvertibleExpression {
-
+  
   func int64Exp(_ key: String) -> Expression<Int64>
   
   func int64Exp(_ key: CodingKey) -> Expression<Int64>
   
   func optIntExp(_ key: String) -> Expression<Int?>
-
+  
   func optIntExp(_ key: CodingKey) -> Expression<Int?>
   
   func stringExp(_ key: String) -> Expression<String>
-
+  
   func stringExp(_ key: CodingKey) -> Expression<String>
   
   func optStringExp(_ key: String) -> Expression<String?>
-
+  
   func optStringExp(_ key: CodingKey) -> Expression<String?>
 }
 
 extension BCDatabase {
   
   class Table: BCConvertibleExpression {
-
+    
     static let shared = Table()
-
+    
     enum Kind: String, CaseIterable {
       case book, authors, translators
       case tags, images, series, rating
@@ -80,7 +80,7 @@ extension BCDatabase {
     func optStringExp(_ key: String) -> Expression<String?> {
       Expression<String?>(key)
     }
-
+    
     func optStringExp(_ key: CodingKey) -> Expression<String?> {
       optStringExp(key.stringValue)
     }
@@ -96,67 +96,107 @@ extension BCDatabase {
 }
 
 extension BCDatabase.Table.Kind {
-
+  
   var table: Table { Table(self.raw) }
-
-  var columns: [Expressible] {
-    var columns: [Expressible] = [Expression<Int64>("book_id")]
-    
-    switch self {
-      case .book:
-        columns = [Expression<Int64>("local_id")]
-        columns += BCBook.CodingKeys.allCases.compactMap {
-          element -> Expressible? in
-          
-          switch element {
-            case .doubanID: return Expression<String>(element.rawValue)
-            case .authors, .translators, .tags, .images, .series, .rating: return nil
-            default: return Expression<String?>(element.rawValue)
-          }
+  
+  func create(with connection: Connection) {
+    do {
+      switch self {
+        case .book:
+          try connection.run(self.table.create(ifNotExists: true) {
+            $0.column(TBBook.id, primaryKey: .autoincrement)
+            $0.column(TBBook.doubanID, unique: true)
+            $0.column(TBBook.title)
+            $0.column(TBBook.subtitle)
+            $0.column(TBBook.originTitle)
+            $0.column(TBBook.publishedDate)
+            $0.column(TBBook.publisher)
+            $0.column(TBBook.isbn10)
+            $0.column(TBBook.isbn13)
+            $0.column(TBBook.image)
+            $0.column(TBBook.binding)
+            $0.column(TBBook.authorIntroduction)
+            $0.column(TBBook.catalog)
+            $0.column(TBBook.pages)
+            $0.column(TBBook.summary)
+            $0.column(TBBook.price)
+          })
+        
+        case .tags:
+          try connection.run(self.table.create(ifNotExists: true) {
+            $0.column(TBTags.id)
+            $0.column(TBTags.count)
+            $0.column(TBTags.title)
+            $0.foreignKey(
+              TBTags.id,
+              references: self.table, TBBook.id,
+              delete: .cascade
+            )
+          })
+        
+        case .images:
+          try connection.run(self.table.create(ifNotExists: true) {
+            $0.column(TBImages.id)
+            $0.column(TBImages.small)
+            $0.column(TBImages.medium)
+            $0.column(TBImages.large)
+            $0.foreignKey(
+              TBImages.id,
+              references: self.table, TBBook.id,
+              delete: .cascade
+            )
+          })
+        
+        case .series:
+          try connection.run(self.table.create(ifNotExists: true) {
+            $0.column(TBSeries.id)
+            $0.column(TBSeries.seriesID)
+            $0.column(TBSeries.title)
+            $0.foreignKey(
+              TBSeries.id,
+              references: self.table, TBBook.id,
+              delete: .cascade
+            )
+          })
+        
+        case .rating:
+          try connection.run(self.table.create(ifNotExists: true) {
+            $0.column(TBRating.id)
+            $0.column(TBRating.max)
+            $0.column(TBRating.numRaters)
+            $0.column(TBRating.min)
+            $0.column(TBRating.average)
+            $0.foreignKey(
+              TBRating.id,
+              references: self.table, TBBook.id,
+              delete: .cascade
+            )
+          })
+        
+        case .authors:
+          try connection.run(self.table.create(ifNotExists: true) {
+            $0.column(TBAuthors.id)
+            $0.column(TBAuthors.name)
+            $0.foreignKey(
+              TBAuthors.id,
+              references: self.table, TBBook.id,
+              delete: .cascade
+            )
+          })
+        
+        case .translators:
+          try connection.run(self.table.create(ifNotExists: true) {
+            $0.column(TBTranslators.id)
+            $0.column(TBTranslators.name)
+            $0.foreignKey(
+              TBTranslators.id,
+              references: self.table, TBBook.id,
+              delete: .cascade
+            )
+          })
       }
-      
-      case .authors, .translators:
-        columns.append(Expression<String?>("name"))
-      
-      case .tags:
-        columns += BCBook.Tag.CodingKeys.allCases.compactMap {
-          element -> Expressible? in
-          
-          switch element {
-            case .count: return Expression<Int?>(element.rawValue)
-            case .title: return Expression<String?>(element.rawValue)
-          }
-      }
-      
-      case .images:
-        columns += BCBook.Images.CodingKeys.allCases.compactMap {
-          element -> Expressible? in
-          
-          switch element {
-            default: return Expression<String?>(element.rawValue)
-          }
-      }
-      
-      case .series:
-        columns += BCBook.Series.CodingKeys.allCases.compactMap {
-          element -> Expressible? in
-          
-          switch element {
-            default: return Expression<String?>(element.rawValue)
-          }
-      }
-      
-      case .rating:
-        columns += BCBook.Rating.CodingKeys.allCases.compactMap {
-          element -> Expressible? in
-          
-          switch element {
-            case .average: return Expression<String?>(element.rawValue)
-            default: return Expression<Int?>(element.rawValue)
-          }
-      }
+    } catch {
+      print("Create error: \(error)")
     }
-    
-    return columns
   }
 }

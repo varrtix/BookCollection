@@ -42,23 +42,8 @@ extension BCDatabase {
     
     override func main() {
       guard let connection = DB.validate().connection else { return }
-//      Table.Kind.allCases.forEach { kind in
-//        do {
-//          switch kind {
-//            default:
-//              try connection.run(kind.table.create(ifNotExists: true) { builder in
-//                builder.column(kind.columns[0])
-//              })
-//          }
-////          try connection.run(kind.table.create(ifNotExists: true) { builder in
-////            kind.columns.forEach { builder.column($0) }
-////          })
-//        } catch { }
-//      }
-      try connection.run(Table.Kind.book.table.create(ifNotExists: true) { builder in
-        builder.column(Expression<Int64>("local_id"))
-        
-      })
+      
+      Table.Kind.allCases.forEach { $0.create(with: connection) }
     }
   }
 }
