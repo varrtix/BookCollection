@@ -32,14 +32,6 @@ extension BCDatabase {
   
   final class TableOperation: AsyncOperation {
     
-    static let shared: TableOperation = {
-      let tableOperation = TableOperation()
-      
-      tableOperation.start()
-      
-      return tableOperation
-    }()
-    
     override func main() {
       guard let connection = DB.validate().connection else { return }
       

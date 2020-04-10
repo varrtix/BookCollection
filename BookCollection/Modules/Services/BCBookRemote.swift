@@ -27,28 +27,29 @@
 /// THE SOFTWARE.
 
 import Foundation
-import SQLite
+import Alamofire
 
-//let BCBookTable = BCDBTable.list[BCDBTable.Kind.book]!
-//let BCAuthorsTable = BCDBTable.list[BCDBTable.Kind.authors]!
-//let BCTranslatorsTable = BCDBTable.list[BCDBTable.Kind.translators]!
-//let BCTagsTable = BCDBTable.list[BCDBTable.Kind.tags]!
-//let BCImagesTable = BCDBTable.list[BCDBTable.Kind.images]!
-//let BCSeriesTable = BCDBTable.list[BCDBTable.Kind.series]!
-//let BCRatingTable = BCDBTable.list[BCDBTable.Kind.rating]!
-//
-struct BCDBTable {
+final class BCBookRemote {
   
-  enum Kind: String, CaseIterable {
-    case book, authors, translators
-    case tags, images, series, rating
-    
-    var raw: String { "TB_BC_\(self.rawValue.uppercased())" }
+  typealias BCBookResponseHandler = (AFDataResponse<BCBook>) -> Void
+  
+  private let url: URL?
+  
+  private let request: DataRequest?
+  
+  init(isbn: String) {
+    url = URL(string: BCRemote.bookRemote + isbn)
+    request = url == nil ? nil : AF.request(url!)
   }
   
-  static let list = Dictionary(
-    uniqueKeysWithValues: zip(
-      Kind.allCases,
-      Kind.allCases.map { Table($0.raw) })
-  )
+  func fetch(
+    at queue: DispatchQueue = .main,
+    completionHandler: @escaping BCBookResponseHandler
+  ) {
+    request?.validate().responseDecodable(of: BCBook.self) { response in
+      queue.async { completionHandler(response) }
+    }
+  }
+  
+  func cancel() { request?.cancel() }
 }

@@ -28,15 +28,35 @@
 
 import Foundation
 
-protocol BCDAO {
+struct BCRemote {
+  static let repo = "https://douban-api-git-master.zce.now.sh/"
   
-  func create(table name: String)
+//  static let bookURL = repo + "v2/book/isbn/"
+  enum HTTPMethodType: String {
+    case get, post, put, delete
+    
+    var method: String { self.rawValue.uppercased() }
+  }
   
-  func insert()
+  enum SourceType: String {
+    case book
+    
+//    var rawURL: String { repo + "v2/\(self.rawValue)/isbn/" }
+  }
   
-  func delete()
+  enum BookReq: String {
+    case isbn
+    
+    var method: HTTPMethodType {
+      switch self {
+        case .isbn: return .get
+      }
+    }
+  }
   
-  func update()
-  
-  func select()
+//  static func remote(type: SourceType, ) -> String {
+//    repo +
+//  }
+  // temp
+  static let bookRemote = repo + "v2/book/isbn/"
 }

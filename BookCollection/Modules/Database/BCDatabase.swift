@@ -33,16 +33,10 @@ let DB = BCDatabase.shared
 
 let TB = BCDatabase.Table.shared
 
-let TO = BCDatabase.TableOperation.shared
-
 final class BCDatabase {
   
   static let shared = BCDatabase()
   
-//  let TO = TableOperation.shared
-  
-//  let TB = Table.shared
-
   var connection: Connection? {
     do {
       return try Connection(file).pragma(.foreignKeys(true))

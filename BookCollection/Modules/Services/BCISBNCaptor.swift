@@ -28,16 +28,6 @@
 
 import AVFoundation
 
-//fileprivate enum CameraError: Error {
-//  case invalidDevice
-//  case inputCaptureError
-//}
-//typealias ISBNResult = Result<String, AVAuthorizationStatus>()
-//enum ISBNResult {
-//  case success(String)
-//  case failure(AVAuthorizationStatus)
-//  public init(catching body: () throws -> Success)
-//}
 enum CaptureError: Error {
   case invalidAuthorization(AVAuthorizationStatus)
   case invalidDevice
@@ -66,12 +56,19 @@ enum CaptureError: Error {
 }
 
 //typealias ISBNCaptorCompletion = (String) -> Void
-typealias ISBNCaptorCompletion = (Result<String, Error>) -> Void
+//typealias ISBNCaptorHandler = (Result<String, Error>) -> Void
 
 final class BCISBNCaptor: NSObject {
   
+  typealias ISBNResult = Result<String, Error>
+  
+  typealias ISBNCaptorHandler = (ISBNResult) -> Void
+  
   private let videoSession = AVCaptureSession()
   
+//  private let group = DispatchGroup()
+  
+//  private let result: ISBNResult
   //  private var videoAuthorization: AVAuthorizationStatus {
   //    AVCaptureDevice.authorizationStatus(for: .video)
   //  }
@@ -83,8 +80,10 @@ final class BCISBNCaptor: NSObject {
   var layer: CALayer { AVCaptureVideoPreviewLayer(session: videoSession) }
   
   //  var handler: BCISBNHandler?
-  private var completion: ISBNCaptorCompletion
+  private var completion: ISBNCaptorHandler?
   
+//  private var result: ISBNResult?
+  private var error: Error?
   //  private var isCommitted: Bool = false
   
   //  init(_ handler: @escaping BCISBNHandler) {
@@ -92,13 +91,18 @@ final class BCISBNCaptor: NSObject {
   //
   //    super.init()
   //  }
-  @discardableResult
-  init(_ completion: @escaping ISBNCaptorCompletion) {
-    self.completion = completion
+//  @discardableResult
+//  init(_ completion: @escaping ISBNCaptorHandler) {
+//    self.completion = completion
     
-    super.init()
+//    super.init()
     
     //    capture()
+//    launch()
+//  }
+  private override init() {
+    super.init()
+    
     launch()
   }
   
@@ -110,17 +114,20 @@ final class BCISBNCaptor: NSObject {
           if granted {
             self.capture()
           } else {
-            self.completion(
-              .failure(CaptureError.invalidAuthorization(.notDetermined))
-            )
+//            self.completion?(
+//              .failure(CaptureError.invalidAuthorization(.notDetermined))
+//            )
+            self.error = CaptureError.invalidAuthorization(.notDetermined)
           }
       }
-      case .denied: self.completion(
-        .failure(CaptureError.invalidAuthorization(.denied))
-      )
-      case .restricted: self.completion(
-        .failure(CaptureError.invalidAuthorization(.restricted))
-      )
+      case .denied, .restricted: self.error = CaptureError.invalidAuthorization(.denied)
+//      case .denied: self.completion?(
+//        .failure(CaptureError.invalidAuthorization(.denied))
+//      )
+//      case .restricted: self.error = CaptureError.invalidAuthorization(.restricted)
+//      case .restricted: self.completion?(
+//        .failure(CaptureError.invalidAuthorization(.restricted))
+//      )
       @unknown default: break
     }
   }
@@ -173,9 +180,10 @@ final class BCISBNCaptor: NSObject {
       
       videoSession.commitConfiguration()
       
-    } catch { completion(.failure(error)) }
+//    } catch { completion?(.failure(error)) }
+    } catch { self.error = error }
     
-    videoSession.startRunning()
+//    videoSession.startRunning()
     //      else { return nil }
     //
     //    guard let captureInput = try? AVCaptureDeviceInput(device: captureDevice)
@@ -208,6 +216,19 @@ final class BCISBNCaptor: NSObject {
     //    startup()
     //    return AVCaptureVideoPreviewLayer(session: session)
   }
+  
+  func output(_ completionHandler: @escaping ISBNCaptorHandler) {
+//    videoSession.startRunning()
+    
+    completion = completionHandler
+    
+    if let error = error {
+      //      completion?(.failure(error))
+      completion?(.failure(error))
+    } else {
+      videoSession.startRunning()
+    }
+  }
 }
 
 // MARK: - AVCaptureMetadataOutputObjectsDelegate
@@ -229,6 +250,6 @@ extension BCISBNCaptor: AVCaptureMetadataOutputObjectsDelegate {
     //    }
     //    stopRunning()
     //    if handler != nil { handler!(isbn) }
-    completion(.success(isbn))
+    completion?(.success(isbn))
   }
 }
