@@ -44,9 +44,9 @@ final class BCImagesCRUD: ForeignKeyCRUD {
   
   @discardableResult
   class func get(by id: Int64) throws -> BCBook.Images? {
-    let row = try DB.connection?
+    try DB.connection?
       .pluck(BCTableKind.images.table.filter(id == TBImages.id))
-    return row == nil ? nil : BCBook.Images(result: row!)
+      .map { BCBook.Images(result: $0) }
   }
 }
 

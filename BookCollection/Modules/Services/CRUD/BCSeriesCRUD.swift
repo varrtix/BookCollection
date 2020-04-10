@@ -43,9 +43,9 @@ final class BCSeriesCRUD: ForeignKeyCRUD {
   
   @discardableResult
   class func get(by id: Int64) throws -> BCBook.Series? {
-    let row = try DB.connection?
+    try DB.connection?
       .pluck(BCTableKind.series.table.filter(id == TBSeries.id))
-    return row == nil ? nil : BCBook.Series(result: row!)
+      .map { BCBook.Series(result: $0) }
   }
 }
 

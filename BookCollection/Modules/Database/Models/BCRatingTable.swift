@@ -28,7 +28,11 @@
 
 import Foundation
 
+let TBRating = BCRatingTable.shared
+
 struct BCRatingTable: BCTable {
+  
+  static let shared = BCRatingTable()
   
   typealias Keys = BCBook.Rating.CodingKeys
   

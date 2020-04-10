@@ -28,7 +28,11 @@
 
 import Foundation
 
+let TBTranslators = BCTranslatorsTable.shared
+
 struct BCTranslatorsTable: BCTable {
+  
+  static let shared = BCTranslatorsTable()
   
   typealias Keys = BCBook.Translator
   

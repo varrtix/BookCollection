@@ -31,11 +31,25 @@ import SQLite
 
 typealias BCTableKind = BCDatabase.Table.Kind
 
+typealias BCLimit = (offset: Int, size: Int)
+
 protocol PrimaryKeyCRUD {
   associatedtype Object: Codable
   
   @discardableResult
   static func insert(_ object: Object) throws -> Int64
+  
+  @discardableResult
+  static func get(by key: String) throws -> Object?
+  
+  @discardableResult
+  static func multiGet(limit: BCLimit) throws -> [Object]?
+  
+  @discardableResult
+  static func delete(by key: String) throws -> Int
+
+  @discardableResult
+  static func count() throws -> Int
 }
 
 protocol ForeignKeyCRUD {

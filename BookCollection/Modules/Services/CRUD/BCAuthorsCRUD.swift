@@ -29,33 +29,25 @@
 import Foundation
 import SQLite
 
-//struct BCTagDAO: BCDAO {
-//  typealias Model = BCTag
-
-struct BCTagDAO {
+final class BCAuthorsCRUD: ForeignKeyCRUD {
+  typealias Object = BCBook.Authors
   
   @discardableResult
-  static func insert(
-    or conflict: SQLite.OnConflict,
-    _ tag: BCTag,
-    by id: Int64,
-    with connection: Connection
-  ) throws -> Int64 {
-    try connection.run(BCTagsTable.insert(
-      or: conflict,
-      BCTagDBD.bookID <- id,
-      BCTagDBD.count <- tag.count,
-      BCTagDBD.title <- tag.title
-    ))
+  class func insert(_ object: BCBook.Authors, by id: Int64) throws -> Int64 {
+    try object.compactMap { obj in
+      try DB.connection?.run(BCTableKind.authors.table.insert(
+        TBAuthors.id <- id,
+        TBAuthors.name <- obj
+      ))
+    }.first ?? -1
   }
   
-  static func query(
-    by id: Int64,
-    with connection: Connection
-  ) throws -> [BCTag]? {
-    let tags = try connection
-      .prepare(BCTagsTable.filter(id == BCTagDBD.bookID))
-      .map { BCTag(result: $0) }
-    return tags.isEmpty ? nil : tags
+  @discardableResult
+  class func get(by id: Int64) throws -> BCBook.Authors? {
+    try DB.connection?
+      .prepare(BCTableKind.authors.table.filter(id == TBAuthors.id))
+      .compactMap { $0[TBAuthors.name] }
   }
 }
+
+typealias BCTranslatorsCRUD = BCAuthorsCRUD

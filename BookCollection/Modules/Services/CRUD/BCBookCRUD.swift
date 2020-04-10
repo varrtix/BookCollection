@@ -35,7 +35,7 @@ final class BCBookCRUD: PrimaryKeyCRUD {
   
   @discardableResult
   class func insert(_ object: BCBook) throws -> Int64 {
-    try DB.connection?.run(BCTableKind.book.table.insert(
+    let id = try DB.connection?.run(BCTableKind.book.table.insert(
       TBBook.doubanID <- object.doubanID,
       TBBook.title <- object.title,
       TBBook.subtitle <- object.subtitle,
@@ -52,35 +52,89 @@ final class BCBookCRUD: PrimaryKeyCRUD {
       TBBook.summary <- object.summary,
       TBBook.price <- object.price
     )) ?? -1
+    
+    guard id > 0 else { return id }
+    
+    if let tags = object.tags {
+      try BCTagsCRUD.insert(tags, by: id)
+    }
+    
+    if let images = object.images {
+      try BCImagesCRUD.insert(images, by: id)
+    }
+    
+    if let series = object.series {
+      try BCSeriesCRUD.insert(series, by: id)
+    }
+    
+    if let rating = object.rating {
+      try BCRatingCRUD.insert(rating, by: id)
+    }
+    
+    if let authors = object.authors {
+      try BCAuthorsCRUD.insert(authors, by: id)
+    }
+    
+    if let translators = object.translators {
+      try BCTranslatorsCRUD.insert(translators, by: id)
+    }
+    
+    return id
   }
   
-  //final class BCBookCRUD {
-  //  static func insert(or conflict: OnConflict, _ object: Codable, into table: Table, setters: Setter...) throws -> Int64 {
-  //    try DB.connection?.run(table.insert(setters)) ?? -1
-  //  }
-  //
-  //
-  //}
+  @discardableResult
+  class func get(by key: String) throws -> BCBook? {
+    try DB.connection?.pluck(
+      BCTableKind.book.table
+        .filter(key == (key.count == 10 ? TBBook.isbn10 : TBBook.isbn13)))
+      .map { try BCBook(result: $0) }
+  }
   
-  //  class func insert(_ object: BCBook) throws -> Int64 {
-  //    let id = try DB.connection?.run(TableKind.book.table.insert(
-  //      TBBook.doubanID <- book.doubanID,
-  //      TBBook.title <- book.title,
-  //      TBBook.subtitle <- book.subtitle,
-  //      TBBook.originTitle <- book.originTitle,
-  //      TBBook.publishedDate <- book.publishedDate,
-  //      TBBook.publisher <- book.publisher,
-  //      TBBook.isbn10 <- book.isbn10,
-  //      TBBook.isbn13 <- book.isbn13,
-  //      TBBook.image <- book.image,
-  //      TBBook.binding <- book.binding,
-  //      TBBook.authorIntroduction <- book.authorIntroduction,
-  //      TBBook.catalog <- book.catalog,
-  //      TBBook.pages <- book.pages,
-  //      TBBook.summary <- book.summary,
-  //      TBBook.price <- book.price
-  //    ))
-  //
-  //    return id ?? -1
-  //  }
+  @discardableResult
+  class func multiGet(limit: BCLimit) throws -> [BCBook]? {
+    try DB.connection?
+      .prepare(BCTableKind.book.table.limit(limit.size, offset: limit.offset))
+      .map { try BCBook(result: $0) }
+  }
+  
+  @discardableResult
+  class func delete(by key: String) throws -> Int {
+    try DB.connection?.run(
+      BCTableKind.book.table
+        .filter(key == TBBook.doubanID).delete()) ?? -1
+  }
+
+  @discardableResult
+  class func count() throws -> Int {
+    try DB.connection?.scalar(BCTableKind.book.table.count) ?? -1
+  }
+}
+
+fileprivate extension BCBook {
+  init(result: Row) throws {
+    let id = result[TBBook.id]
+    self.init(
+      doubanID: result[TBBook.doubanID],
+      title: result[TBBook.title],
+      subtitle: result[TBBook.subtitle],
+      originTitle: result[TBBook.originTitle],
+      publishedDate: result[TBBook.publishedDate],
+      publisher: result[TBBook.publisher],
+      isbn10: result[TBBook.isbn10],
+      isbn13: result[TBBook.isbn13],
+      image: result[TBBook.image],
+      binding: result[TBBook.binding],
+      authorIntroduction: result[TBBook.authorIntroduction],
+      catalog: result[TBBook.catalog],
+      pages: result[TBBook.pages],
+      summary: result[TBBook.summary],
+      price: result[TBBook.price],
+      authors: try BCAuthorsCRUD.get(by: id),
+      translators: try BCTranslatorsCRUD.get(by: id),
+      tags: try BCTagsCRUD.get(by: id),
+      images: try BCImagesCRUD.get(by: id),
+      series: try BCSeriesCRUD.get(by: id),
+      rating: try BCRatingCRUD.get(by: id)
+    )
+  }
 }

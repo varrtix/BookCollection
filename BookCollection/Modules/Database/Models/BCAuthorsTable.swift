@@ -28,7 +28,11 @@
 
 import Foundation
 
+let TBAuthors = BCAuthorsTable.shared
+
 struct BCAuthorsTable: BCTable {
+  
+  static let shared = BCAuthorsTable()
   
   typealias Keys = BCBook.Author
   

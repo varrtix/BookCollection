@@ -28,7 +28,11 @@
 
 import Foundation
 
+let TBTags = BCTagsTable.shared
+
 struct BCTagsTable: BCTable {
+  
+  static let shared = BCTagsTable()
   
   typealias Keys = BCBook.Tag.CodingKeys
   

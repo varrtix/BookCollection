@@ -45,9 +45,9 @@ final class BCRatingCRUD: ForeignKeyCRUD {
   
   @discardableResult
   class func get(by id: Int64) throws -> BCBook.Rating? {
-    let row = try DB.connection?
+    try DB.connection?
       .pluck(BCTableKind.rating.table.filter(id == TBRating.id))
-    return row == nil ? nil : BCBook.Rating(result: row!)
+      .map { BCBook.Rating(result: $0) }
   }
 }
 

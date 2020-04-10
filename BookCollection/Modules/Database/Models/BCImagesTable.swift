@@ -28,7 +28,11 @@
 
 import Foundation
 
+let TBImages = BCImagesTable.shared
+
 struct BCImagesTable: BCTable {
+  
+  static let shared = BCImagesTable()
   
   typealias Keys = BCBook.Images.CodingKeys
   
