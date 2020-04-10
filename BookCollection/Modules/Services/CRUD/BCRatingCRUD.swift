@@ -27,44 +27,19 @@
 /// THE SOFTWARE.
 
 import Foundation
-import Alamofire
+import SQLite
 
-typealias BCBookHandler = (BCBook) -> Void
-
-fileprivate let repo = "https://douban-api-git-master.zce.now.sh/"
-fileprivate let bookQueryURL = repo + "v2/book/isbn/"
-
-extension BCBook {
+final class BCRatingCRUD: ForeignKeyCRUD {
+  typealias Object = BCBook.Rating
   
-//  static let sourceURL = 
-  
-  static func fetch(
-    with isbn: String,
-    at queue: DispatchQueue = .main,
-    completionHandler: @escaping (Result<BCBook, AFError>) -> Void
-  ) {
-    guard let url = URL(
-      string: bookQueryURL + isbn)
-      else { return }
-    
-    AF.request(url)
-      .validate()
-      .responseDecodable(of: BCBook.self) { response in
-        queue.async { completionHandler(response.result) }
-    }
+  @discardableResult
+  class func insert(_ object: BCBook.Rating, by id: Int64) throws -> Int64 {
+    try DB.connection?.run(BCTableKind.rating.table.insert(
+      TBRating.id <- id,
+      TBRating.min <- object.min,
+      TBRating.max <- object.max,
+      TBRating.numRaters <- object.numRaters,
+      TBRating.average <- object.average
+    )) ?? -1
   }
-  
-  static func cancelFetch(with isbn: String) {
-    AF.session.getAllTasks {
-      $0.forEach { task in
-        guard
-          let url = URL(string: bookQueryURL + isbn),
-          let taskURL = task.currentRequest?.url
-          else { return }
-        if taskURL == url { task.cancel() }
-      }
-    }
-  }
-  
-//  static func cancelAll() { AF.cancelAllRequests() }
 }
