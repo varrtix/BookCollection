@@ -41,4 +41,21 @@ final class BCImagesCRUD: ForeignKeyCRUD {
       TBImages.large <- object.large
     )) ?? -1
   }
+  
+  @discardableResult
+  class func get(by id: Int64) throws -> BCBook.Images? {
+    let row = try DB.connection?
+      .pluck(BCTableKind.images.table.filter(id == TBImages.id))
+    return row == nil ? nil : BCBook.Images(result: row!)
+  }
+}
+
+fileprivate extension BCBook.Images {
+  init(result: Row) {
+    self.init(
+      small: result[TBImages.small],
+      medium: result[TBImages.medium],
+      large: result[TBImages.large]
+    )
+  }
 }

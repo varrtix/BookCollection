@@ -43,4 +43,7 @@ protocol ForeignKeyCRUD {
 
   @discardableResult
   static func insert(_ object: Object, by id: Int64) throws -> Int64
+  
+  @discardableResult
+  static func get(by id: Int64) throws -> Object?
 }

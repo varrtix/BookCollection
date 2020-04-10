@@ -40,4 +40,20 @@ final class BCSeriesCRUD: ForeignKeyCRUD {
       TBSeries.title <- object.title
     )) ?? -1
   }
+  
+  @discardableResult
+  class func get(by id: Int64) throws -> BCBook.Series? {
+    let row = try DB.connection?
+      .pluck(BCTableKind.series.table.filter(id == TBSeries.id))
+    return row == nil ? nil : BCBook.Series(result: row!)
+  }
+}
+
+fileprivate extension BCBook.Series {
+  init(result: Row) {
+    self.init(
+      seriesID: result[TBSeries.seriesID],
+      title: result[TBSeries.title]
+    )
+  }
 }

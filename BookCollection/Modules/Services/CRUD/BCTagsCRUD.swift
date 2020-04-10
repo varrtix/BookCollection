@@ -29,16 +29,34 @@
 import Foundation
 import SQLite
 
-final class BCTagCRUD: ForeignKeyCRUD {
+final class BCTagsCRUD: ForeignKeyCRUD {
 
-  typealias Object = BCBook.Tag
+  typealias Object = BCBook.Tags
   
   @discardableResult
-  class func insert(_ object: BCBook.Tag, by id: Int64) throws -> Int64 {
-    try DB.connection?.run(BCTableKind.tags.table.insert(
-      TBTags.id <- id,
-      TBTags.count <- object.count,
-      TBTags.title <- object.title
-    )) ?? -1
+  class func insert(_ object: BCBook.Tags, by id: Int64) throws -> Int64 {
+    try object.compactMap { obj in
+      try DB.connection?.run(BCTableKind.tags.table.insert(
+        TBTags.id <- id,
+        TBTags.count <- obj.count,
+        TBTags.title <- obj.title
+      ))
+    }.first ?? -1
+  }
+  
+  @discardableResult
+  class func get(by id: Int64) throws -> BCBook.Tags? {
+    try DB.connection?
+      .prepare(BCTableKind.tags.table.filter(id == TBTags.id))
+      .map { BCBook.Tag(result: $0) }
+  }
+}
+
+fileprivate extension BCBook.Tag {
+  init(result: Row) {
+    self.init(
+      count: result[TBTags.count],
+      title: result[TBTags.title]
+    )
   }
 }

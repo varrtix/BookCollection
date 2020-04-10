@@ -42,4 +42,22 @@ final class BCRatingCRUD: ForeignKeyCRUD {
       TBRating.average <- object.average
     )) ?? -1
   }
+  
+  @discardableResult
+  class func get(by id: Int64) throws -> BCBook.Rating? {
+    let row = try DB.connection?
+      .pluck(BCTableKind.rating.table.filter(id == TBRating.id))
+    return row == nil ? nil : BCBook.Rating(result: row!)
+  }
+}
+
+fileprivate extension BCBook.Rating {
+  init(result: Row) {
+    self.init(
+      max: result[TBRating.max],
+      numRaters: result[TBRating.numRaters],
+      average: result[TBRating.average],
+      min: result[TBRating.min]
+    )
+  }
 }
