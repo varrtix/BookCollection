@@ -33,17 +33,13 @@ class BCTabBarViewController: UITabBarController, UITabBarControllerDelegate {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    delegate = self
+    setup()
     
-    setupView()
+    setup(tabBar)
   }
   
-  private func setupView() {
-    tabBar.itemPositioning = .centered
-    
-    tabBar.unselectedItemTintColor = BCColor.BarTint.gray
-    tabBar.barTintColor = BCColor.BarTint.white
-    tabBar.tintColor = BCColor.BarTint.green
+  private func setup() {
+    delegate = self
     
     viewControllers  = BCMapping.ViewControllers.allCases.map {
       let viewController = $0.raw
@@ -55,6 +51,14 @@ class BCTabBarViewController: UITabBarController, UITabBarControllerDelegate {
       }
       return viewController
     }
+  }
+  
+  private func setup(_ tabbar: UITabBar) {
+    tabbar.itemPositioning = .centered
+    
+    tabbar.unselectedItemTintColor = BCColor.BarTint.gray
+    tabbar.barTintColor = BCColor.BarTint.white
+    tabbar.tintColor = BCColor.BarTint.green
   }
   
   // MARK: Tabbar controller delegate

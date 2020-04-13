@@ -30,6 +30,10 @@ import Foundation
 
 typealias BCResult<Success> = Result<Success, Error>
 
+typealias BCDataResponse<Success> = (BCResult<Success>) -> Void
+
+typealias BCSourceDataResponse<Success, SourceType> = (BCResult<Success>, SourceType) -> Void
+
 struct BCResponse {
   static func handle<T: Any>(
     _ result: BCResult<T>,

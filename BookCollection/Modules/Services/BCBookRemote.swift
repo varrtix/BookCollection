@@ -31,25 +31,44 @@ import Alamofire
 
 final class BCBookRemote {
   
-  typealias BCBookResponseHandler = (AFDataResponse<BCBook>) -> Void
+//  static let cancelNotification = Notification.Name("CancelBookRequest")
   
-  private let url: URL?
+  private var url: URL? = nil
   
-  private let request: DataRequest?
+  private var request: DataRequest? = nil
+  
+  init() {}
   
   init(isbn: String) {
+    
+    set(isbn: isbn)
+    //    NotificationCenter.default.addObserver(self, selector: #selector(cancel), name: BCBookRemote.cancelNotification, object: nil)
+  }
+  
+  @discardableResult
+  func set(isbn: String) -> Self {
     url = URL(string: BCRemote.bookRemote + isbn)
     request = url == nil ? nil : AF.request(url!)
+    
+    return self
   }
   
   func fetch(
     at queue: DispatchQueue = .main,
-    completionHandler: @escaping BCBookResponseHandler
+    completion: @escaping BCDataResponse<BCBook?>
   ) {
     request?.validate().responseDecodable(of: BCBook.self) { response in
-      queue.async { completionHandler(response) }
+      switch response.result {
+        case .success(let book): queue.async{ completion(.success(book)) }
+        case .failure(let error):
+          switch error {
+            case .responseSerializationFailed(reason: _): queue.async { completion(.success(nil)) }
+            default: queue.async { completion(.failure(error)) }
+        }
+      }
     }
   }
   
+//  @objc
   func cancel() { request?.cancel() }
 }

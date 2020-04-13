@@ -13,8 +13,6 @@
 		560175E02424789C008C9578 /* BCBook+Series.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175DF2424789C008C9578 /* BCBook+Series.swift */; };
 		560175E324247979008C9578 /* BCBook+Rating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175E224247979008C9578 /* BCBook+Rating.swift */; };
 		560175E524247A00008C9578 /* BCBook+Author.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175E424247A00008C9578 /* BCBook+Author.swift */; };
-		560175EB24250385008C9578 /* BCBookInfoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560175EA24250385008C9578 /* BCBookInfoService.swift */; };
-		560522DB242DBF4C00A11316 /* BCBookListService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560522DA242DBF4C00A11316 /* BCBookListService.swift */; };
 		560522DE242DD48A00A11316 /* BCListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560522DD242DD48A00A11316 /* BCListTableViewController.swift */; };
 		560522E0242DD49E00A11316 /* BCListCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560522DF242DD49E00A11316 /* BCListCollectionViewController.swift */; };
 		561B9231243AC95B0039FA4B /* BCTabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 561B9230243AC95B0039FA4B /* BCTabBarViewController.swift */; };
@@ -90,8 +88,6 @@
 		560175DF2424789C008C9578 /* BCBook+Series.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCBook+Series.swift"; sourceTree = "<group>"; };
 		560175E224247979008C9578 /* BCBook+Rating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCBook+Rating.swift"; sourceTree = "<group>"; };
 		560175E424247A00008C9578 /* BCBook+Author.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCBook+Author.swift"; sourceTree = "<group>"; };
-		560175EA24250385008C9578 /* BCBookInfoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCBookInfoService.swift; sourceTree = "<group>"; };
-		560522DA242DBF4C00A11316 /* BCBookListService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCBookListService.swift; sourceTree = "<group>"; };
 		560522DD242DD48A00A11316 /* BCListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCListTableViewController.swift; sourceTree = "<group>"; };
 		560522DF242DD49E00A11316 /* BCListCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCListCollectionViewController.swift; sourceTree = "<group>"; };
 		561B9230243AC95B0039FA4B /* BCTabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCTabBarViewController.swift; sourceTree = "<group>"; };
@@ -390,8 +386,6 @@
 		567D764A24239FA300F94CD6 /* Stores */ = {
 			isa = PBXGroup;
 			children = (
-				560175EA24250385008C9578 /* BCBookInfoService.swift */,
-				560522DA242DBF4C00A11316 /* BCBookListService.swift */,
 				56C983BC243991A30006F878 /* BCBookStore.swift */,
 				56C983BF2439F1FD0006F878 /* BCBookshelf.swift */,
 			);
@@ -625,14 +619,12 @@
 				56F02A3D243DF4B5000DAAFE /* BCBookTable.swift in Sources */,
 				5667FB24241682D2009F9E65 /* BCListViewController.swift in Sources */,
 				56B611EB2422296100C7C6A8 /* BCInfoViewController.swift in Sources */,
-				560175EB24250385008C9578 /* BCBookInfoService.swift in Sources */,
 				5671DE002419FEDC00979210 /* BCBook.swift in Sources */,
 				56F02A47243E1BB7000DAAFE /* BCRatingTable.swift in Sources */,
 				5625EFE7242F1093001E1D6D /* BCTableViewCell.swift in Sources */,
 				5625EFEF242F1147001E1D6D /* BCListCollectionViewCell.swift in Sources */,
 				563D03A82440619100855B37 /* BCCRUD.swift in Sources */,
 				561B9231243AC95B0039FA4B /* BCTabBarViewController.swift in Sources */,
-				560522DB242DBF4C00A11316 /* BCBookListService.swift in Sources */,
 				56F02A4B243E1DF4000DAAFE /* BCTranslatorsTable.swift in Sources */,
 				56BC57932435C689007D972F /* BCScanViewController+Alert.swift in Sources */,
 				560175E02424789C008C9578 /* BCBook+Series.swift in Sources */,

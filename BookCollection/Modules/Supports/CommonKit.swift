@@ -96,6 +96,24 @@ public extension UIColor {
 // MARK: - UIAlertController extension
 public extension UIAlertController {
   func addActions(_ actions: [UIAlertAction]) { actions.forEach { addAction($0) } }
+  
+  convenience init(title: String?, message: String?, actions: [UIAlertAction]? = nil) {
+    self.init(title: title, message: message, preferredStyle: .alert)
+
+    view.tintColor = .black
+    
+    if actions != nil { addActions(actions!) }
+  }
+}
+
+public extension UIAlertAction {
+  convenience init(title: String?, tintColor: UIColor = .black, style: UIAlertAction.Style, handler: ((UIAlertAction) -> Void)? = nil) {
+    self.init(title: title, style: style, handler: handler)
+    
+    self.setTintColor(tintColor)
+  }
+  
+  func setTintColor(_ color: UIColor) { self.setValue(color, forKey: "titleTextColor") }
 }
 
 // MARK: - Async operation
@@ -161,7 +179,7 @@ public enum V2RXError: Error {
   }
 }
 
-public extension V2RXError: LocalizedError {
+extension V2RXError: LocalizedError {
   static func printError(_ error: Error) {
     print(
       "V2RXError:\nDescription: \(error.localizedDescription)\n" +

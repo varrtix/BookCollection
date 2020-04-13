@@ -28,15 +28,6 @@
 
 import UIKit
 
-// View controllers configurations
-//typealias ViewTuple = (title: String, item: BCViewController)
-//typealias BCViewControllerDictionary = [String: UIViewController]
-
-//let mainBarControllers: BCViewControllerDictionary = [
-//  "Collections": BCListViewController(),
-//  "Me": BCAnalyticViewController(),
-//]
-
 struct BCMapping {
   enum ViewControllers: String, CaseIterable {
     case collections = "Collections"

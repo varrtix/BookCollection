@@ -56,7 +56,7 @@ class BCInfoViewController: BCViewController {
   
   fileprivate var backgroundImageView = UIImageView(image: UIImage(named: "Info/NavigationBar"))
   
-  var book: BCBook?
+  var book: BCBook!
   
   lazy var isMarked = false
   

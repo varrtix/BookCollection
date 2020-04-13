@@ -91,9 +91,15 @@ final class BCBookCRUD: PrimaryKeyCRUD {
   }
   
   @discardableResult
-  class func multiGet(limit: BCLimit) throws -> [BCBook]? {
-    try DB.connection?
-      .prepare(BCTableKind.book.table.limit(limit.size, offset: limit.offset))
+  class func multiGet(limit: BCLimit? = nil) throws -> [BCBook]? {
+    let table = BCTableKind.book.table
+    if let offset = limit?.offset, let length = limit?.length {
+      _ = table.limit(length, offset: offset)
+    } else {
+      _ = table.limit(limit?.length)
+    }
+    return try DB.connection?
+      .prepare(table)
       .map { try BCBook(result: $0) }
   }
   

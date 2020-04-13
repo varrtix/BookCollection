@@ -37,21 +37,15 @@ extension BCScanViewController {
     case failure(Error)
   }
   
-  func dismiss(completion: (() -> Void)? = nil) {
-    guard navigationController?.presentedViewController is UIAlertController else {
-      if completion != nil { completion!() }
-      return
-    }
-    navigationController?.presentedViewController?.view.layer.removeAllAnimations()
-    navigationController?.dismiss(animated: true, completion: completion)
-  }
+//  func dismiss(completion: (() -> Void)? = nil) {
+//    if navigationController?.presentedViewController is UIAlertController {
+//      navigationController?.presentedViewController?.view.layer.removeAllAnimations()
+//    }
+//    navigationController?.dismiss(animated: true, completion: completion)
+//  }
+//
   
-  func presentAlert(_ type: AlertType, completion: @escaping () -> Void) {
-    dismiss {
-      self.present(self.alertController(type, completion: completion), animated: true)
-    }
-  }
-  
+
   func alertController(_ type: AlertType, completion: @escaping () -> Void) -> UIAlertController {
     let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
     alert.view.tintColor = .black
@@ -69,13 +63,13 @@ extension BCScanViewController {
         }
         let cancelAction = UIAlertAction(title: "OK", style: .cancel) { _ in completion() }
         cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
-        
+
         alert.addActions([settingAction, cancelAction])
       
       case .waiting(let isbn):
         alert.title = "Loading"
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
-          BCBook.cancelFetch(with: isbn)
+//          BCBook.cancelFetch(with: isbn)
           completion()
         }
         alert.message = "..."

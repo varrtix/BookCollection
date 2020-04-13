@@ -31,7 +31,7 @@ import SQLite
 
 typealias BCTableKind = BCDatabase.Table.Kind
 
-typealias BCLimit = (offset: Int, size: Int)
+typealias BCLimit = (length: Int?, offset: Int?)
 
 protocol PrimaryKeyCRUD {
   associatedtype Object: Codable
@@ -43,7 +43,7 @@ protocol PrimaryKeyCRUD {
   static func get(by key: String) throws -> Object?
   
   @discardableResult
-  static func multiGet(limit: BCLimit) throws -> [Object]?
+  static func multiGet(limit: BCLimit?) throws -> [Object]?
   
   @discardableResult
   static func delete(by key: String) throws -> Int
