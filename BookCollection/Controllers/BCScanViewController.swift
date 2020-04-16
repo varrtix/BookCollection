@@ -36,12 +36,13 @@ final class BCScanViewController: BCViewController {
     vertical: BCScanView.Constraint.verticalOffset
   )
   
-  var store: BCBookStore?
+  private var store: BCBookStore?
   
   private var isbnCaptor: BCISBNCaptor?
   
   private var captureLayer: CALayer?
   
+  private let bookShelf = BCBookshelf.shared
   
   private lazy var loadingAlert: UIAlertController = {
     let alert = UIAlertController(title: "Loading", message: "...")
@@ -168,7 +169,8 @@ fileprivate extension BCScanViewController {
   func processing(isbn: String) {
     let alert = UIAlertController(title: "Book INFO", message: "")
 
-    store?.getBook(with: isbn) { [unowned self] result in
+    store = BCBookStore(isbn: isbn)
+    store?.getBook { [unowned self] result in
       if case let .success(value) = result, let book = value {
         alert.message = """
         \(book.title ?? "No title")
@@ -183,10 +185,11 @@ fileprivate extension BCScanViewController {
         }
         alert.addAction(detail)
         
-        if self.store?.sourceType == .networking {
-          let next = UIAlertAction(title: "Mark and Continue", style: .default) { _ in self.store?.mark() }
+        if !book.isMarked {
+          let next = UIAlertAction(title: "Mark and Continue", style: .default) { _ in self.bookShelf.append(book) }
           alert.addAction(next)
         }
+        
       } else if case let .failure(error) = result {
         alert.title = "Something goes wrong"
         alert.message = error.localizedDescription
