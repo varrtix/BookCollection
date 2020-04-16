@@ -27,43 +27,31 @@
 /// THE SOFTWARE.
 
 import UIKit
-//import ESPullToRefresh
 
 class BCListTableViewController: BCViewController {
   
-//  fileprivate enum State {
-//    case ready, start, wait, stop
-//  }
-//
-//  fileprivate var state = State.stop {
-//    willSet {
-//      switch newValue {
-//        case .ready:
-//          launch()
-//        case .start:
-//          wakeup()
-//        case .wait: break
-//        case .stop: break
-//      }
-//    }
-//  }
+  private let tableViewDataSource = ListTableViewDataSource()
+  private lazy var tableView: UITableView = {
+    let tableView = UITableView(frame: view.frame, style: .plain)
+    
+    tableView.backgroundColor = BCColor.ListTint.snowWhite
+    tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    tableView.tableFooterView = UIView()
+    
+    tableView.delegate = self
+    
+    tableView.dataSource = self.tableViewDataSource
+    
+    tableView.prefetchDataSource = self.tableViewDataSource
+    
+    view.addSubview(tableView)
+
+    return tableView
+  }()
   
-  fileprivate lazy var tableView = launchTableView()
-  
-  fileprivate var books = [BCBook]()
-  
-  private var booksCount: Int {
-    var count = 0
-    BCBookListService.getBooksCount {
-      BCResponse.handle($0, success: { value in
-        count = value
-      })
-    }
-    return count
+  deinit {
+    NotificationCenter.default.removeObserver(self, name: BCBookshelf.changedNotification, object: nil)
   }
-  
-  private var pageOffset = 0
-  private let defaultPageSize = 5
 }
 
 // MARK: - View life-cycle
@@ -71,65 +59,41 @@ extension BCListTableViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-//    state = .ready
     launch()
   }
   
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     
-//    state = .start
     wakeup()
   }
 }
 
 // MARK: - Data
 extension BCListTableViewController {
-  fileprivate func loadData() {
-    if pageOffset == 0 { books.removeAll() }
-    
-    BCBookListService.getAllBooks(withOffset: pageOffset, andSize: defaultPageSize) {
-      BCResponse.handle($0, success: {
-        self.books += $0
-        
-        self.tableView.reloadData()
-        self.tableView.es.stopLoadingMore()
-        
-        self.pageOffset += self.defaultPageSize
-      }) { V2RXError.printError($0) }
-    }
-  }
 }
 
 // MARK: - View controllers
 extension BCListTableViewController {
   fileprivate func launch() {
-    loadData()
+    NotificationCenter.default.addObserver(self, selector: #selector(handleChangeNotification(_:)), name: BCBookshelf.changedNotification, object: nil)
   }
   
   fileprivate func wakeup() {
   }
   
-  fileprivate func launchTableView() -> UITableView {
-    let tableView = UITableView(frame: view.frame, style: .plain)
+  @objc
+  private func handleChangeNotification(_ notification: Notification) {
+    guard let key = notification.userInfo?[BCBookshelf.ChangedNotification.reasonKey] as? BCBookshelf.ChangedNotification.ReasonKey
+      else { return }
     
-    tableView.backgroundColor = BCColor.ListTint.snowWhite
-    tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-    tableView.tableFooterView = UIView()
-    tableView.delegate = self
-    tableView.dataSource = self
-    
-    view.addSubview(tableView)
-    
-    tableView.es.addInfiniteScrolling { [unowned self] in
-      if self.pageOffset > self.booksCount {
-        self.tableView.es.noticeNoMoreData()
-      }
-      
-      self.loadData()
+    if key == .append,
+      let index = notification.userInfo?[BCBookshelf.ChangedNotification.ValueCache.newValueKey] as? Int {
+      tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+    } else if key == .remove,
+      let index = notification.userInfo?[BCBookshelf.ChangedNotification.ValueCache.oldValueKey] as? Int {
+      tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
     }
-
-    return tableView
   }
 }
 
@@ -146,74 +110,74 @@ extension BCListTableViewController: UITableViewDelegate {
 }
 
 // MARK: - Tableview datasource
-extension BCListTableViewController: UITableViewDataSource {
-  func tableView(
-    _ tableView: UITableView,
-    numberOfRowsInSection section: Int
-  ) -> Int { books.count }
-  
-  func tableView(
-    _ tableView: UITableView,
-    cellForRowAt
-    indexPath: IndexPath
-  ) -> UITableViewCell {
-    let identifier = "BCListTableViewCell"
-    
-    var cell = tableView.dequeueReusableCell(withIdentifier: identifier) as? BCListTableViewCell
-    
-    if cell == nil {
-      cell = BCListTableViewCell(style: .default, reuseIdentifier: identifier)
-    }
-    cell?.inject(book: books[indexPath.row])
-    
-    if cell?.cover == nil,
-      !tableView.isDragging && !tableView.isDecelerating {
-      cell?.loadingImage(with: books[indexPath.row].image)
-    }
-    
-    return cell!
-  }
-  
-  func tableView(
-    _ tableView: UITableView,
-    commit editingStyle: UITableViewCell.EditingStyle,
-    forRowAt indexPath: IndexPath
-  ) {
-    switch editingStyle {
-      case .delete:
-        BCBookInfoService.unmark(by: books[indexPath.row].doubanID) {
-          BCResponse.handle($0, success: { _ in
-            self.books.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .automatic)
-          }) { V2RXError.printError($0) }
-      }
-      default: break
-    }
-  }
-}
+//extension BCListTableViewController: UITableViewDataSource {
+//  func tableView(
+//    _ tableView: UITableView,
+//    numberOfRowsInSection section: Int
+//  ) -> Int { books.count }
+//
+//  func tableView(
+//    _ tableView: UITableView,
+//    cellForRowAt
+//    indexPath: IndexPath
+//  ) -> UITableViewCell {
+//    let identifier = "BCListTableViewCell"
+//
+//    var cell = tableView.dequeueReusableCell(withIdentifier: identifier) as? BCListTableViewCell
+//
+//    if cell == nil {
+//      cell = BCListTableViewCell(style: .default, reuseIdentifier: identifier)
+//    }
+//    cell?.inject(book: books[indexPath.row])
+//
+//    if cell?.cover == nil,
+//      !tableView.isDragging && !tableView.isDecelerating {
+//      cell?.loadingImage(with: books[indexPath.row].image)
+//    }
+//
+//    return cell!
+//  }
+//
+//  func tableView(
+//    _ tableView: UITableView,
+//    commit editingStyle: UITableViewCell.EditingStyle,
+//    forRowAt indexPath: IndexPath
+//  ) {
+//    switch editingStyle {
+//      case .delete:
+//        BCBookInfoService.unmark(by: books[indexPath.row].doubanID) {
+//          BCResponse.handle($0, success: { _ in
+//            self.books.remove(at: indexPath.row)
+//            tableView.deleteRows(at: [indexPath], with: .automatic)
+//          }) { V2RXError.printError($0) }
+//      }
+//      default: break
+//    }
+//  }
+//}
 
 // MARK: - Scrollview delegate
-extension BCListTableViewController {
-  func scrollViewDidEndDragging(
-    _ scrollView: UIScrollView,
-    willDecelerate decelerate: Bool) {
-    if !decelerate {
-      loadingCoversForVisibleCells()
-    }
-  }
-  
-  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-    loadingCoversForVisibleCells()
-  }
-  
-  fileprivate func loadingCoversForVisibleCells() {
-    tableView.visibleCells.forEach {
-      if let cell = $0 as? BCListTableViewCell,
-        let indexPath = tableView.indexPath(for: cell) {
-        if cell.cover == nil {
-          cell.loadingImage(with: books[indexPath.row].image)
-        }
-      }
-    }
-  }
-}
+//extension BCListTableViewController {
+//  func scrollViewDidEndDragging(
+//    _ scrollView: UIScrollView,
+//    willDecelerate decelerate: Bool) {
+//    if !decelerate {
+//      loadingCoversForVisibleCells()
+//    }
+//  }
+//
+//  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+//    loadingCoversForVisibleCells()
+//  }
+//
+//  fileprivate func loadingCoversForVisibleCells() {
+//    tableView.visibleCells.forEach {
+//      if let cell = $0 as? BCListTableViewCell,
+//        let indexPath = tableView.indexPath(for: cell) {
+//        if cell.cover == nil {
+//          cell.loadingImage(with: books[indexPath.row].image)
+//        }
+//      }
+//    }
+//  }
+//}

@@ -28,31 +28,51 @@
 
 import UIKit
 
-class ArrayDataSource: NSObject {
-  typealias TableViewCellHandler = (BCTableViewCell, BCBook) -> Void
+final class ListTableViewDataSource: NSObject, UITableViewDataSource {
+  var bookShelf = BCBookshelf.shared
   
-  private let items: [BCBook]
-  private let cellIdentifier: String
-  private let cellHandler: TableViewCellHandler
+  private let cellIdentifier = "BCListTableViewCell"
   
-  init(with items: [BCBook], identifier: String, handler: @escaping TableViewCellHandler) {
-    self.items = items
-    self.cellIdentifier = identifier
-    self.cellHandler = handler
-  }
-  
-  subscript(indexPath: IndexPath) -> BCBook { items[indexPath.row] }
-}
-
-// MARK: - TableView DataSource
-extension ArrayDataSource: UITableViewDataSource {
-  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { items.count }
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { bookShelf.count }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! BCTableViewCell
+    var cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
+    as? BCListTableViewCell
     
-    cellHandler(cell, self[indexPath])
+    if cell == nil {
+      cell = BCListTableViewCell(style: .default, reuseIdentifier: cellIdentifier)
+    }
+    cell?.inject(book: bookShelf[indexPath.row])
     
-    return cell
+    if cell?.cover == nil, !tableView.isDragging && !tableView.isDecelerating {
+      cell?.loadingImage(with: bookShelf[indexPath.row].image)
+    }
+
+    return cell!
+  }
+  
+  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+    switch editingStyle {
+      case .delete: bookShelf.remove(bookShelf[indexPath.row])
+      default: break
+    }
+  }
+}
+
+extension ListTableViewDataSource: UITableViewDataSourcePrefetching {
+  func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+    indexPaths.forEach {
+      if let cell = tableView.cellForRow(at: $0) as? BCListTableViewCell, cell.cover == nil {
+        cell.loadingImage(with: bookShelf[$0.row].image)
+      }
+    }
+  }
+  
+  func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
+    indexPaths.forEach {
+      if let cell = tableView.cellForRow(at: $0) as? BCListTableViewCell {
+        cell.cancelLoadingImage()
+      }
+    }
   }
 }

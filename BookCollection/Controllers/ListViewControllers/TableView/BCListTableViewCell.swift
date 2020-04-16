@@ -151,4 +151,8 @@ extension BCListTableViewCell {
     guard path != nil else { return }
     coverImageView.kf.setImage(with: URL(string: path!))
   }
+  
+  func cancelLoadingImage() {
+    coverImageView.kf.cancelDownloadTask()
+  }
 }
