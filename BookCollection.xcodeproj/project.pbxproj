@@ -20,7 +20,7 @@
 		5625EFE9242F10CC001E1D6D /* BCCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625EFE8242F10CC001E1D6D /* BCCollectionViewCell.swift */; };
 		5625EFEB242F1114001E1D6D /* BCListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625EFEA242F1114001E1D6D /* BCListTableViewCell.swift */; };
 		5625EFEF242F1147001E1D6D /* BCListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625EFEE242F1147001E1D6D /* BCListCollectionViewCell.swift */; };
-		5632EA7924344D2E00F33DB8 /* ArrayDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5632EA7824344D2E00F33DB8 /* ArrayDataSource.swift */; };
+		5632EA7924344D2E00F33DB8 /* ListTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5632EA7824344D2E00F33DB8 /* ListTableViewDataSource.swift */; };
 		5634E196243F537500B53C85 /* BCBookRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5634E195243F537500B53C85 /* BCBookRemote.swift */; };
 		5634E199243F5C4300B53C85 /* BCRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5634E198243F5C4300B53C85 /* BCRemote.swift */; };
 		563B7FD92434710700664960 /* BCISBNCaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563B7FD82434710700664960 /* BCISBNCaptor.swift */; };
@@ -46,11 +46,12 @@
 		567B0A5224167A2E00B595A7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 567B0A5024167A2E00B595A7 /* LaunchScreen.storyboard */; };
 		567B0A5D24167A2E00B595A7 /* BookCollectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567B0A5C24167A2E00B595A7 /* BookCollectionTests.swift */; };
 		567B0A6824167A2E00B595A7 /* BookCollectionUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567B0A6724167A2E00B595A7 /* BookCollectionUITests.swift */; };
+		568DBDA72448A26700556DA9 /* ListCollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568DBDA62448A26700556DA9 /* ListCollectionViewDataSource.swift */; };
 		56B611EB2422296100C7C6A8 /* BCInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B611EA2422296100C7C6A8 /* BCInfoViewController.swift */; };
 		56BB95B42426313000555EEA /* BCDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BB95B32426313000555EEA /* BCDatabase.swift */; };
-		56BC57932435C689007D972F /* BCScanViewController+Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BC57922435C689007D972F /* BCScanViewController+Alert.swift */; };
 		56C983BD243991A30006F878 /* BCBookStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C983BC243991A30006F878 /* BCBookStore.swift */; };
 		56C983C02439F1FD0006F878 /* BCBookshelf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C983BF2439F1FD0006F878 /* BCBookshelf.swift */; };
+		56EC0DB12446012200F06076 /* BCInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56EC0DB02446012200F06076 /* BCInfoView.swift */; };
 		56EC7409242711C300C684B6 /* BCResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56EC7408242711C300C684B6 /* BCResult.swift */; };
 		56F02A36243DB2CF000DAAFE /* BCDatabase+TableOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F02A35243DB2CF000DAAFE /* BCDatabase+TableOperation.swift */; };
 		56F02A38243DB767000DAAFE /* BCDatabase+Table.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F02A37243DB767000DAAFE /* BCDatabase+Table.swift */; };
@@ -95,7 +96,7 @@
 		5625EFE8242F10CC001E1D6D /* BCCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCCollectionViewCell.swift; sourceTree = "<group>"; };
 		5625EFEA242F1114001E1D6D /* BCListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCListTableViewCell.swift; sourceTree = "<group>"; };
 		5625EFEE242F1147001E1D6D /* BCListCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCListCollectionViewCell.swift; sourceTree = "<group>"; };
-		5632EA7824344D2E00F33DB8 /* ArrayDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayDataSource.swift; sourceTree = "<group>"; };
+		5632EA7824344D2E00F33DB8 /* ListTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTableViewDataSource.swift; sourceTree = "<group>"; };
 		5634E195243F537500B53C85 /* BCBookRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCBookRemote.swift; sourceTree = "<group>"; };
 		5634E198243F5C4300B53C85 /* BCRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCRemote.swift; sourceTree = "<group>"; };
 		563B7FD82434710700664960 /* BCISBNCaptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCISBNCaptor.swift; sourceTree = "<group>"; };
@@ -127,11 +128,12 @@
 		567B0A6324167A2E00B595A7 /* BookCollectionUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BookCollectionUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		567B0A6724167A2E00B595A7 /* BookCollectionUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCollectionUITests.swift; sourceTree = "<group>"; };
 		567B0A6924167A2E00B595A7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		568DBDA62448A26700556DA9 /* ListCollectionViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCollectionViewDataSource.swift; sourceTree = "<group>"; };
 		56B611EA2422296100C7C6A8 /* BCInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCInfoViewController.swift; sourceTree = "<group>"; };
 		56BB95B32426313000555EEA /* BCDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCDatabase.swift; sourceTree = "<group>"; };
-		56BC57922435C689007D972F /* BCScanViewController+Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCScanViewController+Alert.swift"; sourceTree = "<group>"; };
 		56C983BC243991A30006F878 /* BCBookStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCBookStore.swift; sourceTree = "<group>"; };
 		56C983BF2439F1FD0006F878 /* BCBookshelf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCBookshelf.swift; sourceTree = "<group>"; };
+		56EC0DB02446012200F06076 /* BCInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCInfoView.swift; sourceTree = "<group>"; };
 		56EC7408242711C300C684B6 /* BCResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BCResult.swift; sourceTree = "<group>"; };
 		56F02A35243DB2CF000DAAFE /* BCDatabase+TableOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCDatabase+TableOperation.swift"; sourceTree = "<group>"; };
 		56F02A37243DB767000DAAFE /* BCDatabase+Table.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BCDatabase+Table.swift"; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 			isa = PBXGroup;
 			children = (
 				560522DD242DD48A00A11316 /* BCListTableViewController.swift */,
+				5632EA7824344D2E00F33DB8 /* ListTableViewDataSource.swift */,
 				5625EFEA242F1114001E1D6D /* BCListTableViewCell.swift */,
 			);
 			path = TableView;
@@ -204,6 +207,7 @@
 			children = (
 				560522DF242DD49E00A11316 /* BCListCollectionViewController.swift */,
 				5625EFEE242F1147001E1D6D /* BCListCollectionViewCell.swift */,
+				568DBDA62448A26700556DA9 /* ListCollectionViewDataSource.swift */,
 			);
 			path = CollectionView;
 			sourceTree = "<group>";
@@ -250,6 +254,7 @@
 			isa = PBXGroup;
 			children = (
 				564CC8942417911000E9D08B /* BCScanView.swift */,
+				56EC0DB02446012200F06076 /* BCInfoView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -261,10 +266,8 @@
 				560522DC242DD44A00A11316 /* ListViewControllers */,
 				5667FB23241682D2009F9E65 /* BCListViewController.swift */,
 				5667FB252416833B009F9E65 /* BCScanViewController.swift */,
-				56BC57922435C689007D972F /* BCScanViewController+Alert.swift */,
 				5667FB2724168386009F9E65 /* BCAnalyticViewController.swift */,
 				56B611EA2422296100C7C6A8 /* BCInfoViewController.swift */,
-				5632EA7824344D2E00F33DB8 /* ArrayDataSource.swift */,
 				561B9230243AC95B0039FA4B /* BCTabBarViewController.swift */,
 			);
 			path = Controllers;
@@ -611,12 +614,14 @@
 			files = (
 				563D03AA2440684500855B37 /* BCTagsCRUD.swift in Sources */,
 				5625EFE9242F10CC001E1D6D /* BCCollectionViewCell.swift in Sources */,
+				56EC0DB12446012200F06076 /* BCInfoView.swift in Sources */,
 				56F02A36243DB2CF000DAAFE /* BCDatabase+TableOperation.swift in Sources */,
 				5667FB2824168386009F9E65 /* BCAnalyticViewController.swift in Sources */,
 				560522DE242DD48A00A11316 /* BCListTableViewController.swift in Sources */,
 				563D03AC24409F1E00855B37 /* BCImagesCRUD.swift in Sources */,
 				56F02A41243E1881000DAAFE /* BCTable.swift in Sources */,
 				56F02A3D243DF4B5000DAAFE /* BCBookTable.swift in Sources */,
+				568DBDA72448A26700556DA9 /* ListCollectionViewDataSource.swift in Sources */,
 				5667FB24241682D2009F9E65 /* BCListViewController.swift in Sources */,
 				56B611EB2422296100C7C6A8 /* BCInfoViewController.swift in Sources */,
 				5671DE002419FEDC00979210 /* BCBook.swift in Sources */,
@@ -626,7 +631,6 @@
 				563D03A82440619100855B37 /* BCCRUD.swift in Sources */,
 				561B9231243AC95B0039FA4B /* BCTabBarViewController.swift in Sources */,
 				56F02A4B243E1DF4000DAAFE /* BCTranslatorsTable.swift in Sources */,
-				56BC57932435C689007D972F /* BCScanViewController+Alert.swift in Sources */,
 				560175E02424789C008C9578 /* BCBook+Series.swift in Sources */,
 				564CC8952417911000E9D08B /* BCScanView.swift in Sources */,
 				5634E196243F537500B53C85 /* BCBookRemote.swift in Sources */,
@@ -650,7 +654,7 @@
 				563D03AE24409FB500855B37 /* BCSeriesCRUD.swift in Sources */,
 				56C983BD243991A30006F878 /* BCBookStore.swift in Sources */,
 				563D03A52440598F00855B37 /* BCBookCRUD.swift in Sources */,
-				5632EA7924344D2E00F33DB8 /* ArrayDataSource.swift in Sources */,
+				5632EA7924344D2E00F33DB8 /* ListTableViewDataSource.swift in Sources */,
 				563D03B224409FE100855B37 /* BCAuthorsCRUD.swift in Sources */,
 				566D37DD241A659B00DE970C /* BCViewController.swift in Sources */,
 				567B0A4624167A2D00B595A7 /* AppDelegate.swift in Sources */,

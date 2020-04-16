@@ -54,6 +54,9 @@ final class BCDatabase {
     directory = URL(fileURLWithPath: "BCDB", relativeTo: FileManager.documentDirectory)
     file = URL(fileURLWithPath: "Book.sqlite", relativeTo: directory)
     
+    #if DEBUG
+    print("Database path: \(file.path)")
+    #endif
   }
 
   @discardableResult

@@ -30,7 +30,7 @@ import UIKit
 import SnapKit
 import Kingfisher
 
-protocol BCListCollectionViewCellDelegate {
+protocol BCListCollectionViewCellDataSource {
   func removeCell(_ cell: BCListCollectionViewCell)
 }
 
@@ -56,7 +56,7 @@ class BCListCollectionViewCell: BCCollectionViewCell {
   
   var cover: UIImage? { coverImageView.image }
   
-  var delegate: BCListCollectionViewCellDelegate?
+  var dataSource: BCListCollectionViewCellDataSource?
   
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -114,9 +114,9 @@ extension BCListCollectionViewCell {
 // MARK: - Inject data
 extension BCListCollectionViewCell {
   func inject(book: BCBook) {
-//    if let image = book.image {
-//      coverImageView.kf.setImage(with: URL(string: image))
-//    }
+    //    if let image = book.image {
+    //      coverImageView.kf.setImage(with: URL(string: image))
+    //    }
     titleLabel.text = book.title
   }
   
@@ -124,12 +124,16 @@ extension BCListCollectionViewCell {
     guard path != nil else { return }
     coverImageView.kf.setImage(with: URL(string: path!))
   }
+  
+  func cancelLoadingImage() {
+    coverImageView.kf.cancelDownloadTask()
+  }
 }
 
 // MARK: - Actions
 extension BCListCollectionViewCell {
   @objc
   func remove(_ sender: UIButton? = nil) {
-    delegate?.removeCell(self)
+    dataSource?.removeCell(self)
   }
 }

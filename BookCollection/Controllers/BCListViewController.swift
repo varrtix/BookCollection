@@ -40,17 +40,13 @@ class BCListViewController: BCViewController {
       }
     }
   }
-  
+
   private var modeImage: UIImage? { UIImage(named: "Main/List/Mode-\(viewMode.rawValue)") }
   
   private var viewMode = ViewMode.table {
     didSet {
       DispatchQueue.main.async {
-        //        self.navigationItem.leftBarButtonItem?.image = UIImage(
-        //          named: "Main/List/Mode-\(newValue.rawValue)"
-        //        )
         self.navigationItem.leftBarButtonItem?.image = self.modeImage
-        //        self.toggleController(mode: newValue)
         self.toggleController(mode: self.viewMode)
       }
     }
@@ -75,7 +71,6 @@ extension BCListViewController {
     super.viewDidLoad()
     
     view.backgroundColor = BCColor.ListTint.snowWhite
-    //    setupNavigationBar()
     setup(navigationItem)
     viewMode = .table
   }
@@ -104,28 +99,9 @@ extension BCListViewController {
     }
   }
   
-  //  private func setupNavigationBar() {
   private func setup(_ item: UINavigationItem) {
-    //    navigationItem.title = "BookCollection"
     item.title = "BookCollection"
     
-    //    let scanButtonItem = UIBarButtonItem(
-    //      image: UIImage(named: "Main/\(BCMapping.ViewControllers.scan.rawValue)"),
-    //      style: .plain,
-    //      target: self,
-    //      action: #selector(scan(_:)))
-    
-    
-    //    let modeButtonItem = UIBarButtonItem(
-    //      image: UIImage(),
-    //      style: .plain,
-    //      target: self,
-    //      action: #selector(switchMode(_:)))
-    
-    //    navigationItem.rightBarButtonItem = scanButtonItem
-    //    navigationItem.leftBarButtonItem = modeButtonItem
-    //    item.leftBarButtonItem = modeButtonItem
-    //    item.rightBarButtonItem = scanButtonItem
     item.leftBarButtonItem = modeBarButton
     item.rightBarButtonItem = scanBarButton
   }

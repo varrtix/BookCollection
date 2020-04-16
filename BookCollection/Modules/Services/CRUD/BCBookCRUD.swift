@@ -117,9 +117,10 @@ final class BCBookCRUD: PrimaryKeyCRUD {
 }
 
 fileprivate extension BCBook {
-  init(result: Row) throws {
+  convenience init(result: Row) throws {
     let id = result[TBBook.id]
     self.init(
+      isMarked: true,
       doubanID: result[TBBook.doubanID],
       title: result[TBBook.title],
       subtitle: result[TBBook.subtitle],

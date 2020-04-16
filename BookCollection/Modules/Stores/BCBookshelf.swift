@@ -29,48 +29,163 @@
 import Foundation
 
 final class BCBookshelf {
+  
   static let shared = BCBookshelf()
   
-  var books: [BCBook]!
+  private var contents: [BCBook] = []
+  
+  var count: Int { contents.count }
   
   init() {
-    launchDatabse()
-    
-  }
-  
-  private func launchDatabse() {
-    let database = BCDatabaseOperation()
+    let database = BCDatabase.TableOperation()
     database.start()
-    #if DEBUG
-    // MARK: TODO: Write all logs to a log file
-    print("Database path: \(BCDatabase.fileURL)")
-    #endif
+    
+    database.completionBlock = { self.puttingBooks() }
   }
   
-  class func getAllBooks(
-    withOffset: Int,
-    andSize: Int,
-    at queue: DispatchQueue = .main,
-    completionHandler: @escaping (BCResult<[BCBook]>) -> Void
-  ) {
-    let group = DispatchGroup()
-    group.enter()
-    BCDB.asyncConnect { conn in
-      let result = BCResult<[BCBook]> {
-        try BCBookDAO.queryAll(offset: withOffset, size: andSize, with: conn)
+  subscript(_ index: Int) -> BCBook { contents[index] }
+
+  func remove(_ book: BCBook) {
+    guard let index = contents.firstIndex(where: { $0 === book }) else { return }
+    book.unmark { [unowned self] res in
+      if case let .success(id) = res, id > 0 {
+        let removed = self.contents.remove(at: index)
+        self.post(removed, userInfo: [
+          ChangedNotification.reasonKey: ChangedNotification.ReasonKey.remove,
+          ChangedNotification.ValueCache.oldValueKey: index,
+        ])
       }
-      group.leave()
-      
-      group.notify(queue: queue) { completionHandler(result) }
     }
   }
   
-  class func getBooksCount(completionHandler: @escaping (BCResult<Int>) -> Void) {
-    BCDB.syncConnect { conn in
-      let result = BCResult<Int> {
-        try BCBookDAO.queryCount(with: conn)
+  func append(_ book: BCBook) {
+    book.mark { [unowned self] res in
+      if case let .success(id) = res, id > 0 {
+        self.contents.append(book)
+        self.post(book, userInfo: [
+          ChangedNotification.reasonKey: ChangedNotification.ReasonKey.append,
+          ChangedNotification.ValueCache.newValueKey: self.contents.count - 1
+        ])
       }
-      completionHandler(result)
+    }
+  }
+//  func put(book: BCBook, at index: IndexPath? = nil) {
+//    book.mark { [unowned self] res in
+//      if case let .success(id) = res, id > 0 {
+//        if let index = index {
+//          self.contents.insert(book, at: index.row)
+//        } else {
+//          self.contents.append(book)
+//        }
+//        self.post(book, userInfo: [
+//          ChangedNotification.reasonKey: ChangedNotification.ReasonKey.insert,
+//          ChangedNotification.ValueCache.newValueKey: index ?? IndexPath(row: self.count, section: 0),
+//        ])
+//      }
+//    }
+//  }
+
+//  class func +=(lhs: BCBookshelf, rhs: BCBook) { lhs.put(book: rhs) }
+  
+  private func puttingBooks() {
+    let result = BCResult<[BCBook]?> {
+      try BCBookCRUD.multiGet()
+    }
+    if case let .success(books) = result, books != nil {
+      contents = books!
+    }
+  }
+  
+  private func post(_ notifying: BCBook, userInfo: [AnyHashable: Any]) {
+    NotificationCenter.default.post(name: BCBookshelf.changedNotification, object: notifying, userInfo: userInfo)
+  }
+}
+
+extension BCBookshelf {
+  
+  static let changedNotification = Notification.Name("ShelfChangedNotification")
+  
+  struct ChangedNotification {
+//    static let insert = Notification.Name(NSStringFromSelector(#selector(put(book:at:))))
+//    static let remove = Notification.Name(NSStringFromSelector(#selector(remove(at:))))
+    
+    static let reasonKey = "ReasonKey"
+    
+    static let valueCache = "ValueCache"
+    
+    enum ReasonKey: String {
+      case insert, remove, append
+    }
+    
+    enum ValueCache: String {
+      case newValue, oldValue, oldValueKey, newValueKey
     }
   }
 }
+
+//  private func launchDatabse() {
+//    let database = BCDatabaseOperation()
+//    database.start()
+//    #if DEBUG
+//    // MARK: TODO: Write all logs to a log file
+//    print("Database path: \(BCDatabase.fileURL)")
+//    #endif
+//  }
+//
+//  class func getAllBooks(
+//    withOffset: Int,
+//    andSize: Int,
+//    at queue: DispatchQueue = .main,
+//    completionHandler: @escaping (BCResult<[BCBook]>) -> Void
+//  ) {
+//    let group = DispatchGroup()
+//    group.enter()
+//    BCDB.asyncConnect { conn in
+//      let result = BCResult<[BCBook]> {
+//        try BCBookDAO.queryAll(offset: withOffset, size: andSize, with: conn)
+//      }
+//      group.leave()
+//
+//      group.notify(queue: queue) { completionHandler(result) }
+//    }
+//  }
+//
+//  class func getBooksCount(completionHandler: @escaping (BCResult<Int>) -> Void) {
+//    BCDB.syncConnect { conn in
+//      let result = BCResult<Int> {
+//        try BCBookDAO.queryCount(with: conn)
+//      }
+//      completionHandler(result)
+//    }
+//  }
+//}
+
+
+//class BCBookListService {
+//  class func getAllBooks(
+//    withOffset: Int,
+//    andSize: Int,
+//    at queue: DispatchQueue = .main,
+//    completionHandler: @escaping (BCResult<[BCBook]>) -> Void
+//  ) {
+//    let group = DispatchGroup()
+//    group.enter()
+//    BCDB.asyncConnect { conn in
+//      let result = BCResult<[BCBook]> {
+//        try BCBookDAO.queryAll(offset: withOffset, size: andSize, with: conn)
+//      }
+//      group.leave()
+//
+//      group.notify(queue: queue) { completionHandler(result) }
+//    }
+//  }
+//
+//  class func getBooksCount(completionHandler: @escaping (BCResult<Int>) -> Void) {
+//    BCDB.syncConnect { conn in
+//      let result = BCResult<Int> {
+//        try BCBookDAO.queryCount(with: conn)
+//      }
+//      completionHandler(result)
+//    }
+//  }
+//}

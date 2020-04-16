@@ -27,47 +27,40 @@
 /// THE SOFTWARE.
 
 import UIKit
-import ESPullToRefresh
 
 class BCListCollectionViewController: BCViewController {
-  
-  fileprivate enum State {
-    case ready, start, wait, stop
-  }
- 
-  fileprivate var state = State.stop {
-    willSet {
-      switch newValue {
-        case .ready:
-        launch()
-        case .start:
-        wakeup()
-        case .wait: break
-        case .stop: break
-      }
-    }
-  }
-  
-  fileprivate lazy var collecitonView = launchCollectionView()
-  
-  fileprivate var books = [BCBook]()
   
   private let numbersOfPerRow: CGFloat = 3
   
   private let paddingInset = UIEdgeInsets(top: 20, left: 10, bottom: 20, right: 10)
   
-  private var booksCount: Int {
-    var count = 0
-    BCBookListService.getBooksCount {
-      BCResponse.handle($0, success: { value in
-        count = value
-      })
-    }
-    return count
+  private let collectionViewDataSource = ListCollectionViewDataSource()
+  private lazy var collectionView: UICollectionView = {
+    let layout = UICollectionViewFlowLayout()
+    let collectionView = UICollectionView(
+      frame: view.frame,
+      collectionViewLayout: layout)
+    
+    collectionView.backgroundColor = BCColor.ListTint.snowWhite
+    
+    collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    
+    collectionView.delegate = self
+    
+    collectionView.dataSource = self.collectionViewDataSource
+    
+    collectionView.prefetchDataSource = self.collectionViewDataSource
+    
+    collectionView.register(BCListCollectionViewCell.self, forCellWithReuseIdentifier: "BCListCollectionViewCell")
+    
+    view.addSubview(collectionView)
+    
+    return collectionView
+  }()
+
+  deinit {
+    NotificationCenter.default.removeObserver(self, name: BCBookshelf.changedNotification, object: nil)
   }
-  
-  private var pageOffset = 0
-  private let defaultPageSize = 15
 }
 
 // MARK: - View life-cycle
@@ -75,76 +68,49 @@ extension BCListCollectionViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    state = .ready
+    launch()
   }
   
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     
-    state = .start
+    wakeup()
   }
 }
 
 // MARK: - Data
 extension BCListCollectionViewController {
-  fileprivate func loadData() {
-    if pageOffset == 0 { books.removeAll() }
-    
-    BCBookListService.getAllBooks(withOffset: pageOffset, andSize: defaultPageSize) {
-      BCResponse.handle($0, success: {
-        self.books += $0
-        
-        self.collecitonView.reloadData()
-        self.collecitonView.es.stopLoadingMore()
-        
-        self.pageOffset += self.defaultPageSize
-      }) { V2RXError.printError($0) }
-    }
-  }
 }
 
 // MARK: - View controllers
 extension BCListCollectionViewController {
   fileprivate func launch() {
     
+    NotificationCenter.default.addObserver(self, selector: #selector(handleChangeNotification(_:)), name: BCBookshelf.changedNotification, object: nil)
+    
     let longPressGesture = UILongPressGestureRecognizer(
       target: self,
       action: #selector(longPressHandler(_:))
     )
-    collecitonView.addGestureRecognizer(longPressGesture)
-
-    loadData()
+    
+    collectionView.addGestureRecognizer(longPressGesture)
   }
   
   fileprivate func wakeup() {
-    
   }
   
-  fileprivate func launchCollectionView() -> UICollectionView {
-    let layout = UICollectionViewFlowLayout()
-    let collectionView = UICollectionView(
-      frame: view.frame,
-      collectionViewLayout: layout)
+  @objc
+  private func handleChangeNotification(_ notification: Notification) {
+    guard let key = notification.userInfo?[BCBookshelf.ChangedNotification.reasonKey] as? BCBookshelf.ChangedNotification.ReasonKey
+      else { return }
     
-    collectionView.backgroundColor = BCColor.ListTint.snowWhite
-//    collectionView.backgroundColor = .systemTeal
-    collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-    collectionView.delegate = self
-    collectionView.dataSource = self
-    
-    collectionView.register(BCListCollectionViewCell.self, forCellWithReuseIdentifier: "BCListCollectionViewCell")
-    
-    view.addSubview(collectionView)
-    
-    collectionView.es.addInfiniteScrolling {
-      if self.pageOffset > self.booksCount {
-        self.collecitonView.es.noticeNoMoreData()
-      }
-      
-      self.loadData()
+    if key == .append,
+      let index = notification.userInfo?[BCBookshelf.ChangedNotification.ValueCache.newValueKey] as? Int {
+      collectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
+    } else if key == .remove,
+      let index = notification.userInfo?[BCBookshelf.ChangedNotification.ValueCache.oldValueKey] as? Int {
+      collectionView.deleteItems(at: [IndexPath(row: index, section: 0)])
     }
-
-    return collectionView
   }
 }
 
@@ -162,34 +128,34 @@ extension BCListCollectionViewController: UICollectionViewDelegate {
 }
 
 // MARK: - Collectionview datasource
-extension BCListCollectionViewController: UICollectionViewDataSource {
-  func collectionView(
-    _ collectionView: UICollectionView,
-    numberOfItemsInSection section: Int
-  ) -> Int { books.count }
-  
-  func collectionView(
-    _ collectionView: UICollectionView,
-    cellForItemAt indexPath: IndexPath
-  ) -> UICollectionViewCell {
-    let identifier = "BCListCollectionViewCell"
-    
-    var cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as? BCListCollectionViewCell
-//    cell.image
-    if cell == nil {
-      cell = BCListCollectionViewCell()
-    }
-    cell?.inject(book: books[indexPath.row])
-    cell?.delegate = self
-    
-    if cell?.cover == nil,
-      !collectionView.isDragging && !collectionView.isDecelerating {
-      cell?.loadingImage(with: books[indexPath.row].image)
-    }
-    
-    return cell!
-  }
-}
+//extension BCListCollectionViewController: UICollectionViewDataSource {
+//  func collectionView(
+//    _ collectionView: UICollectionView,
+//    numberOfItemsInSection section: Int
+//  ) -> Int { books.count }
+//
+//  func collectionView(
+//    _ collectionView: UICollectionView,
+//    cellForItemAt indexPath: IndexPath
+//  ) -> UICollectionViewCell {
+//    let identifier = "BCListCollectionViewCell"
+//
+//    var cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as? BCListCollectionViewCell
+////    cell.image
+//    if cell == nil {
+//      cell = BCListCollectionViewCell()
+//    }
+//    cell?.inject(book: books[indexPath.row])
+//    cell?.delegate = self
+//
+//    if cell?.cover == nil,
+//      !collectionView.isDragging && !collectionView.isDecelerating {
+//      cell?.loadingImage(with: books[indexPath.row].image)
+//    }
+//
+//    return cell!
+//  }
+//}
 
 // MARK: - Collectionview flowlayout delegate
 extension BCListCollectionViewController: UICollectionViewDelegateFlowLayout {
@@ -217,53 +183,54 @@ extension BCListCollectionViewController: UICollectionViewDelegateFlowLayout {
 extension BCListCollectionViewController {
   @objc
   func longPressHandler(_ sender: UILongPressGestureRecognizer) {
-    let points = sender.location(in: collecitonView)
+    let points = sender.location(in: collectionView)
     guard
-      let indexPath = collecitonView.indexPathForItem(at: points),
+      let indexPath = collectionView.indexPathForItem(at: points),
       sender.state == .began
       else { return }
-    let cell = collecitonView.cellForItem(at: indexPath) as! BCListCollectionViewCell
+    let cell = collectionView.cellForItem(at: indexPath) as! BCListCollectionViewCell
     cell.isEditing = true
   }
 }
 
 // MARK: - Collectionview cell delegate
-extension BCListCollectionViewController: BCListCollectionViewCellDelegate {
-  func removeCell(_ cell: BCListCollectionViewCell) {
-    guard let indexPath = collecitonView.indexPath(for: cell)
-      else { return }
-    // MARK: delete row on database
-    BCBookInfoService.unmark(by: books[indexPath.row].doubanID) {
-      BCResponse.handle($0, success: { _ in
-        self.books.remove(at: indexPath.row)
-        self.collecitonView.deleteItems(at: [indexPath])
-      }) { V2RXError.printError($0) }
-    }
-  }
-}
+//extension BCListCollectionViewController: BCListCollectionViewCellDataSource {
+//  func removeCell(_ cell: BCListCollectionViewCell) {
+//    guard let indexPath = collectionView.indexPath(for: cell)
+//      else { return }
+//    // MARK: delete row on database
+//    BCBookInfoService.unmark(by: books[indexPath.row].doubanID) {
+//      BCResponse.handle($0, success: { _ in
+//        self.books.remove(at: indexPath.row)
+//        self.collecitonView.deleteItems(at: [indexPath])
+//      }) { V2RXError.printError($0) }
+//    }
+    
+//  }
+//}
 
 // MARK: - Scrollview delegate
-extension BCListCollectionViewController {
-  func scrollViewDidEndDragging(
-    _ scrollView: UIScrollView,
-    willDecelerate decelerate: Bool) {
-    if !decelerate {
-      loadingCoversForVisibleCells()
-    }
-  }
-  
-  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-    loadingCoversForVisibleCells()
-  }
-  
-  fileprivate func loadingCoversForVisibleCells() {
-    collecitonView.visibleCells.forEach {
-      if let cell = $0 as? BCListCollectionViewCell,
-        let indexPath = collecitonView.indexPath(for: cell) {
-        if cell.cover == nil {
-          cell.loadingImage(with: books[indexPath.row].image)
-        }
-      }
-    }
-  }
-}
+//extension BCListCollectionViewController {
+//  func scrollViewDidEndDragging(
+//    _ scrollView: UIScrollView,
+//    willDecelerate decelerate: Bool) {
+//    if !decelerate {
+//      loadingCoversForVisibleCells()
+//    }
+//  }
+//
+//  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+//    loadingCoversForVisibleCells()
+//  }
+//
+//  fileprivate func loadingCoversForVisibleCells() {
+//    collecitonView.visibleCells.forEach {
+//      if let cell = $0 as? BCListCollectionViewCell,
+//        let indexPath = collecitonView.indexPath(for: cell) {
+//        if cell.cover == nil {
+//          cell.loadingImage(with: books[indexPath.row].image)
+//        }
+//      }
+//    }
+//  }
+//}

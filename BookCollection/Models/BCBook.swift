@@ -28,7 +28,9 @@
 
 import Foundation
 
-struct BCBook: Codable {
+final class BCBook: Codable {
+  
+  var isMarked: Bool = false
   
   let doubanID: String
   
@@ -83,5 +85,53 @@ struct BCBook: Codable {
     case authors = "author"
     case translators = "translator"
     case tags, images, series, rating
+  }
+  
+  init(
+    isMarked: Bool = false,
+    doubanID: String,
+    title: String?,
+    subtitle: String?,
+    originTitle: String?,
+    publishedDate: String?,
+    publisher: String?,
+    isbn10: String?,
+    isbn13: String?,
+    image: String?,
+    binding: String?,
+    authorIntroduction: String?,
+    catalog: String?,
+    pages: String?,
+    summary: String?,
+    price: String?,
+    authors: Authors?,
+    translators: Translators?,
+    tags: Tags?,
+    images: Images?,
+    series: Series?,
+    rating: Rating?
+  ) {
+    self.isMarked = isMarked
+    self.doubanID = doubanID
+    self.title = title
+    self.subtitle = subtitle
+    self.originTitle = originTitle
+    self.publishedDate = publishedDate
+    self.publisher = publisher
+    self.isbn10 = isbn10
+    self.isbn13 = isbn13
+    self.image = image
+    self.binding = binding
+    self.authorIntroduction = authorIntroduction
+    self.catalog = catalog
+    self.pages = pages
+    self.summary = summary
+    self.price = price
+    self.authors = authors
+    self.translators = translators
+    self.tags = tags
+    self.images = images
+    self.series = series
+    self.rating = rating
   }
 }

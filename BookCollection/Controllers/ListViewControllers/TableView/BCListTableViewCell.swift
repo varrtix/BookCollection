@@ -32,13 +32,13 @@ import Kingfisher
 
 class BCListTableViewCell: BCTableViewCell {
   
-  fileprivate lazy var coverImageView = UIImageView()
+  private lazy var coverImageView = UIImageView()
   
-  fileprivate lazy var authorLabel = UILabel()
+  private lazy var authorLabel = UILabel()
   
-  fileprivate lazy var titleLabel = UILabel()
+  private lazy var titleLabel = UILabel()
   
-  fileprivate lazy var tagsView = UIView()
+  private lazy var tagsView = UIView()
   
   var cover: UIImage? { coverImageView.image }
   

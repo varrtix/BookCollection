@@ -29,7 +29,8 @@
 import UIKit
 
 final class ListTableViewDataSource: NSObject, UITableViewDataSource {
-  var bookShelf = BCBookshelf.shared
+  
+  private let bookShelf = BCBookshelf.shared
   
   private let cellIdentifier = "BCListTableViewCell"
   

@@ -28,7 +28,7 @@
 
 import UIKit
 
-class BCScanView: UIView {
+final class BCScanView: UIView {
   fileprivate typealias Point = (x: CGFloat, y: CGFloat)
   /// The size of scanning rectangle
   fileprivate var size: CGSize
