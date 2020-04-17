@@ -34,37 +34,25 @@ class BCViewController: UIViewController {
   
   lazy var shouldHideBottomBarWhenPushed = false
   
-//  lazy var navigationBarBackgroundImage: UIImage? = nil
-  
   lazy var navigationBarBackgroundImage: UIImage? = nil
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     
-    //    setupNavigationBar()
-    //    setup(bar: UINavigationBar)
-    //    setup(bar: navigationController?.navigationBar)
     if let bar = navigationController?.navigationBar { setup(bar) }
   }
   
   private func setup(_ bar: UINavigationBar) {
-    //  private func setupNavigationBar() {
     if shouldShowShadowImage {
-      //      navigationController?.navigationBar.shadowImage = nil
       bar.shadowImage = nil
     } else {
-      //      navigationController?.navigationBar.shadowImage = UIImage()
       bar.shadowImage = UIImage()
-      //      navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
       bar.setBackgroundImage(UIImage(), for: .default)
     }
     
     if let image = navigationBarBackgroundImage {
-      //      navigationController?.navigationBar.setBackgroundImage(image, for: .default)
       bar.setBackgroundImage(image, for: .default)
     } else {
-      //      navigationController?.navigationBar.barTintColor = BCColor.BarTint.green
-      //      navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
       bar.barTintColor = BCColor.BarTint.green
       bar.setBackgroundImage(nil, for: .default)
     }

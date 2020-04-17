@@ -151,8 +151,9 @@ public extension AsyncOperation {
       return
     }
     
-    main()
     state = .Executing
+    main()
+    state = .Finished
   }
   
   override func cancel() { state = .Finished }

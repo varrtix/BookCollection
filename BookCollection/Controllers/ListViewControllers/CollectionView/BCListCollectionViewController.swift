@@ -28,38 +28,50 @@
 
 import UIKit
 
-class BCListCollectionViewController: BCViewController {
+private let cellIdentifier = BCMapping.CellIdentifier.listCollectionView.rawValue
+
+final class BCListCollectionViewController: BCViewController {
   
   private let numbersOfPerRow: CGFloat = 3
   
   private let paddingInset = UIEdgeInsets(top: 20, left: 10, bottom: 20, right: 10)
   
-  private let collectionViewDataSource = ListCollectionViewDataSource()
+  private let collectionViewDataSource = ListCollectionViewDataSource(withCellReuseIdentifier: cellIdentifier)
+  
   private lazy var collectionView: UICollectionView = {
     let layout = UICollectionViewFlowLayout()
     let collectionView = UICollectionView(
       frame: view.frame,
-      collectionViewLayout: layout)
+      collectionViewLayout: layout
+    )
     
     collectionView.backgroundColor = BCColor.ListTint.snowWhite
-    
     collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     
     collectionView.delegate = self
     
-    collectionView.dataSource = self.collectionViewDataSource
+    collectionView.dataSource = collectionViewDataSource
     
-    collectionView.prefetchDataSource = self.collectionViewDataSource
+    collectionView.prefetchDataSource = collectionViewDataSource
     
-    collectionView.register(BCListCollectionViewCell.self, forCellWithReuseIdentifier: "BCListCollectionViewCell")
+    collectionView.register(BCListCollectionViewCell.self, forCellWithReuseIdentifier: cellIdentifier)
     
-    view.addSubview(collectionView)
+    let longPressGesture = UILongPressGestureRecognizer(
+      target: self,
+      action: #selector(longPressHandler(_:))
+    )
+    
+    collectionView.addGestureRecognizer(longPressGesture)
     
     return collectionView
   }()
-
+  
   deinit {
-    NotificationCenter.default.removeObserver(self, name: BCBookshelf.changedNotification, object: nil)
+    NotificationCenter.default.removeObserver(
+      self,
+      name: BCBookshelf.changedNotification,
+      object: nil
+    )
   }
 }
 
@@ -78,38 +90,37 @@ extension BCListCollectionViewController {
   }
 }
 
-// MARK: - Data
-extension BCListCollectionViewController {
-}
-
 // MARK: - View controllers
 extension BCListCollectionViewController {
-  fileprivate func launch() {
+  private func launch() {
     
-    NotificationCenter.default.addObserver(self, selector: #selector(handleChangeNotification(_:)), name: BCBookshelf.changedNotification, object: nil)
-    
-    let longPressGesture = UILongPressGestureRecognizer(
-      target: self,
-      action: #selector(longPressHandler(_:))
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(handleChangeNotification(_:)),
+      name: BCBookshelf.changedNotification,
+      object: nil
     )
     
-    collectionView.addGestureRecognizer(longPressGesture)
+    view.addSubview(collectionView)
   }
   
-  fileprivate func wakeup() {
-  }
+  private func wakeup() {}
   
   @objc
   private func handleChangeNotification(_ notification: Notification) {
     guard let key = notification.userInfo?[BCBookshelf.ChangedNotification.reasonKey] as? BCBookshelf.ChangedNotification.ReasonKey
       else { return }
     
-    if key == .append,
-      let index = notification.userInfo?[BCBookshelf.ChangedNotification.ValueCache.newValueKey] as? Int {
-      collectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
-    } else if key == .remove,
-      let index = notification.userInfo?[BCBookshelf.ChangedNotification.ValueCache.oldValueKey] as? Int {
-      collectionView.deleteItems(at: [IndexPath(row: index, section: 0)])
+    DispatchQueue.main.async {
+      if key == .append,
+        let index = notification.userInfo?[BCBookshelf.ChangedNotification.ValueCache.newValueKey] as? Int {
+        self.collectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
+      } else if key == .remove,
+        let index = notification.userInfo?[BCBookshelf.ChangedNotification.ValueCache.oldValueKey] as? Int {
+        self.collectionView.deleteItems(at: [IndexPath(row: index, section: 0)])
+      } else if key == .multiLoadingComplete {
+        self.collectionView.reloadData()
+      }
     }
   }
 }
@@ -127,36 +138,6 @@ extension BCListCollectionViewController: UICollectionViewDelegate {
   }
 }
 
-// MARK: - Collectionview datasource
-//extension BCListCollectionViewController: UICollectionViewDataSource {
-//  func collectionView(
-//    _ collectionView: UICollectionView,
-//    numberOfItemsInSection section: Int
-//  ) -> Int { books.count }
-//
-//  func collectionView(
-//    _ collectionView: UICollectionView,
-//    cellForItemAt indexPath: IndexPath
-//  ) -> UICollectionViewCell {
-//    let identifier = "BCListCollectionViewCell"
-//
-//    var cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as? BCListCollectionViewCell
-////    cell.image
-//    if cell == nil {
-//      cell = BCListCollectionViewCell()
-//    }
-//    cell?.inject(book: books[indexPath.row])
-//    cell?.delegate = self
-//
-//    if cell?.cover == nil,
-//      !collectionView.isDragging && !collectionView.isDecelerating {
-//      cell?.loadingImage(with: books[indexPath.row].image)
-//    }
-//
-//    return cell!
-//  }
-//}
-
 // MARK: - Collectionview flowlayout delegate
 extension BCListCollectionViewController: UICollectionViewDelegateFlowLayout {
   func collectionView(
@@ -168,10 +149,10 @@ extension BCListCollectionViewController: UICollectionViewDelegateFlowLayout {
     let width = ((view.frame.width - paddingSpace) /
       numbersOfPerRow).rounded(.towardZero)
     let height = width / 5 * 7 + 5 + 16 + 20
-
+    
     return CGSize(width: width, height: height)
   }
-
+  
   func collectionView(
     _ collectionView: UICollectionView,
     layout collectionViewLayout: UICollectionViewLayout,
@@ -179,58 +160,16 @@ extension BCListCollectionViewController: UICollectionViewDelegateFlowLayout {
   ) -> UIEdgeInsets { paddingInset }
 }
 
-// MARK: Collectionview actions
+// MARK: - Collectionview actions
 extension BCListCollectionViewController {
   @objc
   func longPressHandler(_ sender: UILongPressGestureRecognizer) {
     let points = sender.location(in: collectionView)
-    guard
+    guard sender.state == .began,
       let indexPath = collectionView.indexPathForItem(at: points),
-      sender.state == .began
+      let cell = collectionView.cellForItem(at: indexPath) as? BCListCollectionViewCell
       else { return }
-    let cell = collectionView.cellForItem(at: indexPath) as! BCListCollectionViewCell
+    
     cell.isEditing = true
   }
 }
-
-// MARK: - Collectionview cell delegate
-//extension BCListCollectionViewController: BCListCollectionViewCellDataSource {
-//  func removeCell(_ cell: BCListCollectionViewCell) {
-//    guard let indexPath = collectionView.indexPath(for: cell)
-//      else { return }
-//    // MARK: delete row on database
-//    BCBookInfoService.unmark(by: books[indexPath.row].doubanID) {
-//      BCResponse.handle($0, success: { _ in
-//        self.books.remove(at: indexPath.row)
-//        self.collecitonView.deleteItems(at: [indexPath])
-//      }) { V2RXError.printError($0) }
-//    }
-    
-//  }
-//}
-
-// MARK: - Scrollview delegate
-//extension BCListCollectionViewController {
-//  func scrollViewDidEndDragging(
-//    _ scrollView: UIScrollView,
-//    willDecelerate decelerate: Bool) {
-//    if !decelerate {
-//      loadingCoversForVisibleCells()
-//    }
-//  }
-//
-//  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-//    loadingCoversForVisibleCells()
-//  }
-//
-//  fileprivate func loadingCoversForVisibleCells() {
-//    collecitonView.visibleCells.forEach {
-//      if let cell = $0 as? BCListCollectionViewCell,
-//        let indexPath = collecitonView.indexPath(for: cell) {
-//        if cell.cover == nil {
-//          cell.loadingImage(with: books[indexPath.row].image)
-//        }
-//      }
-//    }
-//  }
-//}

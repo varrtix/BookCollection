@@ -30,53 +30,65 @@ import UIKit
 import SnapKit
 import Kingfisher
 
-class BCListTableViewCell: BCTableViewCell {
+final class BCListTableViewCell: BCTableViewCell {
   
-  private lazy var coverImageView = UIImageView()
+  private let coverImageView: UIImageView = {
+    let imageView = UIImageView()
+    imageView.backgroundColor = .white
+    
+    return imageView
+  }()
   
-  private lazy var authorLabel = UILabel()
+  private let authorLabel: UILabel = {
+    let label = UILabel()
+    
+    label.font = UIFont.systemFont(ofSize: 13)
+    label.textColor = UIColor(HEX: 0x999999)
+    
+    return label
+  }()
   
-  private lazy var titleLabel = UILabel()
+  private let titleLabel: UILabel = {
+    let label = UILabel()
+    
+    label.font = UIFont.systemFont(ofSize: 16)
+    label.textColor = UIColor(HEX: 0x555555)
+    
+    return label
+  }()
   
-  private lazy var tagsView = UIView()
+  private let tagsView = UIView()
   
   var cover: UIImage? { coverImageView.image }
   
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     
-    launchSubviews()
+    setup(contentView)
   }
   
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
-  
-  override func awakeFromNib() { super.awakeFromNib() }
-  
-  override func setSelected(_ selected: Bool, animated: Bool) {
-    super.setSelected(selected, animated: animated)
-  }
 }
 
 // MARK: - Subviews
 extension BCListTableViewCell {
-  fileprivate func launchSubviews() {
+  private func setup(_ contentView: UIView) {
     contentView.backgroundColor = BCColor.ListTint.snowWhite
     
-    coverImageView.backgroundColor = .white
     contentView.addSubview(coverImageView)
     
-    authorLabel.font = UIFont.systemFont(ofSize: 13)
-    authorLabel.textColor = UIColor(HEX: 0x999999)
     contentView.addSubview(authorLabel)
     
-    titleLabel.font = UIFont.systemFont(ofSize: 16)
-    titleLabel.textColor = UIColor(HEX: 0x555555)
     contentView.addSubview(titleLabel)
     
     contentView.addSubview(tagsView)
     
+    layoutAllViews()
+  }
+  
+  private func layoutAllViews() {
     coverImageView.snp.makeConstraints { make in
       make.left.top.equalToSuperview().inset(15)
       make.size.equalTo(CGSize(width: 50, height: 70))
@@ -122,7 +134,7 @@ extension BCListTableViewCell {
       authorLabel.text = author
     }
     
-    if let tags = book.tags {
+    if let tags = book.tags, !tags.isEmpty {
       let stackView = UIStackView(
         arrangedSubviews: tags[0...min(tags.count, 3)].map { item -> UIButton in
           let button = UIButton(type: .custom)
@@ -143,16 +155,10 @@ extension BCListTableViewCell {
       tagsView.addSubview(stackView)
       
       stackView.snp.makeConstraints { $0.edges.equalToSuperview() }
-      
     }
   }
   
-  func loadingImage(with path: String?) {
-    guard path != nil else { return }
-    coverImageView.kf.setImage(with: URL(string: path!))
-  }
+  func loadingImage(with url: URL) { coverImageView.kf.setImage(with: url) }
   
-  func cancelLoadingImage() {
-    coverImageView.kf.cancelDownloadTask()
-  }
+  func cancelLoadingImage() { coverImageView.kf.cancelDownloadTask() }
 }

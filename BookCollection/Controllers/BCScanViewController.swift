@@ -30,11 +30,7 @@ import UIKit
 
 final class BCScanViewController: BCViewController {
   
-  private lazy var scanView = BCScanView(
-    self.view.frame,
-    rect: BCScanView.Constraint.size,
-    vertical: BCScanView.Constraint.verticalOffset
-  )
+  private lazy var scanView = BCScanView(frame: self.view.frame)
   
   private var store: BCBookStore?
   
@@ -65,28 +61,36 @@ final class BCScanViewController: BCViewController {
   @CustomBarButtonItem("Scan/back-button", target: self, action: #selector(pop(_:))) var backBarButton
   
   @CustomBarButtonItem("Scan/light-off", and: "Scan/light-on", target: self, action: #selector(light(_:))) var lightBarButton
+  
+  deinit {
+    NotificationCenter.default.removeObserver(
+      self,
+      name: UIApplication.willEnterForegroundNotification,
+      object: nil
+    )
+  }
 }
 
 // MARK: - View controller life-cycle
 extension BCScanViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
-    setup(view)
-  }
-  
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    startup()
-  }
-  
-  override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
+    
     NotificationCenter.default.addObserver(
       self,
       selector: #selector(scan),
       name: UIApplication.willEnterForegroundNotification,
       object: nil
     )
+    
+    setup(navigationItem)
+    
+    setup(view)
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    startup()
   }
   
   override func viewDidDisappear(_ animated: Bool) {
@@ -100,8 +104,6 @@ private extension BCScanViewController {
   
   func setup(_ view: UIView) {
     view.backgroundColor = BCColor.BarTint.gray
-    
-    setup(navigationItem)
     
     view.addSubview(scanView)
   }
@@ -209,11 +211,6 @@ fileprivate extension BCScanViewController {
     captureLayer?.removeFromSuperlayer()
     captureLayer = nil
     
-    NotificationCenter.default.removeObserver(
-      self,
-      name: UIApplication.willEnterForegroundNotification,
-      object: nil
-    )
   }
   
   // MARK: BarButton actions

@@ -41,7 +41,7 @@ class BCTabBarViewController: UITabBarController, UITabBarControllerDelegate {
   private func setup() {
     delegate = self
     
-    viewControllers  = BCMapping.ViewControllers.allCases.map {
+    viewControllers  = BCMapping.ViewControllers.TabBar.allCases.map {
       let viewController = $0.raw
       viewController.tabBarItem.title = $0.rawValue
       viewController.tabBarItem.image = UIImage(named: "Tabbar/\($0.rawValue)")

@@ -69,11 +69,11 @@ extension BCInfoViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    view.backgroundColor = BCColor.BarTint.white
+    setup(navigationItem)
     
-    configure(item: navigationItem)
-    configureSubviews()
+    setup(view)
     
+    infoView.delegate = self
   }
   
   override func viewDidDisappear(_ animated: Bool) {
@@ -90,7 +90,7 @@ extension BCInfoViewController {
 // MARK: - View configure
 extension BCInfoViewController {
   
-  fileprivate func configure(item: UINavigationItem) {
+  fileprivate func setup(_ item: UINavigationItem) {
     item.title = book?.title ?? "Book Information"
     
     navigationBarBackgroundImage = UIImage()
@@ -108,8 +108,10 @@ extension BCInfoViewController {
     }
   }
   // MARK: configure Subviews
-  fileprivate func configureSubviews() {
-    infoView.delegate = self
+  fileprivate func setup(_ view: UIView) {
+
+    view.backgroundColor = BCColor.BarTint.white
+    
     view.addSubview(infoView)
   }
 }

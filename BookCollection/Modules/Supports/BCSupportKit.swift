@@ -29,25 +29,39 @@
 import UIKit
 
 struct BCMapping {
-  enum ViewControllers: String, CaseIterable {
-    case collections = "Collections"
-    case scan = "Scan"
-    case me = "Me"
+  enum ViewControllers: String {
+    enum TabBar: String, CaseIterable {
+      case collections = "Collections"
+      case me = "Me"
+      
+      var raw: UIViewController {
+        switch self {
+          case .collections: return BCListViewController()
+          case .me: return BCAnalyticViewController()
+        }
+      }
+      var identifier: String { self.rawValue }
+    }
     
+    case scan = "Scan"
+
     case tableList = "TableList"
     case collectionList = "CollectionList"
 
     var raw: UIViewController {
       switch self {
-        case .collections: return BCListViewController()
         case .scan: return BCScanViewController()
-        case .me: return BCAnalyticViewController()
         case .tableList: return BCListTableViewController()
         case .collectionList: return BCListCollectionViewController()
       }
     }
     
     var identifier: String { self.rawValue }
+  }
+  
+  enum CellIdentifier: String {
+    case listTableView = "BCListTableViewCell"
+    case listCollectionView = "BCListCollectionViewCell"
   }
 }
 

@@ -33,7 +33,10 @@ extension BCDatabase {
   final class TableOperation: AsyncOperation {
     
     override func main() {
-      guard let connection = DB.validate().connection else { return }
+      guard let connection = DB.validate().connection else {
+        self.cancel()
+        return
+      }
       
       Table.Kind.allCases.forEach { $0.create(with: connection) }
     }

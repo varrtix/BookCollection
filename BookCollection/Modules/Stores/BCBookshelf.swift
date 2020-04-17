@@ -27,6 +27,7 @@
 /// THE SOFTWARE.
 
 import Foundation
+import Kingfisher
 
 final class BCBookshelf {
   
@@ -34,13 +35,17 @@ final class BCBookshelf {
   
   private var contents: [BCBook] = []
   
+  private(set) var snapshotURLs: [Int: URL] = [:]
+  
   var count: Int { contents.count }
   
   init() {
     let database = BCDatabase.TableOperation()
-    database.start()
+    database.completionBlock = {
+      self.puttingBooks()
+    }
     
-    database.completionBlock = { self.puttingBooks() }
+    database.start()
   }
   
   subscript(_ index: Int) -> BCBook { contents[index] }
@@ -69,30 +74,28 @@ final class BCBookshelf {
       }
     }
   }
-//  func put(book: BCBook, at index: IndexPath? = nil) {
-//    book.mark { [unowned self] res in
-//      if case let .success(id) = res, id > 0 {
-//        if let index = index {
-//          self.contents.insert(book, at: index.row)
-//        } else {
-//          self.contents.append(book)
-//        }
-//        self.post(book, userInfo: [
-//          ChangedNotification.reasonKey: ChangedNotification.ReasonKey.insert,
-//          ChangedNotification.ValueCache.newValueKey: index ?? IndexPath(row: self.count, section: 0),
-//        ])
-//      }
-//    }
-//  }
-
-//  class func +=(lhs: BCBookshelf, rhs: BCBook) { lhs.put(book: rhs) }
   
+  func prefetching(by keys: Set<Int>) {
+    let urls: [URL] = keys.compactMap { index in
+      guard let url = contents[index].image else { return nil }
+      snapshotURLs[index] = URL(string: url)
+      return snapshotURLs[index]
+    }
+    ImagePrefetcher(urls: urls).start()
+  }
+
   private func puttingBooks() {
     let result = BCResult<[BCBook]?> {
       try BCBookCRUD.multiGet()
     }
     if case let .success(books) = result, books != nil {
       contents = books!
+      NotificationCenter.default.post(
+        name: BCBookshelf.changedNotification,
+        object: nil,
+        userInfo: [
+          ChangedNotification.reasonKey: ChangedNotification.ReasonKey.multiLoadingComplete,
+      ])
     }
   }
   
@@ -106,15 +109,13 @@ extension BCBookshelf {
   static let changedNotification = Notification.Name("ShelfChangedNotification")
   
   struct ChangedNotification {
-//    static let insert = Notification.Name(NSStringFromSelector(#selector(put(book:at:))))
-//    static let remove = Notification.Name(NSStringFromSelector(#selector(remove(at:))))
-    
+
     static let reasonKey = "ReasonKey"
     
     static let valueCache = "ValueCache"
     
     enum ReasonKey: String {
-      case insert, remove, append
+      case insert, remove, append, loadingComplete, multiLoadingComplete
     }
     
     enum ValueCache: String {
@@ -122,70 +123,3 @@ extension BCBookshelf {
     }
   }
 }
-
-//  private func launchDatabse() {
-//    let database = BCDatabaseOperation()
-//    database.start()
-//    #if DEBUG
-//    // MARK: TODO: Write all logs to a log file
-//    print("Database path: \(BCDatabase.fileURL)")
-//    #endif
-//  }
-//
-//  class func getAllBooks(
-//    withOffset: Int,
-//    andSize: Int,
-//    at queue: DispatchQueue = .main,
-//    completionHandler: @escaping (BCResult<[BCBook]>) -> Void
-//  ) {
-//    let group = DispatchGroup()
-//    group.enter()
-//    BCDB.asyncConnect { conn in
-//      let result = BCResult<[BCBook]> {
-//        try BCBookDAO.queryAll(offset: withOffset, size: andSize, with: conn)
-//      }
-//      group.leave()
-//
-//      group.notify(queue: queue) { completionHandler(result) }
-//    }
-//  }
-//
-//  class func getBooksCount(completionHandler: @escaping (BCResult<Int>) -> Void) {
-//    BCDB.syncConnect { conn in
-//      let result = BCResult<Int> {
-//        try BCBookDAO.queryCount(with: conn)
-//      }
-//      completionHandler(result)
-//    }
-//  }
-//}
-
-
-//class BCBookListService {
-//  class func getAllBooks(
-//    withOffset: Int,
-//    andSize: Int,
-//    at queue: DispatchQueue = .main,
-//    completionHandler: @escaping (BCResult<[BCBook]>) -> Void
-//  ) {
-//    let group = DispatchGroup()
-//    group.enter()
-//    BCDB.asyncConnect { conn in
-//      let result = BCResult<[BCBook]> {
-//        try BCBookDAO.queryAll(offset: withOffset, size: andSize, with: conn)
-//      }
-//      group.leave()
-//
-//      group.notify(queue: queue) { completionHandler(result) }
-//    }
-//  }
-//
-//  class func getBooksCount(completionHandler: @escaping (BCResult<Int>) -> Void) {
-//    BCDB.syncConnect { conn in
-//      let result = BCResult<Int> {
-//        try BCBookDAO.queryCount(with: conn)
-//      }
-//      completionHandler(result)
-//    }
-//  }
-//}

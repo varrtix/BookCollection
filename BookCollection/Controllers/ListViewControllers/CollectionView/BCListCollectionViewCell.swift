@@ -34,13 +34,34 @@ protocol BCListCollectionViewCellDataSource {
   func removeCell(_ cell: BCListCollectionViewCell)
 }
 
-class BCListCollectionViewCell: BCCollectionViewCell {
+final class BCListCollectionViewCell: BCCollectionViewCell {
   
-  fileprivate lazy var coverImageView = UIImageView()
+  private let coverImageView: UIImageView = {
+    let imageView = UIImageView()
+    imageView.backgroundColor = .white
+    
+    return imageView
+  }()
   
-  fileprivate lazy var titleLabel = UILabel()
+  private let titleLabel: UILabel = {
+    let label = UILabel()
+    
+    label.font = UIFont.systemFont(ofSize: 14)
+    label.textColor = UIColor(HEX: 0x555555)
+    label.numberOfLines = 0
+    
+    return label
+  }()
   
-  fileprivate lazy var deleteButton = UIButton()
+  private let deleteButton: UIButton = {
+    let button = UIButton()
+    
+    button.setImage(UIImage(named: "Main/List/delete"), for: .normal)
+    button.addTarget(self, action: #selector(remove(_:)), for: .touchUpInside)
+    button.isHidden = true
+    
+    return button
+  }()
   
   var isEditing = false {
     didSet {
@@ -61,9 +82,9 @@ class BCListCollectionViewCell: BCCollectionViewCell {
   override init(frame: CGRect) {
     super.init(frame: frame)
     
-    launchSubviews()
+    setup(contentView)
   }
-  
+
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
@@ -71,20 +92,20 @@ class BCListCollectionViewCell: BCCollectionViewCell {
 
 // MARK: - Subviews
 extension BCListCollectionViewCell {
-  fileprivate func launchSubviews() {
+  private func setup(_ contentView: UIView) {
     contentView.backgroundColor = .clear
     
-    coverImageView.backgroundColor = .white
     contentView.addSubview(coverImageView)
-    
-    titleLabel.font = UIFont.systemFont(ofSize: 14)
-    titleLabel.textColor = UIColor(HEX: 0x555555)
-    titleLabel.numberOfLines = 0
+
     contentView.addSubview(titleLabel)
     
+    contentView.addSubview(deleteButton)
+    
+    layoutAllViews()
+  }
+   
+  private func layoutAllViews() {
     coverImageView.snp.makeConstraints { make in
-      //      make.size.equalTo(CGSize(width: 80, height: 110))
-      //      make.left.right.top.equalToSuperview().inset(10)
       make.left.right.top.equalToSuperview().inset(10)
       make.height.equalTo(coverImageView.snp.width).multipliedBy(7.0/5.0)
     }
@@ -95,14 +116,9 @@ extension BCListCollectionViewCell {
       make.left.right.equalToSuperview()
     }
     
-    deleteButton.setImage(UIImage(named: "Main/List/delete"), for: .normal)
-    deleteButton.addTarget(self, action: #selector(remove(_:)), for: .touchUpInside)
-    contentView.addSubview(deleteButton)
-    
     deleteButton.snp.makeConstraints { make in
       make.right.top.equalToSuperview()
     }
-    deleteButton.isHidden = true
   }
   
   override func prepareForReuse() {
@@ -114,20 +130,12 @@ extension BCListCollectionViewCell {
 // MARK: - Inject data
 extension BCListCollectionViewCell {
   func inject(book: BCBook) {
-    //    if let image = book.image {
-    //      coverImageView.kf.setImage(with: URL(string: image))
-    //    }
     titleLabel.text = book.title
   }
   
-  func loadingImage(with path: String?) {
-    guard path != nil else { return }
-    coverImageView.kf.setImage(with: URL(string: path!))
-  }
+  func loadingImage(with url: URL) { coverImageView.kf.setImage(with: url) }
   
-  func cancelLoadingImage() {
-    coverImageView.kf.cancelDownloadTask()
-  }
+  func cancelLoadingImage() { coverImageView.kf.cancelDownloadTask() }
 }
 
 // MARK: - Actions

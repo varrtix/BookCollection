@@ -28,11 +28,13 @@
 
 import UIKit
 
-final class ListTableViewDataSource: NSObject, UITableViewDataSource {
+final class ListCollectionViewDataSource: NSObject, UICollectionViewDataSource {
   
   private let bookShelf = BCBookshelf.shared
   
   private let cellIdentifier: String
+  
+  private var collectionView: UICollectionView?
   
   init(withCellReuseIdentifier: String) {
     self.cellIdentifier = withCellReuseIdentifier
@@ -40,13 +42,18 @@ final class ListTableViewDataSource: NSObject, UITableViewDataSource {
     super.init()
   }
   
-  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { bookShelf.count }
+  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    self.collectionView = collectionView
+    return bookShelf.count
+  }
   
-  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
+  func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath)
     
-    if let cell = cell as? BCListTableViewCell {
+    if let cell = cell as? BCListCollectionViewCell {
+      cell.dataSource = self
       cell.inject(book: bookShelf[indexPath.row])
+      
       if let url = bookShelf.snapshotURLs[indexPath.row] {
         cell.loadingImage(with: url)
       } else if let url = URL(string: bookShelf[indexPath.row].image ?? "") {
@@ -56,19 +63,20 @@ final class ListTableViewDataSource: NSObject, UITableViewDataSource {
     
     return cell
   }
-  
-  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-    switch editingStyle {
-      case .delete: bookShelf.remove(bookShelf[indexPath.row])
-      default: break
-    }
-  }
 }
 
-extension ListTableViewDataSource: UITableViewDataSourcePrefetching {
-  func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+extension ListCollectionViewDataSource: UICollectionViewDataSourcePrefetching {
+  func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
     bookShelf.prefetching(by: Set(indexPaths.map { $0.row }))
   }
   
-  func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {}
+  func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {}
+}
+
+extension ListCollectionViewDataSource: BCListCollectionViewCellDataSource {
+  func removeCell(_ cell: BCListCollectionViewCell) {
+    guard let indexPath = collectionView?.indexPath(for: cell)
+      else { return }
+    bookShelf.remove(bookShelf[indexPath.row])
+  }
 }

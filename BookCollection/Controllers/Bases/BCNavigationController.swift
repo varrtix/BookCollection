@@ -33,7 +33,6 @@ class BCNavigationController: UINavigationController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    //    setupBar()
     setup(navigationBar)
     
     setup(&modalPresentationStyle)
@@ -43,11 +42,6 @@ class BCNavigationController: UINavigationController {
   
   // MARK: - Navigation configurations
   private func setup(_ bar: UINavigationBar) {
-    //    navigationBar.barTintColor = BCColor.BarTint.green
-    //    navigationBar.tintColor = BCColor.BarTint.white
-    //    navigationBar.titleTextAttributes = [
-    //      NSAttributedString.Key.foregroundColor: BCColor.BarTint.white
-    //    ]
     bar.barTintColor = BCColor.BarTint.green
     bar.tintColor = BCColor.BarTint.white
     bar.titleTextAttributes = [
@@ -56,17 +50,11 @@ class BCNavigationController: UINavigationController {
   }
   
   private func setup(_ style: inout UIModalPresentationStyle) {
-    //    if #available(iOS 13.0, *) {
-    //      modalPresentationStyle = .automatic
-    //    } else {
-    //      modalPresentationStyle = .fullScreen
-    //    }
     if #available(iOS 13.0, *) {
       style = .automatic
     } else {
       style = .fullScreen
     }
-    //    modalTransitionStyle = .coverVertical
   }
   
   private func setup(_ style: inout UIModalTransitionStyle) {
