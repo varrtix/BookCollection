@@ -28,7 +28,7 @@
 
 import UIKit
 
-class BCListViewController: BCViewController {
+final class BCListViewController: BCViewController {
   
   private enum ViewMode: String {
     case table, collection
@@ -40,7 +40,7 @@ class BCListViewController: BCViewController {
       }
     }
   }
-
+  
   private var modeImage: UIImage? { UIImage(named: "Main/List/Mode-\(viewMode.rawValue)") }
   
   private var viewMode = ViewMode.table {
@@ -52,17 +52,19 @@ class BCListViewController: BCViewController {
     }
   }
   
-  private let scanBarButton = UIBarButtonItem(
+  private lazy var scanBarButton = UIBarButtonItem(
     image: UIImage(named: "Main/\(BCMapping.ViewControllers.scan.rawValue)"),
     style: .plain,
     target: self,
-    action: #selector(scan(_:)))
+    action: #selector(scan(_:))
+  )
   
   private lazy var modeBarButton = UIBarButtonItem(
     image: self.modeImage,
     style: .plain,
     target: self,
-    action: #selector(toggleMode(_:)))
+    action: #selector(toggleMode(_:))
+  )
 }
 
 // MARK: - View Life-cycle

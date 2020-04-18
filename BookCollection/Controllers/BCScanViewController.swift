@@ -34,7 +34,7 @@ final class BCScanViewController: BCViewController {
   
   private var store: BCBookStore?
   
-  private var isbnCaptor: BCISBNCaptor?
+  private let isbnCaptor = BCISBNCaptor()
   
   private var captureLayer: CALayer?
   
@@ -58,9 +58,31 @@ final class BCScanViewController: BCViewController {
     return alert
   }()
   
-  @CustomBarButtonItem("Scan/back-button", target: self, action: #selector(pop(_:))) var backBarButton
+  private lazy var backBarButton: UIBarButtonItem = {
+    let button = UIButton(type: .custom)
+    
+    button.setImage(UIImage(named: "Scan/back-button"), for: .normal)
+    button.tintColor = .white
+    button.sizeToFit()
+    
+    
+    button.addTarget(self, action: #selector(pop(_:)), for: .touchUpInside)
+    
+    return UIBarButtonItem(customView: button)
+  }()
   
-  @CustomBarButtonItem("Scan/light-off", and: "Scan/light-on", target: self, action: #selector(light(_:))) var lightBarButton
+  private lazy var lightBarButton: UIBarButtonItem = {
+    let button = UIButton(type: .custom)
+    
+    button.setImage(UIImage(named: "Scan/light-off"), for: .normal)
+    button.setImage(UIImage(named: "Scan/light-on"), for: .selected)
+    button.tintColor = .white
+    button.sizeToFit()
+    
+    button.addTarget(self, action: #selector(light(_:)), for: .touchUpInside)
+    
+    return UIBarButtonItem(customView: button)
+  }()
   
   deinit {
     NotificationCenter.default.removeObserver(
@@ -83,14 +105,15 @@ extension BCScanViewController {
       object: nil
     )
     
-    setup(navigationItem)
-    
     setup(view)
+    
+    setup(navigationItem)
   }
   
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    startup()
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    
+    scan()
   }
   
   override func viewDidDisappear(_ animated: Bool) {
@@ -123,59 +146,72 @@ private extension BCScanViewController {
 
 // MARK: - objc actions
 @objc
-fileprivate extension BCScanViewController {
+private extension BCScanViewController {
   
-  func startup() {
+  func scan() {
     
-    isbnCaptor = BCISBNCaptor()
+    if let error = isbnCaptor.validate() {
+      let setting = UIAlertAction(title: "Setting", tintColor: .black, style: .default) { _ in
+        guard let url = URL(string: UIApplication.openSettingsURLString),
+          UIApplication.shared.canOpenURL(url) else { return }
+        UIApplication.shared.open(url)
+      }
+      let cancel = UIAlertAction(title: "OK", tintColor: .red, style: .cancel) { _ in
+        self.dismiss()
+      }
+      
+      let alert = UIAlertController(
+        title: "Permisson denied",
+        message: error.localizedDescription,
+        actions: [setting, cancel])
+      
+      present(alert, barrier: UIAlertController.self)
+      
+      return
+    }
     
-    captureLayer = isbnCaptor?.layer
+    isbnCaptor.setup()
+    
+    setupCaptureLayer()
+    
+    output()
+  }
+  
+  func setupCaptureLayer() {
+    captureLayer = isbnCaptor.layer
     
     captureLayer?.frame = view.layer.bounds
     
     if captureLayer != nil {
       view.layer.insertSublayer(captureLayer!, at: 0)
     }
-    
-    scan()
   }
   
-  func scan() {
+  func output() {
     scanView.startAnimating()
-
-    isbnCaptor?.output { [unowned self] result in
+    
+    isbnCaptor.output { [unowned self] result in
       self.scanView.stopAnimating()
+      
+      guard case let .success(isbn) = result else {
+        self.dismiss()
+        return
+      }
+      
       self.present(self.loadingAlert, barrier: UIAlertController.self)
       
-      switch result {
-        case let .success(isbn): self.processing(isbn: isbn)
-        case let .failure(error):
-
-          let setting = UIAlertAction(title: "Setting", tintColor: .black, style: .default) { _ in
-            guard let url = URL(string: UIApplication.openSettingsURLString),
-              UIApplication.shared.canOpenURL(url) else { return }
-            UIApplication.shared.open(url)
-          }
-          let cancel = UIAlertAction(title: "OK", tintColor: .red, style: .cancel)
-          
-          let alert = UIAlertController(
-            title: "Permisson denied",
-            message: error.localizedDescription,
-            actions: [setting, cancel])
-          
-          self.present(alert, barrier: UIAlertController.self)
-      }
+      self.processing(isbn: isbn)
     }
   }
   
   func processing(isbn: String) {
-    let alert = UIAlertController(title: "Book INFO", message: "")
-
+    let alert = UIAlertController(title: "No title", message: "")
+    
     store = BCBookStore(isbn: isbn)
     store?.getBook { [unowned self] result in
       if case let .success(value) = result, let book = value {
+        alert.title = book.title ?? "Book Information"
         alert.message = """
-        \(book.title ?? "No title")
         \(book.isbn13 ?? "No ISBN13")
         \(book.authors?.first ?? "No author")
         """
@@ -188,9 +224,15 @@ fileprivate extension BCScanViewController {
         alert.addAction(detail)
         
         if !book.isMarked {
-          let next = UIAlertAction(title: "Mark and Continue", style: .default) { _ in self.bookShelf.append(book) }
+          let next = UIAlertAction(title: "Mark and Continue", style: .default) { _ in
+            self.bookShelf.append(book)
+            self.output()
+          }
           alert.addAction(next)
         }
+        
+        let cancel = UIAlertAction(title: "Cancel", tintColor: .red, style: .cancel) { _ in self.output() }
+        alert.addAction(cancel)
         
       } else if case let .failure(error) = result {
         alert.title = "Something goes wrong"
@@ -200,13 +242,12 @@ fileprivate extension BCScanViewController {
         }
         alert.addAction(confirm)
       }
+      self.present(alert, barrier: UIAlertController.self)
     }
-    present(alert, barrier: UIAlertController.self)
   }
   
   func cleanup() {
     scanView.stopAnimating()
-    isbnCaptor = nil
     
     captureLayer?.removeFromSuperlayer()
     captureLayer = nil
@@ -214,21 +255,18 @@ fileprivate extension BCScanViewController {
   }
   
   // MARK: BarButton actions
-  func pop(_ sender: UIButton? = nil) {
-    // TODO: checking the function dismiss of uiviewcontroller or navigationcontroller
-    navigationController?.dismiss(animated: true)
-  }
+  func pop(_ sender: UIButton? = nil) { dismiss(animated: true) }
   
   func light(_ sender: UIButton) {
     sender.isSelected.toggle()
-    // MARK: TODO: Turn on and off the light.
+    isbnCaptor.toggleFlash()
   }
 }
 
-fileprivate extension BCScanViewController {
+private extension BCScanViewController {
   func dismiss(completion: (() -> Void)? = nil) {
-    navigationController?.presentingViewController?.view.layer.removeAllAnimations()
-    navigationController?.dismiss(animated: true, completion: completion)
+    presentedViewController?.view.layer.removeAllAnimations()
+    dismiss(animated: true, completion: completion)
   }
   
   func present(
@@ -236,31 +274,10 @@ fileprivate extension BCScanViewController {
     barrier: UIViewController.Type? = nil,
     completion: (() -> Void)? = nil
   ) {
-    if let type = barrier.self,
-      type === navigationController?.presentingViewController.self {
-      dismiss()
+    if let type = barrier, self.presentedViewController?.isKind(of: type) ?? false {
+      dismiss { self.present(viewControllerToPresent, animated: true, completion: completion) }
+    } else {
+      present(viewControllerToPresent, animated: true, completion: completion)
     }
-    navigationController?.present(viewControllerToPresent, animated: true, completion: completion)
   }
-}
-
-// MARK: - Custom bar button wrapper
-@propertyWrapper
-fileprivate struct CustomBarButtonItem {
-  
-  private var button: UIButton
-  
-  init(_ imageNamed: String, and selectImageNamed: String? = nil, target: Any?, action: Selector) {
-    button = UIButton(type: .custom)
-    
-    button.setImage(UIImage(named: imageNamed), for: .normal)
-    button.tintColor = .white
-    button.sizeToFit()
-    
-    if let name = selectImageNamed { button.setImage(UIImage(named: name), for: .selected) }
-    
-    button.addTarget(target, action: action, for: .touchUpInside)
-  }
-  
-  var wrappedValue: UIBarButtonItem { UIBarButtonItem(customView: button) }
 }

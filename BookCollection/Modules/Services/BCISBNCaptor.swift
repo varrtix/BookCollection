@@ -55,15 +55,7 @@ enum CaptureError: Error {
   }
 }
 
-//typealias ISBNCaptorCompletion = (String) -> Void
-//typealias ISBNCaptorHandler = (Result<String, Error>) -> Void
-//let ISBNCaptor = BCISBNCaptor.shared
-
 final class BCISBNCaptor: NSObject {
-//  static let shared = BCISBNCaptor()
-  enum State {
-    case start, scanning, stop
-  }
   
   typealias ISBNResult = Result<String, Error>
   
@@ -71,103 +63,31 @@ final class BCISBNCaptor: NSObject {
   
   private let videoSession = AVCaptureSession()
   
-  //  private let group = DispatchGroup()
+  private var isPermitted: Bool = false
   
-  //  private let result: ISBNResult
-  //  private var videoAuthorization: AVAuthorizationStatus {
-  //    AVCaptureDevice.authorizationStatus(for: .video)
-  //  }
+  private var isCommitted: Bool = false
   
-  //  private var isPermitted: Bool { videoAuthorization == .authorized }
+  private var isAvailable: Bool { isPermitted && isCommitted }
   
-  //  var isRunning: Bool { videoSession.isRunning }
-  
-  var layer: CALayer { AVCaptureVideoPreviewLayer(session: videoSession) }
-  
-  var isRunning: Bool { state == .start || state == .scanning || videoSession.isRunning }
-  
-  //  var handler: BCISBNHandler?
   private var completion: ISBNCaptorHandler?
   
-  private var state = State.stop
-  //  private var result: ISBNResult?
-  //  private var error: Error?
-  //  private var isCommitted: Bool = false
+  var layer: CALayer? { isAvailable ? AVCaptureVideoPreviewLayer(session: videoSession) : nil }
   
-  //  init(_ handler: @escaping BCISBNHandler) {
-  //    self.handler = handler
-  //
-  //    super.init()
-  //  }
-  //  @discardableResult
-  //  init(_ completion: @escaping ISBNCaptorHandler) {
-  //    self.completion = completion
+  var isRunning: Bool { videoSession.isRunning }
   
-  //    super.init()
+  var error: Error? = nil
   
-  //    capture()
-  //    launch()
-  //  }
-  //  private override init() {
-  //    super.init()
-  //
-  //    launch()
-  //  }
+  deinit { stopRunning() }
   
-  private func launch() -> Error? {
-    var error: Error?
-    switch AVCaptureDevice.authorizationStatus(for: .video) {
-      case .authorized: error = capture()
-      case .notDetermined:
-        AVCaptureDevice.requestAccess(for: .video) { granted in
-          if granted {
-            error = self.capture()
-          } else {
-            //            self.completion?(
-            //              .failure(CaptureError.invalidAuthorization(.notDetermined))
-            //            )
-            error = CaptureError.invalidAuthorization(.notDetermined)
-          }
-      }
-      case .denied, .restricted: error = CaptureError.invalidAuthorization(.denied)
-      //      case .denied: self.completion?(
-      //        .failure(CaptureError.invalidAuthorization(.denied))
-      //      )
-      //      case .restricted: self.error = CaptureError.invalidAuthorization(.restricted)
-      //      case .restricted: self.completion?(
-      //        .failure(CaptureError.invalidAuthorization(.restricted))
-      //      )
-      @unknown default: break
-    }
-    return error
+  private func startRunning() {
+    if !isRunning { videoSession.startRunning() }
   }
-  //  deinit { stopRunning() }
   
-  //  @discardableResult
-  //  func startRunning() -> Self {
-  //    if !isRunning && isPermitted && isCommitted { session.startRunning() }
-  //    return self
-  //  }
+  private func stopRunning() {
+    if isRunning { videoSession.stopRunning() }
+  }
   
-  //  func stopRunning() {
-  //    if isRunning { videoSession.stopRunning() }
-  //  }
-  
-  //  func capture() -> CALayer? {
-  private func capture() -> Error? {
-    //    if isCommitted || !isPermitted { return nil }
-    //    session.beginConfiguration()
-    //    if !isPermitted {
-    ////      completion(.failure(CaptureError.invalidAuthorization(videoAuthorization)))
-    //      AVCaptureDevice.requestAccess(for: .video) { granted in
-    //        if granted {
-    //          self.capture()
-    //        } else {
-    //          self.completion(.failure(CaptureError.invalidAuthorization(self.videoAuthorization)))
-    //        }
-    //      }
-    //      return
-    //    }
+  private func _setup() -> Error? {
     videoSession.beginConfiguration()
     
     do {
@@ -191,57 +111,52 @@ final class BCISBNCaptor: NSObject {
       videoSession.commitConfiguration()
       
       return nil
-      //    } catch { completion?(.failure(error)) }
     } catch { return error }
+  }
+  
+  func validate() -> CaptureError? {
+    isPermitted = false
+    var error: CaptureError? = nil
+    switch AVCaptureDevice.authorizationStatus(for: .video) {
+      case .authorized: isPermitted = true
+      case .notDetermined:
+        AVCaptureDevice.requestAccess(for: .video) { granted in
+          if !granted { error = CaptureError.invalidAuthorization(.notDetermined) }
+      }
+      case .denied, .restricted: error = CaptureError.invalidAuthorization(.denied)
+      @unknown default: fatalError()
+    }
+    return error
+  }
+  
+  func setup() {
+    if isCommitted || !isPermitted { return }
     
-    //    videoSession.startRunning()
-    //      else { return nil }
-    //
-    //    guard let captureInput = try? AVCaptureDeviceInput(device: captureDevice)
-    //      //      else { throw CameraError.inputCaptureError }
-    //      else { return nil }
-    //
-    //    if session.canAddInput(captureInput) {
-    //      session.addInput(captureInput)
-    //    }
-    //
-    //    let captureOutput = AVCaptureMetadataOutput()
-    //    captureOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
-    //
-    //    if session.canAddOutput(captureOutput) {
-    //      session.addOutput(captureOutput)
-    //      // Filter types must be that after addoutput
-    //      captureOutput.metadataObjectTypes = [.ean13]
-    //    }
-    
-    // Add preview scene
-    //    let layer = AVCaptureVideoPreviewLayer(session: captureSession)
-    //    layer.frame = view.layer.bounds
-    // IMPORTANT: addsublayer will replace the layer of scanView
-    // but isnertsublayer at index 0 will replace parent's layer.
-    //    view.layer.insertSublayer(layer, at: 0)
-    
-    //    session.commitConfiguration()
-    //    sessionIsCommitted = true
-    //    isCommitted = true
-    //    startup()
-    //    return AVCaptureVideoPreviewLayer(session: session)
+    if let error = _setup() {
+      self.error = error
+    } else {
+      isCommitted = true
+    }
   }
   
   func output(_ completionHandler: @escaping ISBNCaptorHandler) {
-    //    videoSession.startRunning()
-    
     completion = completionHandler
-    
-    state = .start
-    if let error = launch() {
-      //      completion?(.failure(error))
-      state = .stop
+    if isAvailable {
+      startRunning()
+    } else if let error = error {
       completion?(.failure(error))
-    } else {
-      state = .scanning
-      videoSession.startRunning()
     }
+  }
+  
+  func toggleFlash() {
+    guard let device = AVCaptureDevice.default(for: .video), device.hasTorch else { return }
+    
+    do {
+      try device.lockForConfiguration()
+      try device.setTorchModeOn(level: 0.2)
+      device.torchMode = device.isTorchActive ? .off : .on
+      device.unlockForConfiguration()
+    } catch { return }
   }
 }
 
@@ -252,19 +167,11 @@ extension BCISBNCaptor: AVCaptureMetadataOutputObjectsDelegate {
     didOutput metadataObjects: [AVMetadataObject],
     from connection: AVCaptureConnection
   ) {
-    videoSession.stopRunning()
-    
+    stopRunning()
     guard
       let object = metadataObjects.first as? AVMetadataMachineReadableCodeObject,
       let isbn = object.stringValue
       else { return }
-    
-    //    BCBook.fetch(with: isbn) { book in
-    //      self.handler(book)
-    //    }
-    //    stopRunning()
-    //    if handler != nil { handler!(isbn) }
-    state = .stop
     
     completion?(.success(isbn))
   }

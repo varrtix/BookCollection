@@ -109,7 +109,7 @@ extension BCInfoViewController {
   }
   // MARK: configure Subviews
   fileprivate func setup(_ view: UIView) {
-
+    
     view.backgroundColor = BCColor.BarTint.white
     
     view.addSubview(infoView)

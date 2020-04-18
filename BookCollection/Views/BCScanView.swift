@@ -213,7 +213,7 @@ extension BCScanView {
 
 // MARK: - AnimationLine
 extension BCScanView {
-
+  
   /// Start scan line animation
   func startAnimating() {
     switch state {

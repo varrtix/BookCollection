@@ -34,7 +34,7 @@ final class BCListTableViewController: BCViewController {
   
   private let tableViewDataSource = ListTableViewDataSource(withCellReuseIdentifier: cellIdentifier)
   
-  private lazy var tableView: UITableView = {
+  private lazy var tableView: UITableView! = {
     let tableView = UITableView(frame: view.frame, style: .plain)
     
     tableView.backgroundColor = BCColor.ListTint.snowWhite
@@ -66,19 +66,6 @@ extension BCListTableViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    launch()
-  }
-  
-  override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
-    
-    wakeup()
-  }
-}
-
-// MARK: - View controllers
-extension BCListTableViewController {
-  private func launch() {
     NotificationCenter.default.addObserver(
       self,
       selector: #selector(handleChangeNotification(_:)),
@@ -86,11 +73,13 @@ extension BCListTableViewController {
       object: nil
     )
     
-    view.addSubview(tableView)
+    view = tableView
   }
-  
-  private func wakeup() {}
-  
+}
+
+// MARK: - View controllers
+extension BCListTableViewController {
+
   @objc
   private func handleChangeNotification(_ notification: Notification) {
     guard let key = notification.userInfo?[BCBookshelf.ChangedNotification.reasonKey]
@@ -100,7 +89,7 @@ extension BCListTableViewController {
     DispatchQueue.main.async {
       if key == .append,
         let index = notification.userInfo?[BCBookshelf.ChangedNotification.ValueCache.newValueKey] as? Int {
-        self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+        self.tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
       } else if key == .remove,
         let index = notification.userInfo?[BCBookshelf.ChangedNotification.ValueCache.oldValueKey] as? Int {
         self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)

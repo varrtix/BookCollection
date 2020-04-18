@@ -63,11 +63,11 @@ final class BCBook: Codable {
   let price: String?
   
   let authors: Authors?
-
+  
   let translators: Translators?
   
   let tags: Tags?
-
+  
   let images: Images?
   
   let series: Series?

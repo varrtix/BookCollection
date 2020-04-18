@@ -39,7 +39,7 @@ protocol BCInfoViewDelegate: UIScrollViewDelegate {
   var isMarked: Bool { get }
   
   func coverImageViewDidLoad(_ cover: UIImageView)
-
+  
   func didFinishingMark(by button: UIButton?) -> Bool
 }
 
@@ -52,7 +52,7 @@ final class BCInfoView: UIView {
   private(set) var backgroundHeight: CGFloat = 270.5
   
   private let scrollViewOffset: CGFloat
-
+  
   private let markButton = UIButton(type: .custom)
   
   init(frame: CGRect, withScrollView offset: CGFloat) {
@@ -124,31 +124,6 @@ final class BCInfoView: UIView {
       make.top.equalToSuperview().inset(16)
     }
     
-    //    var items = [String]()
-    //
-    //    if let authors = book?.authors, !authors.isEmpty {
-    //      var author = String()
-    //      authors.forEach { author += $0 + " " }
-    //      items.append("Author: \(author)")
-    //    }
-    //
-    //    if let translators = book?.translators, !translators.isEmpty {
-    //      var translator = String()
-    //      translators.forEach { translator += $0 + " " }
-    //      items.append("Translator: \(translator)")
-    //    }
-    //
-    //    if book?.publisher != nil { items.append("Publisher: \(book!.publisher!)") }
-    //
-    //    if book?.publishedDate != nil { items.append("Published Date: \(book!.publishedDate!)") }
-    //
-    //    if book?.price != nil { items.append("Price: \(book!.price!)") }
-    //
-    //    if let isbn = book?.isbn13 {
-    //      items.append("ISBN: \(isbn)")
-    //    } else if let isbn = book?.isbn10 {
-    //      items.append("ISBN: \(isbn)")
-    //    }
     // Info text
     let stackView = UIStackView(
       //      arrangedSubviews: items.map { item in
@@ -174,7 +149,6 @@ final class BCInfoView: UIView {
     }
     
     // Mark button
-    //    let markButton = UIButton(type: .custom)
     markButton.titleLabel?.font = UIFont.systemFont(ofSize: 12.0)
     markButton.backgroundColor = BCColor.BarTint.white
     
@@ -246,7 +220,6 @@ final class BCInfoView: UIView {
     layoutIfNeeded()
     backgroundHeight = headView.frame.height + scrollViewOffset
   }
-  
 }
 
 @objc

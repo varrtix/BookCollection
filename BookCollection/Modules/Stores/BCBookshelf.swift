@@ -69,7 +69,7 @@ final class BCBookshelf {
         self.contents.append(book)
         self.post(book, userInfo: [
           ChangedNotification.reasonKey: ChangedNotification.ReasonKey.append,
-          ChangedNotification.ValueCache.newValueKey: self.contents.count - 1
+          ChangedNotification.ValueCache.newValueKey: self.contents.count - 1,
         ])
       }
     }

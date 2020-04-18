@@ -38,7 +38,7 @@ final class BCListCollectionViewController: BCViewController {
   
   private let collectionViewDataSource = ListCollectionViewDataSource(withCellReuseIdentifier: cellIdentifier)
   
-  private lazy var collectionView: UICollectionView = {
+  private lazy var collectionView: UICollectionView! = {
     let layout = UICollectionViewFlowLayout()
     let collectionView = UICollectionView(
       frame: view.frame,
@@ -80,20 +80,6 @@ extension BCListCollectionViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    launch()
-  }
-  
-  override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
-    
-    wakeup()
-  }
-}
-
-// MARK: - View controllers
-extension BCListCollectionViewController {
-  private func launch() {
-    
     NotificationCenter.default.addObserver(
       self,
       selector: #selector(handleChangeNotification(_:)),
@@ -101,11 +87,13 @@ extension BCListCollectionViewController {
       object: nil
     )
     
-    view.addSubview(collectionView)
+    view = collectionView
   }
-  
-  private func wakeup() {}
-  
+}
+
+// MARK: - View controllers
+extension BCListCollectionViewController {
+
   @objc
   private func handleChangeNotification(_ notification: Notification) {
     guard let key = notification.userInfo?[BCBookshelf.ChangedNotification.reasonKey] as? BCBookshelf.ChangedNotification.ReasonKey
