@@ -146,7 +146,7 @@ extension BCListCollectionViewCell {
 // MARK: - Actions
 extension BCListCollectionViewCell {
   @objc
-  func remove(_ sender: UIButton? = nil) {
+  private func remove(_ sender: UIButton? = nil) {
     dataSource?.removeCell(self)
   }
 }

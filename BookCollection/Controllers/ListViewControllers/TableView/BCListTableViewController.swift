@@ -32,6 +32,8 @@ private let cellIdentifier = BCMapping.CellIdentifier.listTableView.rawValue
 
 final class BCListTableViewController: BCViewController {
   
+  private let bookShelf = BCBookshelf.shared
+  
   private let tableViewDataSource = ListTableViewDataSource(withCellReuseIdentifier: cellIdentifier)
   
   private lazy var tableView: UITableView! = {
@@ -109,5 +111,8 @@ extension BCListTableViewController: UITableViewDelegate {
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
+    let infoViewController = BCInfoViewController(with: bookShelf[indexPath.row])
+    let navigationController = BCNavigationController(rootViewController: infoViewController)
+    present(navigationController, animated: true)
   }
 }

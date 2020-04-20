@@ -36,6 +36,8 @@ final class BCListCollectionViewController: BCViewController {
   
   private let paddingInset = UIEdgeInsets(top: 20, left: 10, bottom: 20, right: 10)
   
+  private let bookShelf = BCBookshelf.shared
+  
   private let collectionViewDataSource = ListCollectionViewDataSource(withCellReuseIdentifier: cellIdentifier)
   
   private lazy var collectionView: UICollectionView! = {
@@ -116,12 +118,15 @@ extension BCListCollectionViewController {
 // MARK: - Collectionview delegate
 extension BCListCollectionViewController: UICollectionViewDelegate {
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    if
-      let cell = collectionView.cellForItem(at: indexPath)
-        as? BCListCollectionViewCell,
-      cell.isEditing == true {
-      cell.isEditing = false
-      collectionView.deselectItem(at: indexPath, animated: true)
+    collectionView.deselectItem(at: indexPath, animated: true)
+    if let cell = collectionView.cellForItem(at: indexPath) as? BCListCollectionViewCell {
+      if cell.isEditing == true {
+        cell.isEditing = false
+      } else {
+        let infoViewController = BCInfoViewController(with: bookShelf[indexPath.row])
+        let navigationController = BCNavigationController(rootViewController: infoViewController)
+        present(navigationController, animated: true)
+      }
     }
   }
 }
