@@ -102,7 +102,7 @@ extension BCListCollectionViewController {
     DispatchQueue.main.async {
       if key == .append,
         let index = notification.userInfo?[BCBookshelf.ChangedNotification.ValueCache.newValueKey] as? Int {
-        self.collectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
+        self.collectionView.insertItems(at: [IndexPath(row: index, section: 0)])
       } else if key == .remove,
         let index = notification.userInfo?[BCBookshelf.ChangedNotification.ValueCache.oldValueKey] as? Int {
         self.collectionView.deleteItems(at: [IndexPath(row: index, section: 0)])

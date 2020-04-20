@@ -57,7 +57,6 @@ final class BCListCollectionViewCell: BCCollectionViewCell {
     let button = UIButton()
     
     button.setImage(UIImage(named: "Main/List/delete"), for: .normal)
-    button.addTarget(self, action: #selector(remove(_:)), for: .touchUpInside)
     button.isHidden = true
     
     return button
@@ -70,7 +69,8 @@ final class BCListCollectionViewCell: BCCollectionViewCell {
           withDuration: 1,
           delay: 0.2,
           options: .curveEaseInOut,
-          animations: { self.deleteButton.isHidden = oldValue })
+          animations: { self.deleteButton.isHidden = oldValue }
+        )
       }
     }
   }
@@ -102,6 +102,7 @@ extension BCListCollectionViewCell {
     contentView.addSubview(deleteButton)
     
     layoutAllViews()
+    actionsBinding()
   }
    
   private func layoutAllViews() {
@@ -119,6 +120,10 @@ extension BCListCollectionViewCell {
     deleteButton.snp.makeConstraints { make in
       make.right.top.equalToSuperview()
     }
+  }
+  
+  private func actionsBinding() {
+    deleteButton.addTarget(self, action: #selector(remove(_:)), for: .touchUpInside)
   }
   
   override func prepareForReuse() {
